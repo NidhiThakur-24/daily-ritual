@@ -224,6 +224,14 @@ h1,h2,h3{font-family:'DM Serif Display',serif}
   <!-- TRACKER PANEL -->
   <div class="panel" id="panel-tracker">
 
+    <div id="migrate-banner" style="display:none;background:rgba(126,184,247,0.08);border:1px solid var(--accent3);border-radius:12px;padding:14px;margin-bottom:1rem">
+      <div style="font-size:14px;font-weight:500;color:var(--accent3);margin-bottom:4px">Local data found</div>
+      <div style="font-size:12px;color:var(--muted);margin-bottom:10px">You have existing streak data saved locally. Import it into Supabase so it's never lost.</div>
+      <button onclick="migrateLocalToSupabase()" style="width:100%;padding:9px;background:var(--accent3);color:#0d0d0d;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit">Import my existing data to cloud</button>
+    </div>
+
+    <div id="sync-status" style="display:none;font-size:11px;color:var(--muted);text-align:right;margin-bottom:8px"></div>
+
     <div class="stats-grid">
       <div class="stat-card">
         <div class="stat-val" style="color:var(--accent)" id="stat-streak">0</div>
@@ -300,6 +308,9 @@ h1,h2,h3{font-family:'DM Serif Display',serif}
 </div>
 
 <script>
+const SUPABASE_URL = 'https://zkavknunbdkmdketrlvg.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InprYXZrbnVuYmRrbWRrZXRybHZnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM4Mzk2NTYsImV4cCI6MjA4OTQxNTY1Nn0.yf7Evnj29M0TNfuyNhO_mJdAos7ChV5FZZAHrfW39D8';
+
 const DAYS = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
 const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
 
@@ -416,7 +427,36 @@ const FOOD_AVOID = [
   {icon:'☕',title:'Coffee on an empty stomach',desc:'Spikes cortisol. Eat something small first — even a banana — before your morning coffee.'},
 ];
 
-// State
+// ── Supabase config ──────────────────────────────────────────
+const SUPA_URL = 'https://zkavknunbdkmdketrlvg.supabase.co';
+const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InprYXZrbnVuYmRrbWRrZXRybHZnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM4Mzk2NTYsImV4cCI6MjA4OTQxNTY1Nn0.yf7Evnj29M0TNfuyNhO_mJdAos7ChV5FZZAHrfW39D8';
+
+async function dbGet(table, match) {
+  const params = Object.entries(match).map(([k,v])=>`${k}=eq.${encodeURIComponent(v)}`).join('&');
+  const r = await fetch(`${SUPA_URL}/rest/v1/${table}?${params}&limit=1`, {
+    headers:{'apikey':SUPA_KEY,'Authorization':`Bearer ${SUPA_KEY}`,'Content-Type':'application/json'}
+  });
+  const rows = await r.json();
+  return rows[0] || null;
+}
+
+async function dbUpsert(table, data) {
+  await fetch(`${SUPA_URL}/rest/v1/${table}`, {
+    method:'POST',
+    headers:{'apikey':SUPA_KEY,'Authorization':`Bearer ${SUPA_KEY}`,
+      'Content-Type':'application/json','Prefer':'resolution=merge-duplicates,return=minimal'},
+    body: JSON.stringify(data)
+  });
+}
+
+async function dbGetAll(table) {
+  const r = await fetch(`${SUPA_URL}/rest/v1/${table}?select=*`, {
+    headers:{'apikey':SUPA_KEY,'Authorization':`Bearer ${SUPA_KEY}`}
+  });
+  return await r.json();
+}
+
+// ── State ────────────────────────────────────────────────────
 let state = {
   streak: 0,
   totalWorkouts: 0,
@@ -425,20 +465,143 @@ let state = {
   lastCheckin: null
 };
 
-function loadState() {
-  const s = localStorage.getItem('workout_state_v2');
-  if (s) state = JSON.parse(s);
+let dbReady = false;
+
+function showToast(msg, color='var(--accent)') {
+  let t = document.getElementById('db-toast');
+  if (!t) {
+    t = document.createElement('div');
+    t.id = 'db-toast';
+    t.style.cssText = `position:fixed;bottom:90px;left:50%;transform:translateX(-50%);
+      background:var(--card);border:1px solid var(--border);border-radius:100px;
+      padding:8px 18px;font-size:13px;z-index:999;transition:opacity .4s;white-space:nowrap`;
+    document.body.appendChild(t);
+  }
+  t.style.color = color;
+  t.textContent = msg;
+  t.style.opacity = '1';
+  clearTimeout(t._to);
+  t._to = setTimeout(()=>{ t.style.opacity='0'; }, 2500);
 }
 
-function saveState() {
+async function loadState() {
+  // Always load localStorage first so UI is instant
+  const local = localStorage.getItem('workout_state_v2');
+  if (local) state = JSON.parse(local);
+
+  // Then sync from Supabase
+  try {
+    const [meta, rows] = await Promise.all([
+      dbGet('streak_meta', {id:1}),
+      dbGetAll('workouts')
+    ]);
+    if (meta) {
+      state.streak = meta.streak || 0;
+      state.totalWorkouts = meta.total_workouts || 0;
+    }
+    if (rows && rows.length) {
+      state.checkedDays = {};
+      state.todayExercises = {};
+      rows.forEach(row => {
+        if (row.checked_in) state.checkedDays[row.day_key] = true;
+        if (row.exercises) Object.assign(state.todayExercises, row.exercises);
+      });
+    }
+    dbReady = true;
+    showToast('✦ Synced with cloud');
+  } catch(e) {
+    showToast('Offline — using local data', 'var(--warm)');
+  }
+}
+
+async function saveState() {
+  // Always save locally first
   localStorage.setItem('workout_state_v2', JSON.stringify(state));
+
+  if (!dbReady) return;
+  const todayKey = getToday();
+
+  // Build today's exercise subset
+  const todayExs = {};
+  Object.entries(state.todayExercises).forEach(([k,v]) => {
+    if (k.startsWith(todayKey)) todayExs[k] = v;
+  });
+
+  try {
+    await Promise.all([
+      dbUpsert('workouts', {
+        day_key: todayKey,
+        checked_in: !!state.checkedDays[todayKey],
+        exercises: todayExs
+      }),
+      dbUpsert('streak_meta', {
+        id: 1,
+        streak: state.streak,
+        total_workouts: state.totalWorkouts,
+        updated_at: new Date().toISOString()
+      })
+    ]);
+  } catch(e) {
+    showToast('Save failed — stored locally', 'var(--danger)');
+  }
 }
 
-function resetData() {
-  if (confirm('Reset all your workout data? This cannot be undone.')) {
-    state = {streak:0,totalWorkouts:0,checkedDays:{},todayExercises:{},lastCheckin:null};
-    saveState();
-    location.reload();
+async function resetData() {
+  if (!confirm('Reset ALL workout data everywhere? This cannot be undone.')) return;
+  state = {streak:0,totalWorkouts:0,checkedDays:{},todayExercises:{},lastCheckin:null};
+  localStorage.removeItem('workout_state_v2');
+  try {
+    await fetch(`${SUPA_URL}/rest/v1/workouts`, {
+      method:'DELETE',
+      headers:{'apikey':SUPA_KEY,'Authorization':`Bearer ${SUPA_KEY}`,'Content-Type':'application/json'},
+      body: JSON.stringify({id: {neq: '00000000-0000-0000-0000-000000000000'}})
+    });
+    await dbUpsert('streak_meta', {id:1, streak:0, total_workouts:0, updated_at: new Date().toISOString()});
+  } catch(e) {}
+  location.reload();
+}
+
+// ── One-time migration from localStorage → Supabase ─────────
+async function migrateLocalData() {
+  const btn = document.getElementById('migrate-btn');
+  btn.textContent = 'Migrating...';
+  btn.disabled = true;
+
+  const local = localStorage.getItem('workout_state_v2');
+  if (!local) { btn.textContent = 'Nothing to migrate'; return; }
+
+  const ls = JSON.parse(local);
+  const writes = [];
+
+  // Write all checked days
+  for (const [dayKey, val] of Object.entries(ls.checkedDays || {})) {
+    if (!val) continue;
+    const exs = {};
+    Object.entries(ls.todayExercises || {}).forEach(([k,v]) => {
+      if (k.startsWith(dayKey)) exs[k] = v;
+    });
+    writes.push(dbUpsert('workouts', {day_key: dayKey, checked_in: true, exercises: exs}));
+  }
+
+  // Write streak meta
+  writes.push(dbUpsert('streak_meta', {
+    id: 1,
+    streak: ls.streak || 0,
+    total_workouts: ls.totalWorkouts || 0,
+    updated_at: new Date().toISOString()
+  }));
+
+  try {
+    await Promise.all(writes);
+    btn.textContent = '✓ Migrated! Data is in the cloud now';
+    btn.style.background = 'var(--accent)';
+    btn.style.color = '#0d0d0d';
+    showToast('Migration complete — your streak is safe!');
+    document.getElementById('migrate-section').innerHTML =
+      `<p style="font-size:13px;color:var(--accent);text-align:center;padding:10px 0">✦ All historical data is now in Supabase</p>`;
+  } catch(e) {
+    btn.textContent = 'Migration failed — try again';
+    btn.disabled = false;
   }
 }
 
@@ -1340,21 +1503,22 @@ function switchTab(tab) {
 }
 
 // Init
-function init() {
-  loadState();
+async function init() {
   const d = new Date();
   const plan = getTodayPlan();
   document.getElementById('today-label').textContent = `${DAYS[d.getDay()]}, ${MONTHS[d.getMonth()]} ${d.getDate()}`;
   document.getElementById('workout-day-name').textContent = plan.emoji + ' ' + plan.day;
   document.getElementById('workout-tagline').textContent = plan.tagline;
-
   const q = QUOTES[d.getDay() % QUOTES.length];
   document.getElementById('quote-text').textContent = `"${q.text}"`;
   document.getElementById('quote-author').textContent = `— ${q.author}`;
-
+  // Render with local cache immediately, then re-render after Supabase loads
   renderExercises();
   renderTracker();
   renderFood();
+  await loadState();
+  renderExercises();
+  renderTracker();
 }
 
 // Timer state
