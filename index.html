@@ -5,6 +5,16 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Daily 20-Min Ritual</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+<!-- PWA / Home screen icon -->
+<link rel="manifest" href="data:application/json,{%22name%22:%22Daily%20Ritual%22,%22short_name%22:%22Ritual%22,%22start_url%22:%22.%22,%22display%22:%22standalone%22,%22background_color%22:%22%230d0d0d%22,%22theme_color%22:%22%23c8f55a%22,%22icons%22:[{%22src%22:%22data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%20512%20512%27%3E%3Crect%20width%3D%27512%27%20height%3D%27512%27%20rx%3D%27100%27%20fill%3D%27%230d0d0d%27%2F%3E%3Ccircle%20cx%3D%27256%27%20cy%3D%27256%27%20r%3D%27160%27%20fill%3D%27none%27%20stroke%3D%27%23c8f55a%27%20stroke-width%3D%2728%27%2F%3E%3Ccircle%20cx%3D%27256%27%20cy%3D%27256%27%20r%3D%2790%27%20fill%3D%27none%27%20stroke%3D%27%23c8f55a%27%20stroke-width%3D%2718%27%20opacity%3D%270.6%27%2F%3E%3Ccircle%20cx%3D%27256%27%20cy%3D%27256%27%20r%3D%2736%27%20fill%3D%27%23c8f55a%27%2F%3E%3C%2Fsvg%3E%22,%22sizes%22:%22512x512%22,%22type%22:%22image/svg+xml%22}]}">
+<meta name="theme-color" content="#c8f55a">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Daily Ritual">
+<link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><rect width='512' height='512' rx='100' fill='%230d0d0d'/><circle cx='256' cy='256' r='160' fill='none' stroke='%23c8f55a' stroke-width='28'/><circle cx='256' cy='256' r='90' fill='none' stroke='%23c8f55a' stroke-width='18' opacity='0.6'/><circle cx='256' cy='256' r='36' fill='%23c8f55a'/></svg>">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><rect width='512' height='512' rx='100' fill='%230d0d0d'/><circle cx='256' cy='256' r='160' fill='none' stroke='%23c8f55a' stroke-width='28'/><circle cx='256' cy='256' r='90' fill='none' stroke='%23c8f55a' stroke-width='18' opacity='0.6'/><circle cx='256' cy='256' r='36' fill='%23c8f55a'/></svg>">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{--bg:#0d0d0d;--surface:#161616;--card:#1e1e1e;--border:#2a2a2a;--accent:#c8f55a;--accent2:#ff6b35;--accent3:#7eb8f7;--text:#f0f0f0;--muted:#888;--soft:#555;--danger:#ff4757;--warm:#ffd166}
@@ -334,7 +344,12 @@ async function loadState(){
   try{
     setSyncStatus('spin','Syncing with cloud...');
     const[meta,rows]=await Promise.all([dbGet('streak_meta',{id:1}),dbGetAll('workouts')]);
-    if(meta){state.streak=meta.streak||0;state.totalWorkouts=meta.total_workouts||0;}
+    if(meta){
+      state.streak=meta.streak||0;
+      state.totalWorkouts=meta.total_workouts||0;
+      // Use stored streak directly — don't let recalcStreak overwrite it on load
+      state._streakFromCloud=true;
+    }
     if(rows&&rows.length){
       state.checkedDays={};state.todayExercises={};
       rows.forEach(r=>{
@@ -1223,7 +1238,11 @@ async function checkInToday(){
   showToast('Saved to cloud!');
 }
 function recalcStreak(){
+  // If streak was freshly loaded from Supabase, trust it — don't recalculate
+  if(state._streakFromCloud){state._streakFromCloud=false;return;}
   let streak=0,d=new Date();
+  const todayKey=`${d.getFullYear()}-${d.getMonth()+1}-${d.getDate()}`;
+  if(!state.checkedDays[todayKey]) d.setDate(d.getDate()-1);
   while(true){
     const key=`${d.getFullYear()}-${d.getMonth()+1}-${d.getDate()}`;
     if(state.checkedDays[key]){streak++;d.setDate(d.getDate()-1);}else break;
@@ -1234,9 +1253,10 @@ function recalcStreak(){
 // ── Tracker ───────────────────────────────────────────────────
 function renderTracker(){
   recalcStreak();
-  document.getElementById('stat-streak').textContent=state.streak;
+  const streak = state.streak;
+  document.getElementById('stat-streak').textContent=streak;
   document.getElementById('stat-total').textContent=state.totalWorkouts;
-  document.getElementById('streak-display').textContent=state.streak;
+  document.getElementById('streak-display').textContent=streak;
   document.getElementById('stat-mins').textContent=state.totalWorkouts*20;
   const today=new Date();const ws=new Date(today);ws.setDate(today.getDate()-today.getDay());
   let wc=0;
@@ -1285,9 +1305,9 @@ async function init(){
   const q=QUOTES[d.getDay()%QUOTES.length];
   document.getElementById('quote-text').textContent=`"${q.text}"`;
   document.getElementById('quote-author').textContent=`— ${q.author}`;
-  renderExercises();renderTracker();renderFood();
+  renderExercises();renderFood();
   await loadState();
-  renderExercises();renderTracker();
+  renderExercises();renderTracker();renderCalendar();
 }
 init();
 
