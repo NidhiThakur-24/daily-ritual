@@ -7,39 +7,19 @@
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-:root{
-  --bg:#0d0d0d;
-  --surface:#161616;
-  --card:#1e1e1e;
-  --border:#2a2a2a;
-  --accent:#c8f55a;
-  --accent2:#ff6b35;
-  --accent3:#7eb8f7;
-  --text:#f0f0f0;
-  --muted:#888;
-  --soft:#555;
-  --danger:#ff4757;
-  --warm:#ffd166;
-}
-body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;padding:0;overflow-x:hidden}
+:root{--bg:#0d0d0d;--surface:#161616;--card:#1e1e1e;--border:#2a2a2a;--accent:#c8f55a;--accent2:#ff6b35;--accent3:#7eb8f7;--text:#f0f0f0;--muted:#888;--soft:#555;--danger:#ff4757;--warm:#ffd166}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;overflow-x:hidden}
 h1,h2,h3{font-family:'DM Serif Display',serif}
-
-/* Header */
 .header{padding:2rem 1.5rem 1rem;background:linear-gradient(180deg,#111 0%,transparent 100%);position:sticky;top:0;z-index:50;backdrop-filter:blur(12px)}
 .header-inner{max-width:520px;margin:0 auto;display:flex;align-items:center;justify-content:space-between}
 .app-title{font-size:1.1rem;font-weight:500;letter-spacing:0.04em;color:var(--accent)}
 .streak-badge{display:flex;align-items:center;gap:6px;background:var(--card);border:1px solid var(--border);border-radius:100px;padding:6px 14px;font-size:13px;font-weight:500}
-.streak-fire{font-size:16px}
 .streak-count{color:var(--warm)}
-
-/* Hero */
 .hero{max-width:520px;margin:0 auto;padding:1.5rem 1.5rem 0}
 .day-label{font-size:13px;color:var(--muted);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:6px}
 .day-title{font-size:2.2rem;line-height:1.1;margin-bottom:0.3rem}
 .day-title span{color:var(--accent);font-style:italic}
 .day-sub{font-size:14px;color:var(--muted);margin-bottom:1.5rem}
-
-/* Progress ring */
 .progress-area{display:flex;align-items:center;gap:1.5rem;background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:1.2rem;margin-bottom:1.5rem}
 .ring-wrap{position:relative;width:72px;height:72px;flex-shrink:0}
 .ring-wrap svg{transform:rotate(-90deg)}
@@ -49,574 +29,393 @@ h1,h2,h3{font-family:'DM Serif Display',serif}
 .progress-text h3{font-size:1rem;font-weight:500;margin-bottom:4px}
 .progress-text p{font-size:13px;color:var(--muted)}
 .progress-text strong{color:var(--accent)}
-
-/* Tabs */
-.tabs{max-width:520px;margin:0 auto 1rem;padding:0 1.5rem;display:flex;gap:8px}
+.sync-bar{max-width:520px;margin:0 auto;padding:0 1.5rem 0.6rem;display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted)}
+.sync-dot{width:7px;height:7px;border-radius:50%;background:var(--soft);flex-shrink:0;transition:background .4s}
+.sync-dot.ok{background:#4caf50}.sync-dot.err{background:var(--danger)}.sync-dot.spin{background:var(--warm);animation:pulse 1s infinite}
+.tabs{max-width:520px;margin:0 auto 0.5rem;padding:0 1.5rem;display:flex;gap:8px}
 .tab{padding:8px 18px;border-radius:100px;font-size:13px;font-weight:500;cursor:pointer;border:1px solid var(--border);background:transparent;color:var(--muted);transition:all .2s}
 .tab.active{background:var(--accent);color:#0d0d0d;border-color:var(--accent)}
-
-/* Content */
 .content{max-width:520px;margin:0 auto;padding:0 1.5rem 6rem}
-.panel{display:none}
-.panel.active{display:block}
-
-/* Exercise list */
+.panel{display:none}.panel.active{display:block}
+.migrate-banner{background:linear-gradient(135deg,#1a1a2e,#16213e);border:1px solid var(--accent3);border-radius:14px;padding:1.2rem;margin-bottom:1rem}
+.migrate-banner h4{font-size:14px;font-weight:500;color:var(--accent3);margin-bottom:4px}
+.migrate-banner p{font-size:12px;color:var(--muted);margin-bottom:10px;line-height:1.5}
+.migrate-btn{width:100%;padding:10px;background:var(--accent3);color:#0d0d0d;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;transition:opacity .2s}
+.migrate-btn:hover{opacity:0.85}.migrate-btn:disabled{opacity:0.5;cursor:default}
+.quote-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:1.2rem;margin-bottom:1.2rem;text-align:center}
+.quote-text{font-family:'DM Serif Display',serif;font-size:1.1rem;font-style:italic;color:var(--text);line-height:1.5;margin-bottom:6px}
+.quote-author{font-size:12px;color:var(--muted)}
+.done-banner{background:linear-gradient(135deg,#1a2a0a,#0d1a05);border:1px solid var(--accent);border-radius:14px;padding:1.5rem;text-align:center;margin-bottom:1rem;display:none}
+.done-banner.show{display:block}
+.done-banner h3{font-size:1.4rem;color:var(--accent);margin-bottom:6px}
+.done-banner p{font-size:14px;color:var(--muted)}
+.done-check-btn{margin-top:1rem;width:100%;padding:12px;background:var(--accent);color:#0d0d0d;border:none;border-radius:10px;font-size:15px;font-weight:600;cursor:pointer;font-family:inherit;transition:opacity .2s}
+.done-check-btn:hover{opacity:0.85}.done-check-btn:disabled{opacity:0.5;cursor:default}
 .ex-list{display:flex;flex-direction:column;gap:10px}
 .ex-card{background:var(--card);border:1px solid var(--border);border-radius:14px;overflow:hidden;transition:border-color .2s}
 .ex-card.done{border-color:var(--accent);opacity:0.75}
 .ex-header{display:flex;align-items:center;gap:12px;padding:14px;cursor:pointer}
 .ex-num{width:32px;height:32px;border-radius:50%;background:var(--surface);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;color:var(--muted);flex-shrink:0;transition:all .2s}
 .ex-card.done .ex-num{background:var(--accent);border-color:var(--accent);color:#0d0d0d}
-.ex-info{flex:1}
-.ex-name{font-size:15px;font-weight:500;margin-bottom:2px}
-.ex-meta{font-size:12px;color:var(--muted)}
+.ex-info{flex:1}.ex-name{font-size:15px;font-weight:500;margin-bottom:2px}.ex-meta{font-size:12px;color:var(--muted)}
 .ex-type{font-size:11px;padding:3px 10px;border-radius:100px;font-weight:500}
 .type-yoga{background:rgba(126,184,247,0.15);color:var(--accent3)}
 .type-strength{background:rgba(255,107,53,0.15);color:var(--accent2)}
 .type-breathe{background:rgba(200,245,90,0.15);color:var(--accent)}
 .type-cardio{background:rgba(255,209,102,0.15);color:var(--warm)}
-.ex-toggle{width:24px;height:24px;border-radius:50%;border:1.5px solid var(--soft);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .2s;flex-shrink:0;background:transparent}
-.ex-card.done .ex-toggle{background:var(--accent);border-color:var(--accent)}
+.ex-toggle{width:24px;height:24px;border-radius:50%;border:1.5px solid var(--soft);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .2s;flex-shrink:0;background:transparent;font-size:12px}
+.ex-card.done .ex-toggle{background:var(--accent);border-color:var(--accent);color:#0d0d0d}
 .ex-expand{padding:0 14px 14px;display:none}
-.ex-expand.open{display:block}
+.ex-expand.open{display:block;animation:slideDown .2s ease}
 .ex-viz{background:var(--surface);border-radius:10px;overflow:hidden;margin-bottom:10px}
 .ex-desc{font-size:13px;color:var(--muted);line-height:1.6}
 .ex-tip{margin-top:8px;font-size:12px;padding:8px 12px;background:rgba(200,245,90,0.08);border-left:2px solid var(--accent);border-radius:0 6px 6px 0;color:var(--accent);font-style:italic}
-
-/* Timer */
 .timer-wrap{margin:12px 0 10px;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px;display:flex;align-items:center;gap:16px}
 .timer-ring-wrap{position:relative;width:64px;height:64px;flex-shrink:0}
 .timer-ring-wrap svg{transform:rotate(-90deg)}
 .timer-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
 .timer-time{font-size:16px;font-weight:600;font-variant-numeric:tabular-nums;color:var(--text)}
 .timer-label{font-size:9px;color:var(--muted);margin-top:1px}
-.timer-right{flex:1}
-.timer-name{font-size:12px;color:var(--muted);margin-bottom:8px}
+.timer-right{flex:1}.timer-name{font-size:12px;color:var(--muted);margin-bottom:8px}
 .timer-controls{display:flex;gap:8px}
 .timer-btn{padding:7px 16px;border-radius:8px;font-size:13px;font-weight:500;border:1px solid var(--border);background:transparent;color:var(--text);cursor:pointer;font-family:inherit;transition:all .15s;flex:1;text-align:center}
 .timer-btn.primary{background:var(--accent);color:#0d0d0d;border-color:var(--accent)}
 .timer-btn:active{transform:scale(0.96)}
-.timer-done-flash{animation:timerDone .4s ease 3}
 @keyframes timerDone{0%,100%{background:var(--card)}50%{background:rgba(200,245,90,0.15)}}
-
-/* Done all banner */
-.done-banner{background:linear-gradient(135deg,#1a2a0a,#0d1a05);border:1px solid var(--accent);border-radius:14px;padding:1.5rem;text-align:center;margin-bottom:1rem;display:none}
-.done-banner.show{display:block}
-.done-banner h3{font-size:1.4rem;color:var(--accent);margin-bottom:6px}
-.done-banner p{font-size:14px;color:var(--muted)}
-.done-check-btn{margin-top:1rem;width:100%;padding:12px;background:var(--accent);color:#0d0d0d;border:none;border-radius:10px;font-size:15px;font-weight:600;cursor:pointer;font-family:inherit;transition:opacity .2s}
-.done-check-btn:hover{opacity:0.85}
-.done-check-btn:disabled{opacity:0.5;cursor:default}
-
-/* Calendar */
-.cal-section{margin-bottom:1.5rem}
+.timer-done-flash{animation:timerDone .4s ease 3}
 .section-title{font-size:13px;color:var(--muted);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:10px}
+.stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:1.5rem}
+.stat-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px}
+.stat-val{font-size:1.8rem;font-weight:600;margin-bottom:2px}.stat-label{font-size:12px;color:var(--muted)}
+.cal-section{margin-bottom:1.5rem}
 .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
 .cal-day{aspect-ratio:1;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:500;background:var(--surface);color:var(--soft)}
 .cal-day.done-day{background:var(--accent);color:#0d0d0d}
 .cal-day.today{border:1.5px solid var(--accent3);color:var(--accent3)}
 .cal-day.missed{background:rgba(255,71,87,0.1);color:var(--danger)}
 .cal-day-label{font-size:11px;color:var(--soft);text-align:center;margin-bottom:4px}
-
-/* Stats */
-.stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:1.5rem}
-.stat-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px}
-.stat-val{font-size:1.8rem;font-weight:600;margin-bottom:2px}
-.stat-label{font-size:12px;color:var(--muted)}
-
-/* Food */
-.food-section{margin-bottom:1.5rem}
 .food-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:8px;display:flex;gap:12px;align-items:flex-start}
-.food-icon{font-size:22px;flex-shrink:0;margin-top:2px}
-.food-title{font-size:14px;font-weight:500;margin-bottom:3px}
-.food-desc{font-size:12px;color:var(--muted);line-height:1.5}
-.food-ok{border-left:3px solid var(--accent)}
-.food-no{border-left:3px solid var(--danger)}
+.food-icon{font-size:22px;flex-shrink:0;margin-top:2px}.food-title{font-size:14px;font-weight:500;margin-bottom:3px}.food-desc{font-size:12px;color:var(--muted);line-height:1.5}
+.food-ok{border-left:3px solid var(--accent)}.food-no{border-left:3px solid var(--danger)}
 .food-tag{font-size:11px;padding:2px 8px;border-radius:100px;margin-left:8px;font-weight:500}
-.tag-ok{background:rgba(200,245,90,0.1);color:var(--accent)}
-.tag-no{background:rgba(255,71,87,0.1);color:var(--danger)}
-
-/* Bottom nav */
+.tag-ok{background:rgba(200,245,90,0.1);color:var(--accent)}.tag-no{background:rgba(255,71,87,0.1);color:var(--danger)}
 .bottom-nav{position:fixed;bottom:0;left:0;right:0;background:rgba(13,13,13,0.95);backdrop-filter:blur(12px);border-top:1px solid var(--border);padding:12px 0 20px;z-index:100}
 .nav-inner{max-width:520px;margin:0 auto;display:flex;justify-content:space-around}
 .nav-btn{display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;background:none;border:none;color:var(--muted);font-size:10px;font-family:inherit;transition:color .2s}
-.nav-btn.active{color:var(--accent)}
-.nav-icon{font-size:18px}
-
-/* SVG figure */
+.nav-btn.active{color:var(--accent)}.nav-icon{font-size:18px}
 .figure-svg{width:100%;display:block}
-
-/* Animations */
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.5}}
 @keyframes breathe{0%,100%{transform:scale(1)}50%{transform:scale(1.15)}}
 .breathe-circle{animation:breathe 4s ease-in-out infinite}
 @keyframes slideDown{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}
-.ex-expand.open{animation:slideDown .2s ease}
-
-/* Motivational quote */
-.quote-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:1.2rem;margin-bottom:1.2rem;text-align:center}
-.quote-text{font-family:'DM Serif Display',serif;font-size:1.1rem;font-style:italic;color:var(--text);line-height:1.5;margin-bottom:6px}
-.quote-author{font-size:12px;color:var(--muted)}
 </style>
 </head>
 <body>
-
 <div class="header">
   <div class="header-inner">
-    <div class="app-title">✦ Daily Ritual</div>
-    <div class="streak-badge">
-      <span class="streak-fire">🔥</span>
-      <span class="streak-count" id="streak-display">0</span>
-      <span style="color:var(--muted);font-size:12px">day streak</span>
-    </div>
+    <div class="app-title">&#10022; Daily Ritual</div>
+    <div class="streak-badge">&#128293; <span class="streak-count" id="streak-display">0</span> <span style="color:var(--muted);font-size:12px">day streak</span></div>
   </div>
 </div>
-
 <div class="hero">
   <div class="day-label" id="today-label">Loading...</div>
   <h1 class="day-title">Your <span id="workout-day-name">Daily</span><br>20-Min Ritual</h1>
   <p class="day-sub" id="workout-tagline">Calm the mind. Shape the body.</p>
-
   <div class="progress-area">
     <div class="ring-wrap">
       <svg width="72" height="72" viewBox="0 0 72 72">
         <circle cx="36" cy="36" r="28" fill="none" stroke="#2a2a2a" stroke-width="5"/>
-        <circle id="progress-ring" cx="36" cy="36" r="28" fill="none" stroke="#c8f55a" stroke-width="5"
-          stroke-linecap="round" stroke-dasharray="175.9" stroke-dashoffset="175.9" style="transition:stroke-dashoffset .5s ease"/>
+        <circle id="progress-ring" cx="36" cy="36" r="28" fill="none" stroke="#c8f55a" stroke-width="5" stroke-linecap="round" stroke-dasharray="175.9" stroke-dashoffset="175.9" style="transition:stroke-dashoffset .5s ease"/>
       </svg>
-      <div class="ring-center">
-        <span class="ring-num" id="done-count">0</span>
-        <span class="ring-sub">/ 7 done</span>
-      </div>
+      <div class="ring-center"><span class="ring-num" id="done-count">0</span><span class="ring-sub">/ 7 done</span></div>
     </div>
     <div class="progress-text">
       <h3 id="progress-title">Ready to begin</h3>
-      <p id="progress-sub">Check off each exercise as you go — <strong>you've got this.</strong></p>
+      <p id="progress-sub">Check off each exercise as you go &mdash; <strong>you've got this.</strong></p>
     </div>
   </div>
 </div>
-
+<div class="sync-bar"><div class="sync-dot spin" id="sync-dot"></div><span id="sync-label">Connecting to cloud...</span></div>
 <div class="tabs">
   <button class="tab active" onclick="switchTab('workout')">Today</button>
   <button class="tab" onclick="switchTab('tracker')">Tracker</button>
   <button class="tab" onclick="switchTab('food')">Nutrition</button>
 </div>
-
 <div class="content">
-
-  <!-- TODAY PANEL -->
   <div class="panel active" id="panel-workout">
-
-    <div class="quote-card" id="quote-area">
-      <div class="quote-text" id="quote-text">"The secret of getting ahead is getting started."</div>
-      <div class="quote-author" id="quote-author">— Mark Twain</div>
+    <div class="migrate-banner" id="migrate-banner" style="display:none">
+      <h4>&#128230; Import your existing streak</h4>
+      <p>Found local workout data saved before cloud sync. Click below to migrate it to Supabase permanently &mdash; your streak stays intact.</p>
+      <button class="migrate-btn" id="migrate-btn" onclick="migrateLocalData()">Import my streak to cloud &rarr;</button>
     </div>
-
+    <div class="quote-card"><div class="quote-text" id="quote-text"></div><div class="quote-author" id="quote-author"></div></div>
     <div class="done-banner" id="done-banner">
-      <h3>🎉 Workout Complete!</h3>
-      <p>You crushed all 7 exercises today. <br>진짜 잘했어! (jinjja jalhaesseo — You really did great!)</p>
-      <button class="done-check-btn" id="checkin-btn" onclick="checkInToday()">✓ Mark Today as Done</button>
+      <h3>&#127881; Workout Complete!</h3>
+      <p>You crushed all 7 exercises today.<br>&#51652;&#51156; &#51116;&#54637;&#45264;&#50632;&#50612;! (jinjja jalhaesseo &mdash; You really did great!)</p>
+      <button class="done-check-btn" id="checkin-btn" onclick="checkInToday()">&#10003; Mark Today as Done</button>
     </div>
-
     <div class="ex-list" id="exercise-list"></div>
   </div>
-
-  <!-- TRACKER PANEL -->
   <div class="panel" id="panel-tracker">
-
-    <div id="migrate-banner" style="display:none;background:rgba(126,184,247,0.08);border:1px solid var(--accent3);border-radius:12px;padding:14px;margin-bottom:1rem">
-      <div style="font-size:14px;font-weight:500;color:var(--accent3);margin-bottom:4px">Local data found</div>
-      <div style="font-size:12px;color:var(--muted);margin-bottom:10px">You have existing streak data saved locally. Import it into Supabase so it's never lost.</div>
-      <button onclick="migrateLocalToSupabase()" style="width:100%;padding:9px;background:var(--accent3);color:#0d0d0d;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit">Import my existing data to cloud</button>
-    </div>
-
-    <div id="sync-status" style="display:none;font-size:11px;color:var(--muted);text-align:right;margin-bottom:8px"></div>
-
     <div class="stats-grid">
-      <div class="stat-card">
-        <div class="stat-val" style="color:var(--accent)" id="stat-streak">0</div>
-        <div class="stat-label">🔥 Current streak</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-val" style="color:var(--accent3)" id="stat-total">0</div>
-        <div class="stat-label">✦ Total workouts</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-val" style="color:var(--warm)" id="stat-week">0/7</div>
-        <div class="stat-label">📅 This week</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-val" style="color:var(--accent2)" id="stat-mins">0</div>
-        <div class="stat-label">⏱ Total minutes</div>
-      </div>
+      <div class="stat-card"><div class="stat-val" style="color:var(--accent)" id="stat-streak">0</div><div class="stat-label">&#128293; Current streak</div></div>
+      <div class="stat-card"><div class="stat-val" style="color:var(--accent3)" id="stat-total">0</div><div class="stat-label">&#10022; Total workouts</div></div>
+      <div class="stat-card"><div class="stat-val" style="color:var(--warm)" id="stat-week">0/7</div><div class="stat-label">&#128197; This week</div></div>
+      <div class="stat-card"><div class="stat-val" style="color:var(--accent2)" id="stat-mins">0</div><div class="stat-label">&#9201; Total minutes</div></div>
     </div>
-
     <div class="cal-section">
       <div class="section-title">This month</div>
       <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-bottom:6px">
-        <div class="cal-day-label">S</div><div class="cal-day-label">M</div>
-        <div class="cal-day-label">T</div><div class="cal-day-label">W</div>
-        <div class="cal-day-label">T</div><div class="cal-day-label">F</div>
-        <div class="cal-day-label">S</div>
+        <div class="cal-day-label">S</div><div class="cal-day-label">M</div><div class="cal-day-label">T</div><div class="cal-day-label">W</div><div class="cal-day-label">T</div><div class="cal-day-label">F</div><div class="cal-day-label">S</div>
       </div>
       <div class="cal-grid" id="cal-grid"></div>
     </div>
-
-    <div style="margin-top:1rem">
-      <button onclick="resetData()" style="width:100%;padding:10px;background:transparent;border:1px solid var(--border);color:var(--muted);border-radius:10px;font-size:13px;cursor:pointer;font-family:inherit">Reset all data</button>
-    </div>
+    <button onclick="resetData()" style="width:100%;padding:10px;background:transparent;border:1px solid var(--border);color:var(--muted);border-radius:10px;font-size:13px;cursor:pointer;font-family:inherit;margin-top:1rem">Reset all data</button>
   </div>
-
-  <!-- FOOD PANEL -->
   <div class="panel" id="panel-food">
     <div class="section-title">Eat with intention</div>
-    <p style="font-size:13px;color:var(--muted);margin-bottom:1.2rem;line-height:1.6">No strict diet — just small, smart choices that let your workout actually do its job.</p>
-
-    <div class="section-title" style="color:var(--accent)">✓ Keep these in your life</div>
+    <p style="font-size:13px;color:var(--muted);margin-bottom:1.2rem;line-height:1.6">No strict diet &mdash; just smart choices that let your workout actually do its job.</p>
+    <div class="section-title" style="color:var(--accent)">&#10003; Keep these in your life</div>
     <div id="food-good"></div>
-
-    <div class="section-title" style="color:var(--danger);margin-top:1.2rem">✗ Soft limits (not banned, just careful)</div>
+    <div class="section-title" style="color:var(--danger);margin-top:1.2rem">&#10007; Soft limits (not banned, just mindful)</div>
     <div id="food-avoid"></div>
-
-    <div class="food-section" style="margin-top:1.2rem">
+    <div style="margin-top:1.2rem">
       <div class="section-title">Hydration</div>
       <div class="food-card" style="border-left:3px solid var(--accent3)">
-        <div class="food-icon">💧</div>
-        <div>
-          <div class="food-title">Drink water before you're thirsty</div>
-          <div class="food-desc">Aim for 2–3 liters a day. Start your morning with a big glass before any food — it kicks your metabolism and helps with post-workout soreness. Add lemon for a small detox boost.</div>
-        </div>
+        <div class="food-icon">&#128167;</div>
+        <div><div class="food-title">Drink water before you're thirsty</div><div class="food-desc">Aim for 2-3 liters a day. Start your morning with a big glass before any food. Add lemon for a small detox boost.</div></div>
       </div>
     </div>
   </div>
-
 </div>
-
-<!-- BOTTOM NAV -->
 <div class="bottom-nav">
   <div class="nav-inner">
-    <button class="nav-btn active" id="nav-workout" onclick="switchTab('workout')">
-      <span class="nav-icon">🧘</span>Today
-    </button>
-    <button class="nav-btn" id="nav-tracker" onclick="switchTab('tracker')">
-      <span class="nav-icon">📅</span>Tracker
-    </button>
-    <button class="nav-btn" id="nav-food" onclick="switchTab('food')">
-      <span class="nav-icon">🥗</span>Nutrition
-    </button>
+    <button class="nav-btn active" id="nav-workout" onclick="switchTab('workout')"><span class="nav-icon">&#129496;</span>Today</button>
+    <button class="nav-btn" id="nav-tracker" onclick="switchTab('tracker')"><span class="nav-icon">&#128197;</span>Tracker</button>
+    <button class="nav-btn" id="nav-food" onclick="switchTab('food')"><span class="nav-icon">&#129749;</span>Nutrition</button>
   </div>
 </div>
-
 <script>
-const SUPABASE_URL = 'https://zkavknunbdkmdketrlvg.supabase.co';
-const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InprYXZrbnVuYmRrbWRrZXRybHZnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM4Mzk2NTYsImV4cCI6MjA4OTQxNTY1Nn0.yf7Evnj29M0TNfuyNhO_mJdAos7ChV5FZZAHrfW39D8';
-
-const DAYS = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
-const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
-
-const WORKOUT_PLANS = [
-  {
-    day:'Sunday', emoji:'🌿', tagline:'Slow start. Full reset.',
-    exercises:[
-      {name:'Box Breathing',type:'breathe',duration:'3 min',reps:'4 cycles',desc:'Inhale 4 counts, hold 4, exhale 4, hold 4. This activates your parasympathetic nervous system — aka your calm mode.',tip:'Do this in bed before getting up. Game changer.',viz:'breathe'},
-      {name:'Cat-Cow Stretch',type:'yoga',duration:'2 min',reps:'12 reps',desc:'On all fours: arch your back up (cat), then drop it and lift your head (cow). Warms up the spine beautifully.',tip:'Move with your breath — inhale for cow, exhale for cat.',viz:'cat_cow'},
-      {name:'Child\'s Pose',type:'yoga',duration:'2 min',reps:'Hold 60s × 2',desc:'Kneel, sit back on heels, stretch arms forward, forehead to the floor. Melts tension in the lower back and hips.',tip:'Breathe into your lower back — you\'ll feel it open up.',viz:'childs_pose'},
-      {name:'Seated Spinal Twist',type:'yoga',duration:'2 min',reps:'30s each side',desc:'Sit cross-legged or with legs out, twist your torso with one hand on opposite knee. Great for digestion and spine mobility.',tip:'Twist on the exhale for a deeper stretch.',viz:'spinal_twist'},
-      {name:'Legs Up The Wall',type:'yoga',duration:'3 min',reps:'Hold full time',desc:'Lie on your back, legs straight up against a wall. Relieves tired legs, reduces anxiety, improves circulation.',tip:'Put a pillow under your lower back if needed.',viz:'legs_wall'},
-      {name:'Bridge Pose',type:'strength',duration:'3 min',reps:'3 × 10 holds',desc:'Lie on back, knees bent, feet flat. Lift hips, hold for 5 seconds, lower. Activates glutes and lower back.',tip:'Squeeze glutes hard at the top.',viz:'bridge'},
-      {name:'Savasana Meditation',type:'breathe',duration:'5 min',reps:'Full relaxation',desc:'Lie flat, close eyes, do nothing. Let each body part release. This is the most important part of any yoga practice.',tip:'Set a gentle timer — don\'t peek at the phone.',viz:'savasana'},
-    ]
-  },
-  {
-    day:'Monday', emoji:'🔥', tagline:'New week. New you.',
-    exercises:[
-      {name:'Morning Stretches',type:'yoga',duration:'2 min',reps:'5 each side',desc:'Standing side bends, neck rolls, shoulder circles. Wake every joint up gently before asking them to do anything intense.',tip:'Do these before checking your phone.',viz:'morning_stretch'},
-      {name:'Sun Salutation A',type:'yoga',duration:'4 min',reps:'3 full rounds',desc:'A flowing sequence: mountain pose → forward fold → halfway lift → plank → cobra → down dog → back to standing. Warms the whole body.',tip:'Link each movement to a breath. No rushing.',viz:'sun_sal'},
-      {name:'Warrior I',type:'yoga',duration:'3 min',reps:'45s each side',desc:'Step one foot back, bend front knee, raise arms overhead. Builds leg strength, hip flexibility, and confidence.',tip:'Press your back heel down — don\'t let it float.',viz:'warrior1'},
-      {name:'Plank Hold',type:'strength',duration:'3 min',reps:'3 × 30s',desc:'Hands under shoulders, body in a straight line, core braced. A full-body isometric hold that builds core strength without crunches.',tip:'Look at the floor, not ahead — it protects your neck.',viz:'plank'},
-      {name:'Downward Dog',type:'yoga',duration:'2 min',reps:'Hold 60s × 2',desc:'Inverted V shape — hands and feet on floor, hips high. Stretches hamstrings, calves, shoulders, and strengthens arms.',tip:'Pedal your feet to wake up the calves.',viz:'down_dog'},
-      {name:'Squats',type:'strength',duration:'3 min',reps:'3 × 12',desc:'Feet shoulder-width, toes slightly out. Lower until thighs are parallel, chest up, weight in heels. King of lower body exercises.',tip:'Imagine sitting back into a chair. Don\'t let knees cave in.',viz:'squat'},
-      {name:'Wind-Down Breathing',type:'breathe',duration:'3 min',reps:'6 cycles',desc:'4-7-8 breathing: inhale 4, hold 7, exhale 8. This powerful technique reduces cortisol and signals your body to recover.',tip:'The long exhale is the magic. Don\'t rush it.',viz:'breath_478'},
-    ]
-  },
-  {
-    day:'Tuesday', emoji:'💪', tagline:'Strength and stillness.',
-    exercises:[
-      {name:'Neck & Shoulder Rolls',type:'yoga',duration:'2 min',reps:'5 each direction',desc:'Slow, deliberate circles releasing the tension you\'ve been carrying in your neck. Critical if you sit at a desk.',tip:'Go slow — you\'re not racing.',viz:'neck_roll'},
-      {name:'Surya Namaskar B',type:'yoga',duration:'4 min',reps:'2 rounds',desc:'Sun Salutation with added chair pose and warrior I. More intense than A — gets your heart rate up while building flexibility.',tip:'Modify chair pose if your knees ache.',viz:'sun_sal_b'},
-      {name:'Push-Ups',type:'strength',duration:'3 min',reps:'3 × 10',desc:'Classic. Hands shoulder-width, lower chest to floor, push back up. If hard, do on knees — no shame, full gains.',tip:'Slow down on the way down (3 counts). That\'s where strength is built.',viz:'pushup'},
-      {name:'Warrior II',type:'yoga',duration:'3 min',reps:'45s each side',desc:'Wide stance, front knee bent, arms out to sides, gaze over front hand. Builds stamina and opens the hips.',tip:'Your back foot is flat, not angled in.',viz:'warrior2'},
-      {name:'Reverse Plank',type:'strength',duration:'2 min',reps:'2 × 20s',desc:'Sit with legs out, hands behind you, push hips up until body is a straight line face-up. Works triceps, glutes, and back.',tip:'Squeeze your core and glutes the whole time.',viz:'rev_plank'},
-      {name:'Seated Forward Fold',type:'yoga',duration:'2 min',reps:'Hold 60s × 2',desc:'Legs out, hinge from hips and reach for your feet. Don\'t round your back — it\'s about the hamstrings, not the spine.',tip:'Flex your feet to deepen the stretch.',viz:'fwd_fold'},
-      {name:'Body Scan Meditation',type:'breathe',duration:'4 min',reps:'1 round',desc:'Close eyes, bring awareness from toes to crown — notice tension without judging it. Trains your mind to listen to your body.',tip:'No wrong way to do this. Just notice.',viz:'body_scan'},
-    ]
-  },
-  {
-    day:'Wednesday', emoji:'🌊', tagline:'Midweek flow.',
-    exercises:[
-      {name:'Joint Warm-Up',type:'yoga',duration:'2 min',reps:'3 each joint',desc:'Wrists, ankles, hips — rotate each joint in both directions. Especially important midweek when your body has accumulated stress.',tip:'Use this as a mindfulness check-in — how does each joint feel today?',viz:'joint_warmup'},
-      {name:'Tree Pose',type:'yoga',duration:'3 min',reps:'45s each side',desc:'Stand on one leg, place the other foot on your inner thigh or calf (not knee). Arms above or at heart center.',tip:'Fix your gaze on one non-moving point. It\'s the real secret to balance.',viz:'tree_pose'},
-      {name:'Glute Bridges',type:'strength',duration:'3 min',reps:'3 × 15',desc:'Lie on back, knees bent. Drive hips up using glutes, hold 2 seconds, lower. Minimal impact, maximum activation.',tip:'The more you squeeze at the top, the more you get out of it.',viz:'bridge'},
-      {name:'Triangle Pose',type:'yoga',duration:'3 min',reps:'45s each side',desc:'Wide stance, reach one arm down to shin/foot, other arm up. Stretches hamstrings, groins, and opens the chest.',tip:'Don\'t lock the knee on your front leg.',viz:'triangle'},
-      {name:'Superman Hold',type:'strength',duration:'2 min',reps:'2 × 10 holds',desc:'Lie face down, simultaneously lift arms, chest, and legs off the floor. Hold 3 seconds. Strengthens the entire back chain.',tip:'Squeeze your glutes as you lift — it protects the lower back.',viz:'superman'},
-      {name:'Pigeon Pose',type:'yoga',duration:'3 min',reps:'60s each side',desc:'The ultimate hip opener. Front knee toward hand, leg straight back, fold forward. Releases deep stored tension in hips.',tip:'Use a blanket under your hip if it doesn\'t reach the floor.',viz:'pigeon'},
-      {name:'Alternate Nostril Breathing',type:'breathe',duration:'4 min',reps:'10 cycles',desc:'Block right nostril, inhale left. Block left, exhale right. Inhale right, block, exhale left. Balances the two hemispheres of the brain.',tip:'Nadi Shodhana — one of the most calming breathing practices in yoga.',viz:'nostril_breath'},
-    ]
-  },
-  {
-    day:'Thursday', emoji:'⚡', tagline:'Push through.',
-    exercises:[
-      {name:'Dynamic Stretches',type:'yoga',duration:'2 min',reps:'10 each',desc:'Leg swings, arm swings, hip circles. Dynamic = moving. Perfect pre-workout warmup that\'s better than static stretching.',tip:'Control the movement — don\'t just fling your limbs.',viz:'dynamic_stretch'},
-      {name:'Jumping Jacks',type:'cardio',duration:'3 min',reps:'3 × 30',desc:'Classic cardio. Gets your heart rate up, warms every muscle. Modify by stepping side to side if jumping hurts your joints.',tip:'Land softly — knees slightly bent.',viz:'jumping_jack'},
-      {name:'Lunges',type:'strength',duration:'3 min',reps:'3 × 10 each leg',desc:'Step forward, lower back knee toward floor, push back. Works quads, glutes, and improves balance and hip mobility.',tip:'Keep your torso upright — don\'t lean forward.',viz:'lunge'},
-      {name:'Cobra Pose',type:'yoga',duration:'2 min',reps:'Hold 30s × 3',desc:'Lie face down, hands under shoulders, push up chest while hips stay grounded. Opens the chest and strengthens the back.',tip:'Don\'t straighten your arms all the way — keep soft elbows.',viz:'cobra'},
-      {name:'Mountain Climbers',type:'cardio',duration:'3 min',reps:'3 × 20',desc:'Plank position — drive knees toward chest alternately in a running motion. Cardio + core in one.',tip:'Keep hips level — don\'t let them rise when the knee comes in.',viz:'mountain_climber'},
-      {name:'Pigeon Pose',type:'yoga',duration:'3 min',reps:'60s each side',desc:'After all that, you need this. Opens the hips and signals your nervous system to cool down.',tip:'Breathe into wherever you feel the tightest.',viz:'pigeon'},
-      {name:'Cooling Breath',type:'breathe',duration:'4 min',reps:'8 cycles',desc:'Sheetali pranayama: curl your tongue into a tube, inhale through it, exhale through the nose. Literally cools body temperature and calms the mind.',tip:'If you can\'t curl your tongue, breathe through slightly parted teeth instead.',viz:'cool_breath'},
-    ]
-  },
-  {
-    day:'Friday', emoji:'🙌', tagline:'One more day, king.',
-    exercises:[
-      {name:'5-Breath Wake-Up',type:'breathe',duration:'2 min',reps:'5 deep breaths',desc:'Before anything else — five slow, deep, intentional breaths. Anchor yourself before the day starts.',tip:'Eyes closed. No phone. Just you.',viz:'breathe'},
-      {name:'Standing Forward Fold',type:'yoga',duration:'2 min',reps:'Hold 60s × 2',desc:'Stand tall, fold forward from hips, let your head hang heavy. Decompresses the spine and calms the nervous system.',tip:'Bend your knees slightly if your hamstrings are tight.',viz:'stand_fwd'},
-      {name:'Push-Ups (Wide)',type:'strength',duration:'3 min',reps:'3 × 10',desc:'Wider than shoulder-width push-ups hit your chest more. Same form, just shift the hands out.',tip:'Slow and controlled beats fast and sloppy every single time.',viz:'pushup'},
-      {name:'Chair Pose',type:'yoga',duration:'3 min',reps:'3 × 30s hold',desc:'Feet together, squat down like sitting on an invisible chair, arms overhead. Intense! Builds quads and core.',tip:'Keep your knees behind your toes.',viz:'chair_pose'},
-      {name:'Side Plank',type:'strength',duration:'3 min',reps:'2 × 20s each side',desc:'One hand (or forearm) on floor, body in a straight diagonal line. Works obliques, shoulders, and entire lateral chain.',tip:'Stack your feet or stagger them for more stability.',viz:'side_plank'},
-      {name:'Legs Up The Wall',type:'yoga',duration:'3 min',reps:'Full hold',desc:'You earned this. Lies on your back, legs up, let gravity do the recovery work for you.',tip:'Put your phone down and just... be.',viz:'legs_wall'},
-      {name:'Gratitude Breathing',type:'breathe',duration:'4 min',reps:'Open-ended',desc:'Slow breathing while mentally noting 3 things you\'re grateful for. Combines breathwork with cognitive reframing — proven to reduce anxiety.',tip:'Make them specific. Not "health" but "that I could do today\'s workout."',viz:'breath_478'},
-    ]
-  },
-  {
-    day:'Saturday', emoji:'🌟', tagline:'Rest, but don\'t stop.',
-    exercises:[
-      {name:'Sleep Stretches',type:'yoga',duration:'3 min',reps:'2 min each side',desc:'Supine spinal twist in bed — knee dropped to one side, arms out. Start the day from horizontal.',tip:'No alarm needed for this one — do it the moment you wake.',viz:'spinal_twist'},
-      {name:'Sun Salutation A',type:'yoga',duration:'4 min',reps:'3 rounds',desc:'You know this one now. The whole-body wake-up sequence. On weekends, slow it down even more.',tip:'This is your personal time. No rushing.',viz:'sun_sal'},
-      {name:'Warrior III',type:'yoga',duration:'3 min',reps:'30s each side',desc:'Balance on one leg, body parallel to ground, arms forward. The hardest warrior. Tests balance, strength, and focus.',tip:'Gaze at the floor. Keep the standing knee slightly bent.',viz:'warrior3'},
-      {name:'Dead Bug',type:'strength',duration:'3 min',reps:'3 × 8 each side',desc:'Lie on back, arms up, knees at 90°. Lower opposite arm and leg to floor while keeping lower back pressed down.',tip:'Move SLOWLY. The back must not lift off the floor.',viz:'dead_bug'},
-      {name:'Happy Baby Pose',type:'yoga',duration:'2 min',reps:'Hold full time',desc:'Lie on back, grab outer edges of feet, knees toward armpits. Rocks the hips, decompresses lower back.',tip:'Rock side to side for a gentle spine massage.',viz:'happy_baby'},
-      {name:'Seated Meditation',type:'breathe',duration:'3 min',reps:'Open sitting',desc:'Sit comfortably, eyes closed, just observe your breath. Don\'t control it — just watch it. This is mindfulness at its most basic.',tip:'When your mind wanders (it will), gently return. That return IS the practice.',viz:'body_scan'},
-      {name:'Savasana',type:'breathe',duration:'2 min',reps:'Full rest',desc:'Lie flat. Let it all go. Every weekend workout should end here.',tip:'You showed up. That\'s already everything.',viz:'savasana'},
-    ]
-  }
-];
-
-const QUOTES = [
-  {text:'The body achieves what the mind believes.',author:'Unknown'},
-  {text:'Take care of your body. It\'s the only place you have to live.',author:'Jim Rohn'},
-  {text:'강한 몸은 강한 마음에서 시작된다 (A strong body starts from a strong mind)',author:'Korean Proverb'},
-  {text:'You don\'t have to be extreme, just consistent.',author:'Unknown'},
-  {text:'Movement is medicine for creating change in a person\'s physical, emotional, and mental states.',author:'Carol Welch'},
-  {text:'Your future self is watching you right now through your memories.',author:'Aubrey Marcus'},
-  {text:'The only bad workout is the one that didn\'t happen.',author:'Unknown'},
-];
-
-const FOOD_GOOD = [
-  {icon:'🥑',title:'Healthy fats (avocado, nuts, olive oil)',desc:'Fuel your brain and joints. A small handful of nuts pre-workout gives you sustained energy without a crash.'},
-  {icon:'🍳',title:'Eggs or protein in the morning',desc:'Starting with protein keeps you full and prevents the mid-day energy crash that makes you skip workouts.'},
-  {icon:'🍌',title:'Fruit (banana, berries, mango)',desc:'Natural sugars with fiber. A banana 30 mins before working out? Nature\'s pre-workout.'},
-  {icon:'🥗',title:'Leafy greens (spinach, kale)',desc:'Magnesium helps muscle recovery. Iron keeps you energized. Eat them any way you like.'},
-  {icon:'🧘',title:'Herbal tea (ginger, turmeric, chamomile)',desc:'Anti-inflammatory and calming. Great post-workout. Chamomile at night improves sleep quality.'},
-];
-
-const FOOD_AVOID = [
-  {icon:'🥤',title:'Sugary drinks and soda',desc:'They spike blood sugar and then crash it. Post-crash energy is the enemy of consistent workouts.'},
-  {icon:'🍟',title:'Deep-fried food',desc:'Heavy on your digestion, especially within 2 hours of working out. Your body uses energy to digest that it could use to recover.'},
-  {icon:'🌙',title:'Heavy meals after 9pm',desc:'Late heavy eating disrupts sleep quality — and sleep is when your body actually does the fitness work.'},
-  {icon:'🍺',title:'Alcohol (especially night before)',desc:'Destroys sleep architecture and increases next-day inflammation. Even one drink affects morning workout energy.'},
-  {icon:'☕',title:'Coffee on an empty stomach',desc:'Spikes cortisol. Eat something small first — even a banana — before your morning coffee.'},
-];
-
-// ── Supabase config ──────────────────────────────────────────
+// ── Supabase ──────────────────────────────────────────────────
 const SUPA_URL = 'https://zkavknunbdkmdketrlvg.supabase.co';
 const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InprYXZrbnVuYmRrbWRrZXRybHZnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM4Mzk2NTYsImV4cCI6MjA4OTQxNTY1Nn0.yf7Evnj29M0TNfuyNhO_mJdAos7ChV5FZZAHrfW39D8';
+const SH = {'apikey':SUPA_KEY,'Authorization':`Bearer ${SUPA_KEY}`,'Content-Type':'application/json'};
 
 async function dbGet(table, match) {
-  const params = Object.entries(match).map(([k,v])=>`${k}=eq.${encodeURIComponent(v)}`).join('&');
-  const r = await fetch(`${SUPA_URL}/rest/v1/${table}?${params}&limit=1`, {
-    headers:{'apikey':SUPA_KEY,'Authorization':`Bearer ${SUPA_KEY}`,'Content-Type':'application/json'}
-  });
-  const rows = await r.json();
-  return rows[0] || null;
+  const q = Object.entries(match).map(([k,v])=>`${k}=eq.${encodeURIComponent(v)}`).join('&');
+  const r = await fetch(`${SUPA_URL}/rest/v1/${table}?${q}&limit=1`, {headers:SH});
+  const d = await r.json(); return d[0]||null;
 }
-
-async function dbUpsert(table, data) {
-  await fetch(`${SUPA_URL}/rest/v1/${table}`, {
-    method:'POST',
-    headers:{'apikey':SUPA_KEY,'Authorization':`Bearer ${SUPA_KEY}`,
-      'Content-Type':'application/json','Prefer':'resolution=merge-duplicates,return=minimal'},
-    body: JSON.stringify(data)
-  });
-}
-
 async function dbGetAll(table) {
-  const r = await fetch(`${SUPA_URL}/rest/v1/${table}?select=*`, {
-    headers:{'apikey':SUPA_KEY,'Authorization':`Bearer ${SUPA_KEY}`}
-  });
+  const r = await fetch(`${SUPA_URL}/rest/v1/${table}?select=*`, {headers:SH});
   return await r.json();
 }
-
-// ── State ────────────────────────────────────────────────────
-let state = {
-  streak: 0,
-  totalWorkouts: 0,
-  checkedDays: {},
-  todayExercises: {},
-  lastCheckin: null
-};
-
-let dbReady = false;
-
-function showToast(msg, color='var(--accent)') {
-  let t = document.getElementById('db-toast');
-  if (!t) {
-    t = document.createElement('div');
-    t.id = 'db-toast';
-    t.style.cssText = `position:fixed;bottom:90px;left:50%;transform:translateX(-50%);
-      background:var(--card);border:1px solid var(--border);border-radius:100px;
-      padding:8px 18px;font-size:13px;z-index:999;transition:opacity .4s;white-space:nowrap`;
-    document.body.appendChild(t);
-  }
-  t.style.color = color;
-  t.textContent = msg;
-  t.style.opacity = '1';
-  clearTimeout(t._to);
-  t._to = setTimeout(()=>{ t.style.opacity='0'; }, 2500);
+async function dbUpsert(table, data) {
+  await fetch(`${SUPA_URL}/rest/v1/${table}`, {
+    method:'POST', headers:{...SH,'Prefer':'resolution=merge-duplicates,return=minimal'},
+    body:JSON.stringify(data)
+  });
 }
 
-async function loadState() {
-  // Always load localStorage first so UI is instant
-  const local = localStorage.getItem('workout_state_v2');
-  if (local) state = JSON.parse(local);
+// ── Constants ─────────────────────────────────────────────────
+const DAYS=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+const MONTHS=['January','February','March','April','May','June','July','August','September','October','November','December'];
+const QUOTES=[
+  {text:'The body achieves what the mind believes.',author:'Unknown'},
+  {text:"Take care of your body. It's the only place you have to live.",author:'Jim Rohn'},
+  {text:'강한 몸은 강한 마음에서 시작된다 (A strong body starts from a strong mind)',author:'Korean Proverb'},
+  {text:"You don't have to be extreme, just consistent.",author:'Unknown'},
+  {text:'Movement is medicine for creating change in a person\'s physical, emotional, and mental states.',author:'Carol Welch'},
+  {text:'Your future self is watching you right now through your memories.',author:'Aubrey Marcus'},
+  {text:"The only bad workout is the one that didn't happen.",author:'Unknown'},
+];
+const FOOD_GOOD=[
+  {icon:'🥑',title:'Healthy fats (avocado, nuts, olive oil)',desc:"Fuel your brain and joints. A handful of nuts pre-workout gives sustained energy without a crash."},
+  {icon:'🍳',title:'Eggs or protein in the morning',desc:"Starting with protein keeps you full and prevents the mid-day energy crash that makes you skip workouts."},
+  {icon:'🍌',title:'Fruit (banana, berries, mango)',desc:"Natural sugars with fiber. A banana 30 mins before working out? Nature's pre-workout."},
+  {icon:'🥗',title:'Leafy greens (spinach, kale)',desc:"Magnesium helps muscle recovery. Iron keeps you energized. Eat them any way you like."},
+  {icon:'🧘',title:'Herbal tea (ginger, turmeric, chamomile)',desc:"Anti-inflammatory and calming. Great post-workout. Chamomile at night improves sleep quality."},
+];
+const FOOD_AVOID=[
+  {icon:'🥤',title:'Sugary drinks and soda',desc:"They spike blood sugar and crash it. Post-crash energy is the enemy of consistent workouts."},
+  {icon:'🍟',title:'Deep-fried food',desc:"Heavy on digestion, especially within 2 hours of working out. Your body uses energy to digest that it could use to recover."},
+  {icon:'🌙',title:'Heavy meals after 9pm',desc:"Late heavy eating disrupts sleep quality — and sleep is when your body actually does the fitness work."},
+  {icon:'🍺',title:'Alcohol (especially night before)',desc:"Destroys sleep architecture and increases next-day inflammation. Even one drink affects morning workout energy."},
+  {icon:'☕',title:'Coffee on an empty stomach',desc:"Spikes cortisol. Eat something small first — even a banana — before your morning coffee."},
+];
+const WORKOUT_PLANS=[
+  {day:'Sunday',emoji:'🌿',tagline:'Slow start. Full reset.',exercises:[
+    {name:'Box Breathing',type:'breathe',duration:'3 min',reps:'4 cycles',desc:'Inhale 4 counts, hold 4, exhale 4, hold 4. Activates your parasympathetic nervous system — aka calm mode.',tip:'Do this in bed before getting up. Game changer.',viz:'breathe'},
+    {name:"Cat-Cow Stretch",type:'yoga',duration:'2 min',reps:'12 reps',desc:"On all fours: arch your back up (cat), then drop it and lift your head (cow). Warms up the spine.",tip:'Move with your breath — inhale for cow, exhale for cat.',viz:'cat_cow'},
+    {name:"Child's Pose",type:'yoga',duration:'2 min',reps:'Hold 60s x2',desc:"Kneel, sit back on heels, stretch arms forward, forehead to the floor. Melts tension in lower back and hips.",tip:"Breathe into your lower back — you'll feel it open up.",viz:'childs_pose'},
+    {name:'Seated Spinal Twist',type:'yoga',duration:'2 min',reps:'30s each side',desc:"Sit cross-legged, twist torso with hand on opposite knee. Great for digestion and spine mobility.",tip:'Twist on the exhale for a deeper stretch.',viz:'spinal_twist'},
+    {name:'Legs Up The Wall',type:'yoga',duration:'3 min',reps:'Hold full time',desc:"Lie on back, legs straight up against a wall. Relieves tired legs, reduces anxiety, improves circulation.",tip:'Put a pillow under your lower back if needed.',viz:'legs_wall'},
+    {name:'Bridge Pose',type:'strength',duration:'3 min',reps:'3 x 10 holds',desc:"Lie on back, knees bent, feet flat. Lift hips, hold 5 seconds, lower. Activates glutes and lower back.",tip:'Squeeze glutes hard at the top.',viz:'bridge'},
+    {name:'Savasana Meditation',type:'breathe',duration:'5 min',reps:'Full relaxation',desc:"Lie flat, close eyes, do nothing. Let each body part release. The most important part of any yoga practice.",tip:"Set a gentle timer — don't peek at the phone.",viz:'savasana'},
+  ]},
+  {day:'Monday',emoji:'🔥',tagline:'New week. New you.',exercises:[
+    {name:'Morning Stretches',type:'yoga',duration:'2 min',reps:'5 each side',desc:"Standing side bends, neck rolls, shoulder circles. Wake every joint up gently before asking them to do anything intense.",tip:'Do these before checking your phone.',viz:'morning_stretch'},
+    {name:'Sun Salutation A',type:'yoga',duration:'4 min',reps:'3 full rounds',desc:"Mountain pose to forward fold to plank to cobra to down dog and back. Warms the whole body.",tip:'Link each movement to a breath. No rushing.',viz:'sun_sal'},
+    {name:'Warrior I',type:'yoga',duration:'3 min',reps:'45s each side',desc:"Step one foot back, bend front knee, raise arms overhead. Builds leg strength and hip flexibility.",tip:"Press your back heel down — don't let it float.",viz:'warrior1'},
+    {name:'Plank Hold',type:'strength',duration:'3 min',reps:'3 x 30s',desc:"Hands under shoulders, body in a straight line, core braced. Full-body isometric hold that builds core strength.",tip:'Look at the floor, not ahead — it protects your neck.',viz:'plank'},
+    {name:'Downward Dog',type:'yoga',duration:'2 min',reps:'Hold 60s x2',desc:"Inverted V shape — hands and feet on floor, hips high. Stretches hamstrings, calves, shoulders.",tip:'Pedal your feet to wake up the calves.',viz:'down_dog'},
+    {name:'Squats',type:'strength',duration:'3 min',reps:'3 x 12',desc:"Feet shoulder-width, toes slightly out. Lower until thighs are parallel, chest up, weight in heels.",tip:"Imagine sitting back into a chair. Don't let knees cave in.",viz:'squat'},
+    {name:'Wind-Down Breathing',type:'breathe',duration:'3 min',reps:'6 cycles',desc:"4-7-8 breathing: inhale 4, hold 7, exhale 8. Reduces cortisol and signals your body to recover.",tip:"The long exhale is the magic. Don't rush it.",viz:'478_breath'},
+  ]},
+  {day:'Tuesday',emoji:'💪',tagline:'Strength and stillness.',exercises:[
+    {name:'Neck & Shoulder Rolls',type:'yoga',duration:'2 min',reps:'5 each direction',desc:"Slow, deliberate circles releasing the tension you've been carrying in your neck.",tip:"Go slow — you're not racing.",viz:'neck_roll'},
+    {name:'Surya Namaskar B',type:'yoga',duration:'4 min',reps:'2 rounds',desc:"Sun Salutation with added chair pose and warrior I. Gets your heart rate up while building flexibility.",tip:'Modify chair pose if your knees ache.',viz:'sun_sal_b'},
+    {name:'Push-Ups',type:'strength',duration:'3 min',reps:'3 x 10',desc:"Classic. Hands shoulder-width, lower chest to floor, push back up. Do on knees if needed.",tip:'Slow down on the way down (3 counts). That is where strength is built.',viz:'pushup'},
+    {name:'Warrior II',type:'yoga',duration:'3 min',reps:'45s each side',desc:"Wide stance, front knee bent, arms out to sides, gaze over front hand. Builds stamina, opens hips.",tip:'Your back foot is flat, not angled in.',viz:'warrior2'},
+    {name:'Reverse Plank',type:'strength',duration:'2 min',reps:'2 x 20s',desc:"Sit with legs out, hands behind, push hips up until body is straight face-up. Works triceps, glutes, back.",tip:'Squeeze your core and glutes the whole time.',viz:'bridge'},
+    {name:'Seated Forward Fold',type:'yoga',duration:'2 min',reps:'Hold 60s x2',desc:"Legs out, hinge from hips and reach for your feet. About the hamstrings, not the spine.",tip:'Flex your feet to deepen the stretch.',viz:'fwd_fold'},
+    {name:'Body Scan Meditation',type:'breathe',duration:'4 min',reps:'1 round',desc:"Close eyes, bring awareness from toes to crown — notice tension without judging it.",tip:'No wrong way to do this. Just notice.',viz:'body_scan'},
+  ]},
+  {day:'Wednesday',emoji:'🌊',tagline:'Midweek flow.',exercises:[
+    {name:'Joint Warm-Up',type:'yoga',duration:'2 min',reps:'3 each joint',desc:"Wrists, ankles, hips — rotate each joint in both directions. Especially important midweek.",tip:'Use this as a mindfulness check-in — how does each joint feel today?',viz:'joint_warmup'},
+    {name:'Tree Pose',type:'yoga',duration:'3 min',reps:'45s each side',desc:"Stand on one leg, place the other foot on inner thigh or calf. Arms above or at heart center.",tip:"Fix your gaze on one non-moving point. It's the real secret to balance.",viz:'tree_pose'},
+    {name:'Glute Bridges',type:'strength',duration:'3 min',reps:'3 x 15',desc:"Lie on back, knees bent. Drive hips up using glutes, hold 2 seconds, lower.",tip:'The more you squeeze at the top, the more you get out of it.',viz:'bridge'},
+    {name:'Triangle Pose',type:'yoga',duration:'3 min',reps:'45s each side',desc:"Wide stance, reach one arm down to shin, other arm up. Stretches hamstrings, groins, opens the chest.",tip:"Don't lock the knee on your front leg.",viz:'triangle'},
+    {name:'Superman Hold',type:'strength',duration:'2 min',reps:'2 x 10 holds',desc:"Lie face down, simultaneously lift arms, chest, and legs. Hold 3 seconds. Strengthens the entire back chain.",tip:'Squeeze your glutes as you lift — it protects the lower back.',viz:'superman'},
+    {name:'Pigeon Pose',type:'yoga',duration:'3 min',reps:'60s each side',desc:"The ultimate hip opener. Front knee toward hand, leg straight back, fold forward.",tip:"Use a blanket under your hip if it doesn't reach the floor.",viz:'pigeon'},
+    {name:'Alternate Nostril Breathing',type:'breathe',duration:'4 min',reps:'10 cycles',desc:"Block right nostril, inhale left. Block left, exhale right. Balances both hemispheres of the brain.",tip:'Nadi Shodhana — one of the most calming breathing practices in yoga.',viz:'nostril_breath'},
+  ]},
+  {day:'Thursday',emoji:'⚡',tagline:'Push through.',exercises:[
+    {name:'Dynamic Stretches',type:'yoga',duration:'2 min',reps:'10 each',desc:"Leg swings, arm swings, hip circles. Dynamic movement is better than static stretching as a warmup.",tip:"Control the movement — don't just fling your limbs.",viz:'dynamic_stretch'},
+    {name:'Jumping Jacks',type:'cardio',duration:'3 min',reps:'3 x 30',desc:"Classic cardio. Gets your heart rate up, warms every muscle.",tip:'Land softly — knees slightly bent.',viz:'jumping_jack'},
+    {name:'Lunges',type:'strength',duration:'3 min',reps:'3 x 10 each leg',desc:"Step forward, lower back knee toward floor, push back. Works quads, glutes, and improves balance.",tip:"Keep your torso upright — don't lean forward.",viz:'lunge'},
+    {name:'Cobra Pose',type:'yoga',duration:'2 min',reps:'Hold 30s x3',desc:"Lie face down, hands under shoulders, push up chest while hips stay grounded. Opens chest, strengthens back.",tip:"Don't straighten your arms all the way — keep soft elbows.",viz:'cobra'},
+    {name:'Mountain Climbers',type:'cardio',duration:'3 min',reps:'3 x 20',desc:"Plank position — drive knees toward chest alternately in a running motion. Cardio plus core in one.",tip:"Keep hips level — don't let them rise when the knee comes in.",viz:'mountain_climber'},
+    {name:'Pigeon Pose',type:'yoga',duration:'3 min',reps:'60s each side',desc:"After all that, you need this. Opens the hips and signals your nervous system to cool down.",tip:'Breathe into wherever you feel the tightest.',viz:'pigeon'},
+    {name:'Cooling Breath',type:'breathe',duration:'4 min',reps:'8 cycles',desc:"Sheetali pranayama: curl your tongue, inhale through it, exhale through the nose. Literally cools body temperature.",tip:"If you can't curl your tongue, breathe through slightly parted teeth instead.",viz:'cool_breath'},
+  ]},
+  {day:'Friday',emoji:'🙌',tagline:'One more day, king.',exercises:[
+    {name:'5-Breath Wake-Up',type:'breathe',duration:'2 min',reps:'5 deep breaths',desc:"Before anything else — five slow, deep, intentional breaths. Anchor yourself before the day starts.",tip:'Eyes closed. No phone. Just you.',viz:'breathe'},
+    {name:'Standing Forward Fold',type:'yoga',duration:'2 min',reps:'Hold 60s x2',desc:"Stand tall, fold forward from hips, let your head hang heavy. Decompresses the spine.",tip:'Bend your knees slightly if your hamstrings are tight.',viz:'stand_fwd'},
+    {name:'Push-Ups (Wide)',type:'strength',duration:'3 min',reps:'3 x 10',desc:"Wider than shoulder-width push-ups hit your chest more. Same form, just shift the hands out.",tip:'Slow and controlled beats fast and sloppy every single time.',viz:'pushup'},
+    {name:'Chair Pose',type:'yoga',duration:'3 min',reps:'3 x 30s hold',desc:"Feet together, squat down like sitting on an invisible chair, arms overhead. Builds quads and core.",tip:'Keep your knees behind your toes.',viz:'chair_pose'},
+    {name:'Side Plank',type:'strength',duration:'3 min',reps:'2 x 20s each side',desc:"One hand on floor, body in a straight diagonal line. Works obliques, shoulders, and lateral chain.",tip:'Stack your feet or stagger them for more stability.',viz:'side_plank'},
+    {name:'Legs Up The Wall',type:'yoga',duration:'3 min',reps:'Full hold',desc:"You earned this. Lie on your back, legs up, let gravity do the recovery work.",tip:'Put your phone down and just be.',viz:'legs_wall'},
+    {name:'Gratitude Breathing',type:'breathe',duration:'4 min',reps:'Open-ended',desc:"Slow breathing while mentally noting 3 things you are grateful for. Proven to reduce anxiety.",tip:'Make them specific. Not health but that you could do today\'s workout.',viz:'478_breath'},
+  ]},
+  {day:'Saturday',emoji:'🌟',tagline:"Rest, but don't stop.",exercises:[
+    {name:'Sleep Stretches',type:'yoga',duration:'3 min',reps:'2 min each side',desc:"Supine spinal twist in bed — knee dropped to one side, arms out. Start the day from horizontal.",tip:'Do it the moment you wake.',viz:'spinal_twist'},
+    {name:'Sun Salutation A',type:'yoga',duration:'4 min',reps:'3 rounds',desc:"The whole-body wake-up sequence. On weekends, slow it down even more.",tip:'This is your personal time. No rushing.',viz:'sun_sal'},
+    {name:'Warrior III',type:'yoga',duration:'3 min',reps:'30s each side',desc:"Balance on one leg, body parallel to ground, arms forward. Tests balance, strength, and focus.",tip:'Gaze at the floor. Keep the standing knee slightly bent.',viz:'warrior3'},
+    {name:'Dead Bug',type:'strength',duration:'3 min',reps:'3 x 8 each side',desc:"Lie on back, arms up, knees at 90 degrees. Lower opposite arm and leg while keeping lower back pressed down.",tip:'Move SLOWLY. The back must not lift off the floor.',viz:'dead_bug'},
+    {name:'Happy Baby Pose',type:'yoga',duration:'2 min',reps:'Hold full time',desc:"Lie on back, grab outer edges of feet, knees toward armpits. Decompresses lower back.",tip:'Rock side to side for a gentle spine massage.',viz:'happy_baby'},
+    {name:'Seated Meditation',type:'breathe',duration:'3 min',reps:'Open sitting',desc:"Sit comfortably, eyes closed, observe your breath without controlling it. This is mindfulness at its most basic.",tip:'When your mind wanders (it will), gently return. That return IS the practice.',viz:'body_scan'},
+    {name:'Savasana',type:'breathe',duration:'2 min',reps:'Full rest',desc:"Lie flat. Let it all go. Every weekend workout should end here.",tip:"You showed up. That's already everything.",viz:'savasana'},
+  ]},
+];
 
-  // Then sync from Supabase
-  try {
-    const [meta, rows] = await Promise.all([
-      dbGet('streak_meta', {id:1}),
-      dbGetAll('workouts')
-    ]);
-    if (meta) {
-      state.streak = meta.streak || 0;
-      state.totalWorkouts = meta.total_workouts || 0;
-    }
-    if (rows && rows.length) {
-      state.checkedDays = {};
-      state.todayExercises = {};
-      rows.forEach(row => {
-        if (row.checked_in) state.checkedDays[row.day_key] = true;
-        if (row.exercises) Object.assign(state.todayExercises, row.exercises);
+// ── State ─────────────────────────────────────────────────────
+let state={streak:0,totalWorkouts:0,checkedDays:{},todayExercises:{},lastCheckin:null};
+let dbReady=false;
+
+function getToday(){const d=new Date();return `${d.getFullYear()}-${d.getMonth()+1}-${d.getDate()}`;}
+function getTodayPlan(){return WORKOUT_PLANS[new Date().getDay()];}
+
+function setSyncStatus(cls,msg){
+  document.getElementById('sync-dot').className=`sync-dot ${cls}`;
+  document.getElementById('sync-label').textContent=msg;
+}
+function showToast(msg,color='var(--accent)'){
+  let t=document.getElementById('_toast');
+  if(!t){t=document.createElement('div');t.id='_toast';t.style.cssText='position:fixed;bottom:90px;left:50%;transform:translateX(-50%);background:var(--card);border:1px solid var(--border);border-radius:100px;padding:8px 18px;font-size:13px;z-index:999;transition:opacity .4s;white-space:nowrap';document.body.appendChild(t);}
+  t.style.color=color;t.textContent=msg;t.style.opacity='1';
+  clearTimeout(t._t);t._t=setTimeout(()=>{t.style.opacity='0';},2500);
+}
+
+async function loadState(){
+  // Load local cache instantly so UI doesn't wait
+  const cached=localStorage.getItem('workout_ritual_v3');
+  if(cached){try{state=JSON.parse(cached);}catch(e){}}
+  try{
+    setSyncStatus('spin','Syncing with cloud...');
+    const[meta,rows]=await Promise.all([dbGet('streak_meta',{id:1}),dbGetAll('workouts')]);
+    if(meta){state.streak=meta.streak||0;state.totalWorkouts=meta.total_workouts||0;}
+    if(rows&&rows.length){
+      state.checkedDays={};state.todayExercises={};
+      rows.forEach(r=>{
+        if(r.checked_in)state.checkedDays[r.day_key]=true;
+        if(r.exercises)Object.assign(state.todayExercises,r.exercises);
       });
     }
-    dbReady = true;
-    showToast('✦ Synced with cloud');
-  } catch(e) {
-    showToast('Offline — using local data', 'var(--warm)');
+    dbReady=true;
+    setSyncStatus('ok','Synced to cloud');
+    // Check for old localStorage data that needs migration
+    const old=localStorage.getItem('workout_state_v2');
+    if(old){
+      const op=JSON.parse(old);
+      const hasOldDays=Object.keys(op.checkedDays||{}).filter(k=>op.checkedDays[k]).length>0;
+      const hasCloudDays=Object.keys(state.checkedDays).length>0;
+      if(hasOldDays&&!hasCloudDays){
+        document.getElementById('migrate-banner').style.display='block';
+      }
+    }
+  }catch(e){
+    setSyncStatus('err','Offline — using local cache');
   }
 }
 
-async function saveState() {
-  // Always save locally first
-  localStorage.setItem('workout_state_v2', JSON.stringify(state));
-
-  if (!dbReady) return;
-  const todayKey = getToday();
-
-  // Build today's exercise subset
-  const todayExs = {};
-  Object.entries(state.todayExercises).forEach(([k,v]) => {
-    if (k.startsWith(todayKey)) todayExs[k] = v;
-  });
-
-  try {
+async function saveState(){
+  localStorage.setItem('workout_ritual_v3',JSON.stringify(state));
+  if(!dbReady)return;
+  const todayKey=getToday();
+  const todayExs={};
+  Object.entries(state.todayExercises).forEach(([k,v])=>{if(k.startsWith(todayKey))todayExs[k]=v;});
+  try{
     await Promise.all([
-      dbUpsert('workouts', {
-        day_key: todayKey,
-        checked_in: !!state.checkedDays[todayKey],
-        exercises: todayExs
-      }),
-      dbUpsert('streak_meta', {
-        id: 1,
-        streak: state.streak,
-        total_workouts: state.totalWorkouts,
-        updated_at: new Date().toISOString()
-      })
+      dbUpsert('workouts',{day_key:todayKey,checked_in:!!state.checkedDays[todayKey],exercises:todayExs}),
+      dbUpsert('streak_meta',{id:1,streak:state.streak,total_workouts:state.totalWorkouts,updated_at:new Date().toISOString()})
     ]);
-  } catch(e) {
-    showToast('Save failed — stored locally', 'var(--danger)');
+    setSyncStatus('ok','Saved to cloud');
+  }catch(e){setSyncStatus('err','Saved locally (cloud unavailable)');}
+}
+
+async function migrateLocalData(){
+  const btn=document.getElementById('migrate-btn');
+  btn.disabled=true;btn.textContent='Migrating...';
+  try{
+    const old=localStorage.getItem('workout_state_v2');
+    if(!old){btn.textContent='Nothing to migrate';return;}
+    const op=JSON.parse(old);
+    const days=Object.keys(op.checkedDays||{}).filter(k=>op.checkedDays[k]);
+    for(const dayKey of days){
+      const exs={};
+      Object.entries(op.todayExercises||{}).forEach(([k,v])=>{if(k.startsWith(dayKey))exs[k]=v;});
+      await dbUpsert('workouts',{day_key:dayKey,checked_in:true,exercises:exs});
+    }
+    await dbUpsert('streak_meta',{id:1,streak:op.streak||0,total_workouts:op.totalWorkouts||0,updated_at:new Date().toISOString()});
+    state.checkedDays={...(op.checkedDays||{}),...state.checkedDays};
+    state.todayExercises={...(op.todayExercises||{}),...state.todayExercises};
+    state.streak=Math.max(op.streak||0,state.streak);
+    state.totalWorkouts=Math.max(op.totalWorkouts||0,state.totalWorkouts);
+    localStorage.removeItem('workout_state_v2');
+    document.getElementById('migrate-banner').style.display='none';
+    setSyncStatus('ok',`Migrated ${days.length} day(s) to cloud`);
+    showToast(`Done! ${days.length} day(s) imported to Supabase.`);
+    renderExercises();renderTracker();
+  }catch(e){
+    btn.disabled=false;btn.textContent='Failed — try again';
+    showToast('Migration failed','var(--danger)');
   }
 }
 
-async function resetData() {
-  if (!confirm('Reset ALL workout data everywhere? This cannot be undone.')) return;
-  state = {streak:0,totalWorkouts:0,checkedDays:{},todayExercises:{},lastCheckin:null};
-  localStorage.removeItem('workout_state_v2');
-  try {
-    await fetch(`${SUPA_URL}/rest/v1/workouts`, {
-      method:'DELETE',
-      headers:{'apikey':SUPA_KEY,'Authorization':`Bearer ${SUPA_KEY}`,'Content-Type':'application/json'},
-      body: JSON.stringify({id: {neq: '00000000-0000-0000-0000-000000000000'}})
-    });
-    await dbUpsert('streak_meta', {id:1, streak:0, total_workouts:0, updated_at: new Date().toISOString()});
-  } catch(e) {}
-  location.reload();
+async function resetData(){
+  if(!confirm('Reset ALL workout data? This cannot be undone.'))return;
+  try{
+    await fetch(`${SUPA_URL}/rest/v1/workouts?checked_in=eq.true`,{method:'DELETE',headers:SH});
+    await dbUpsert('streak_meta',{id:1,streak:0,total_workouts:0,updated_at:new Date().toISOString()});
+  }catch(e){}
+  localStorage.removeItem('workout_ritual_v3');
+  state={streak:0,totalWorkouts:0,checkedDays:{},todayExercises:{},lastCheckin:null};
+  renderExercises();renderTracker();showToast('Data reset');
 }
 
-// ── One-time migration from localStorage → Supabase ─────────
-async function migrateLocalData() {
-  const btn = document.getElementById('migrate-btn');
-  btn.textContent = 'Migrating...';
-  btn.disabled = true;
-
-  const local = localStorage.getItem('workout_state_v2');
-  if (!local) { btn.textContent = 'Nothing to migrate'; return; }
-
-  const ls = JSON.parse(local);
-  const writes = [];
-
-  // Write all checked days
-  for (const [dayKey, val] of Object.entries(ls.checkedDays || {})) {
-    if (!val) continue;
-    const exs = {};
-    Object.entries(ls.todayExercises || {}).forEach(([k,v]) => {
-      if (k.startsWith(dayKey)) exs[k] = v;
-    });
-    writes.push(dbUpsert('workouts', {day_key: dayKey, checked_in: true, exercises: exs}));
-  }
-
-  // Write streak meta
-  writes.push(dbUpsert('streak_meta', {
-    id: 1,
-    streak: ls.streak || 0,
-    total_workouts: ls.totalWorkouts || 0,
-    updated_at: new Date().toISOString()
-  }));
-
-  try {
-    await Promise.all(writes);
-    btn.textContent = '✓ Migrated! Data is in the cloud now';
-    btn.style.background = 'var(--accent)';
-    btn.style.color = '#0d0d0d';
-    showToast('Migration complete — your streak is safe!');
-    document.getElementById('migrate-section').innerHTML =
-      `<p style="font-size:13px;color:var(--accent);text-align:center;padding:10px 0">✦ All historical data is now in Supabase</p>`;
-  } catch(e) {
-    btn.textContent = 'Migration failed — try again';
-    btn.disabled = false;
-  }
-}
-
-function getToday() {
-  const d = new Date();
-  return `${d.getFullYear()}-${d.getMonth()+1}-${d.getDate()}`;
-}
-
-function getTodayPlan() {
-  const d = new Date().getDay();
-  return WORKOUT_PLANS[d];
-}
-
-// EXERCISE VISUALIZATIONS
-function getViz(type) {
+// ── Viz ───────────────────────────────────────────────────────
+function getViz(type){
   const vizes = {
     breathe: `<svg viewBox="0 0 300 150" class="figure-svg" style="background:#0d0d0d">
       <circle cx="150" cy="75" r="55" fill="none" stroke="#c8f55a" stroke-width="1.5" opacity="0.3"/>
@@ -1284,28 +1083,85 @@ function getViz(type) {
   return vizes[type] || vizes['breathe'];
 }
 
-// Render exercises
-function renderExercises() {
-  const plan = getTodayPlan();
-  const todayKey = getToday();
-  const el = document.getElementById('exercise-list');
-  el.innerHTML = '';
+// ── Timer ─────────────────────────────────────────────────────
+const timers={};
+function getTimerSecs(ex){
+  const d=ex.duration.toLowerCase();
+  const m=d.match(/(\d+)\s*min/),s=d.match(/(\d+)\s*s/);
+  if(m)return parseInt(m[1])*60;if(s)return parseInt(s[1]);return 60;
+}
+function fmtTime(s){return `${Math.floor(s/60)}:${(s%60).toString().padStart(2,'0')}`;}
+function timerToggle(i){
+  if(!timers[i]){const ex=getTodayPlan().exercises[i];timers[i]={total:getTimerSecs(ex),remaining:getTimerSecs(ex),running:false,interval:null};}
+  const t=timers[i];
+  if(t.running){
+    clearInterval(t.interval);t.running=false;
+    document.getElementById(`timer-btn-${i}`).innerHTML='&#9654; Resume';
+    document.getElementById(`timer-btn-${i}`).classList.add('primary');
+  }else{
+    if(t.remaining<=0){timerReset(i);return;}
+    t.running=true;
+    document.getElementById(`timer-btn-${i}`).innerHTML='&#9646;&#9646; Pause';
+    t.interval=setInterval(()=>{
+      t.remaining--;updateTimerUI(i);
+      if(t.remaining<=0){clearInterval(t.interval);t.running=false;timerFinished(i);}
+    },1000);
+  }
+}
+function timerReset(i){
+  if(timers[i]){clearInterval(timers[i].interval);}
+  const ex=getTodayPlan().exercises[i];const secs=getTimerSecs(ex);
+  if(timers[i]){timers[i].remaining=secs;timers[i].running=false;timers[i].total=secs;}
+  const d=document.getElementById(`timer-display-${i}`);
+  const r=document.getElementById(`timer-ring-${i}`);
+  const b=document.getElementById(`timer-btn-${i}`);
+  if(d)d.textContent=fmtTime(secs);
+  if(r){r.style.strokeDashoffset='0';r.style.stroke='#c8f55a';}
+  if(b){b.innerHTML='&#9654; Start';b.classList.add('primary');}
+}
+function updateTimerUI(i){
+  const t=timers[i];if(!t)return;
+  const d=document.getElementById(`timer-display-${i}`);
+  const r=document.getElementById(`timer-ring-${i}`);
+  if(d)d.textContent=fmtTime(t.remaining);
+  if(r){
+    const pct=t.remaining/t.total;
+    r.style.strokeDashoffset=(1-pct)*163.4;
+    r.style.stroke=pct>0.5?'#c8f55a':pct>0.25?'#ffd166':'#ff6b35';
+  }
+}
+function timerFinished(i){
+  const d=document.getElementById(`timer-display-${i}`);
+  const r=document.getElementById(`timer-ring-${i}`);
+  const b=document.getElementById(`timer-btn-${i}`);
+  const w=document.getElementById(`timer-wrap-${i}`);
+  if(d)d.textContent='0:00';
+  if(r){r.style.strokeDashoffset='163.4';r.style.stroke='#c8f55a';}
+  if(b){b.innerHTML='&#10003; Done!';b.classList.add('primary');}
+  if(w){w.classList.add('timer-done-flash');setTimeout(()=>w.classList.remove('timer-done-flash'),1400);}
+  if(navigator.vibrate)navigator.vibrate([200,100,200]);
+  const key=`${getToday()}_${i}`;
+  if(!state.todayExercises[key]){
+    state.todayExercises[key]=true;saveState();
+    setTimeout(()=>renderExercises(),700);
+  }
+}
 
-  plan.exercises.forEach((ex, i) => {
-    const key = `${todayKey}_${i}`;
-    const isDone = state.todayExercises[key];
-    const div = document.createElement('div');
-    div.className = `ex-card${isDone ? ' done' : ''}`;
-    div.id = `ex-${i}`;
-    div.innerHTML = `
+// ── Exercises ─────────────────────────────────────────────────
+function renderExercises(){
+  const plan=getTodayPlan();const todayKey=getToday();
+  const el=document.getElementById('exercise-list');el.innerHTML='';
+  plan.exercises.forEach((ex,i)=>{
+    const isDone=!!state.todayExercises[`${todayKey}_${i}`];
+    const secs=getTimerSecs(ex);
+    const div=document.createElement('div');
+    div.className=`ex-card${isDone?' done':''}`;div.id=`ex-${i}`;
+    div.innerHTML=`
       <div class="ex-header" onclick="toggleExpand(${i})">
-        <div class="ex-num">${isDone ? '✓' : i+1}</div>
-        <div class="ex-info">
-          <div class="ex-name">${ex.name}</div>
-          <div class="ex-meta">${ex.duration} &nbsp;·&nbsp; ${ex.reps}</div>
-        </div>
+        <div class="ex-num">${isDone?'&#10003;':i+1}</div>
+        <div class="ex-info"><div class="ex-name">${ex.name}</div><div class="ex-meta">${ex.duration} &middot; ${ex.reps}</div></div>
         <span class="ex-type type-${ex.type}">${ex.type}</span>
-        <div class="ex-toggle" onclick="event.stopPropagation();toggleDone(${i})">${isDone ? '✓' : ''}</div>
+        <div class="ex-toggle" onclick="event.stopPropagation();toggleDone(${i})">${isDone?'&#10003;':''}</div>
       </div>
       <div class="ex-expand" id="expand-${i}">
         <div class="ex-viz">${getViz(ex.viz)}</div>
@@ -1313,16 +1169,12 @@ function renderExercises() {
           <div class="timer-ring-wrap">
             <svg width="64" height="64" viewBox="0 0 64 64">
               <circle cx="32" cy="32" r="26" fill="none" stroke="#2a2a2a" stroke-width="4"/>
-              <circle id="timer-ring-${i}" cx="32" cy="32" r="26" fill="none" stroke="#c8f55a" stroke-width="4"
-                stroke-linecap="round" stroke-dasharray="163.4" stroke-dashoffset="0" style="transition:stroke-dashoffset .9s linear,stroke .3s"/>
+              <circle id="timer-ring-${i}" cx="32" cy="32" r="26" fill="none" stroke="#c8f55a" stroke-width="4" stroke-linecap="round" stroke-dasharray="163.4" stroke-dashoffset="0" style="transition:stroke-dashoffset .9s linear,stroke .3s"/>
             </svg>
-            <div class="timer-center">
-              <span class="timer-time" id="timer-display-${i}">${formatTime(getTimerSeconds(ex))}</span>
-              <span class="timer-label">timer</span>
-            </div>
+            <div class="timer-center"><span class="timer-time" id="timer-display-${i}">${fmtTime(secs)}</span><span class="timer-label">timer</span></div>
           </div>
           <div class="timer-right">
-            <div class="timer-name">${ex.duration} &nbsp;·&nbsp; ${ex.reps}</div>
+            <div class="timer-name">${ex.duration} &middot; ${ex.reps}</div>
             <div class="timer-controls">
               <button class="timer-btn primary" id="timer-btn-${i}" onclick="timerToggle(${i})">&#9654; Start</button>
               <button class="timer-btn" onclick="timerReset(${i})">&#8635; Reset</button>
@@ -1331,309 +1183,114 @@ function renderExercises() {
         </div>
         <div class="ex-desc">${ex.desc}</div>
         <div class="ex-tip">&#128161; ${ex.tip}</div>
-      </div>
-    `;
+      </div>`;
     el.appendChild(div);
   });
-
   updateProgress();
 }
-
-function toggleExpand(i) {
-  const el = document.getElementById(`expand-${i}`);
-  el.classList.toggle('open');
+function toggleExpand(i){document.getElementById(`expand-${i}`).classList.toggle('open');}
+function toggleDone(i){
+  const key=`${getToday()}_${i}`;
+  state.todayExercises[key]=!state.todayExercises[key];
+  saveState();renderExercises();
 }
-
-function toggleDone(i) {
-  const todayKey = getToday();
-  const key = `${todayKey}_${i}`;
-  state.todayExercises[key] = !state.todayExercises[key];
-  saveState();
-  renderExercises();
-}
-
-function updateProgress() {
-  const plan = getTodayPlan();
-  const todayKey = getToday();
-  let done = 0;
-  plan.exercises.forEach((_, i) => {
-    if (state.todayExercises[`${todayKey}_${i}`]) done++;
-  });
-
-  const total = plan.exercises.length;
-  const circ = 175.9;
-  const offset = circ - (done / total) * circ;
-  document.getElementById('progress-ring').style.strokeDashoffset = offset;
-  document.getElementById('done-count').textContent = done;
-
-  if (done === 0) {
-    document.getElementById('progress-title').textContent = 'Ready to begin';
-    document.getElementById('progress-sub').innerHTML = `Check off each exercise as you go — <strong>you've got this.</strong>`;
-  } else if (done < total) {
-    document.getElementById('progress-title').textContent = `${done} of ${total} done`;
-    document.getElementById('progress-sub').innerHTML = `Keep going — <strong>${total - done} more to go.</strong>`;
-  } else {
-    document.getElementById('progress-title').textContent = 'Workout complete!';
-    document.getElementById('progress-sub').innerHTML = `<strong>All 7 exercises done today. 대박!</strong>`;
-  }
-
-  const banner = document.getElementById('done-banner');
-  const todayDone = state.checkedDays[todayKey];
-  if (done === total) {
+function updateProgress(){
+  const plan=getTodayPlan();const todayKey=getToday();
+  let done=0;plan.exercises.forEach((_,i)=>{if(state.todayExercises[`${todayKey}_${i}`])done++;});
+  const total=plan.exercises.length;
+  document.getElementById('progress-ring').style.strokeDashoffset=175.9-(done/total)*175.9;
+  document.getElementById('done-count').textContent=done;
+  const title=document.getElementById('progress-title');
+  const sub=document.getElementById('progress-sub');
+  if(done===0){title.textContent='Ready to begin';sub.innerHTML="Check off each exercise as you go &mdash; <strong>you've got this.</strong>";}
+  else if(done<total){title.textContent=`${done} of ${total} done`;sub.innerHTML=`Keep going &mdash; <strong>${total-done} more to go.</strong>`;}
+  else{title.textContent='Workout complete!';sub.innerHTML='<strong>All 7 exercises done today. &#45824;&#48149;!</strong>';}
+  const banner=document.getElementById('done-banner');
+  const todayDone=state.checkedDays[todayKey];
+  if(done===total){
     banner.classList.add('show');
-    document.getElementById('checkin-btn').disabled = !!todayDone;
-    document.getElementById('checkin-btn').textContent = todayDone ? '✓ Already checked in today' : '✓ Mark Today as Done';
-  } else {
-    banner.classList.remove('show');
+    document.getElementById('checkin-btn').disabled=!!todayDone;
+    document.getElementById('checkin-btn').textContent=todayDone?'&#10003; Already checked in today':'&#10003; Mark Today as Done';
+  }else banner.classList.remove('show');
+}
+async function checkInToday(){
+  const todayKey=getToday();
+  if(state.checkedDays[todayKey])return;
+  state.checkedDays[todayKey]=true;state.totalWorkouts++;recalcStreak();
+  await saveState();updateProgress();renderTracker();
+  document.getElementById('checkin-btn').disabled=true;
+  document.getElementById('checkin-btn').textContent='&#10003; Logged! See you tomorrow &#128293;';
+  showToast('Saved to cloud!');
+}
+function recalcStreak(){
+  let streak=0,d=new Date();
+  while(true){
+    const key=`${d.getFullYear()}-${d.getMonth()+1}-${d.getDate()}`;
+    if(state.checkedDays[key]){streak++;d.setDate(d.getDate()-1);}else break;
   }
+  state.streak=streak;
 }
 
-function checkInToday() {
-  const todayKey = getToday();
-  if (state.checkedDays[todayKey]) return;
-  state.checkedDays[todayKey] = true;
-  state.totalWorkouts++;
+// ── Tracker ───────────────────────────────────────────────────
+function renderTracker(){
   recalcStreak();
-  saveState();
-  updateProgress();
-  renderTracker();
-  document.getElementById('checkin-btn').disabled = true;
-  document.getElementById('checkin-btn').textContent = '✓ Logged! See you tomorrow 🔥';
-}
-
-function recalcStreak() {
-  let streak = 0;
-  const d = new Date();
-  while (true) {
-    const key = `${d.getFullYear()}-${d.getMonth()+1}-${d.getDate()}`;
-    if (state.checkedDays[key]) {
-      streak++;
-      d.setDate(d.getDate() - 1);
-    } else break;
-  }
-  state.streak = streak;
-}
-
-// Tracker
-function renderTracker() {
-  recalcStreak();
-  document.getElementById('stat-streak').textContent = state.streak;
-  document.getElementById('stat-total').textContent = state.totalWorkouts;
-  document.getElementById('streak-display').textContent = state.streak;
-  document.getElementById('stat-mins').textContent = state.totalWorkouts * 20;
-
-  // Week count
-  const today = new Date();
-  const weekStart = new Date(today);
-  weekStart.setDate(today.getDate() - today.getDay());
-  let weekCount = 0;
-  for (let i = 0; i < 7; i++) {
-    const d = new Date(weekStart);
-    d.setDate(weekStart.getDate() + i);
-    const key = `${d.getFullYear()}-${d.getMonth()+1}-${d.getDate()}`;
-    if (state.checkedDays[key]) weekCount++;
-  }
-  document.getElementById('stat-week').textContent = `${weekCount}/7`;
-
-  // Calendar
+  document.getElementById('stat-streak').textContent=state.streak;
+  document.getElementById('stat-total').textContent=state.totalWorkouts;
+  document.getElementById('streak-display').textContent=state.streak;
+  document.getElementById('stat-mins').textContent=state.totalWorkouts*20;
+  const today=new Date();const ws=new Date(today);ws.setDate(today.getDate()-today.getDay());
+  let wc=0;
+  for(let i=0;i<7;i++){const d=new Date(ws);d.setDate(ws.getDate()+i);if(state.checkedDays[`${d.getFullYear()}-${d.getMonth()+1}-${d.getDate()}`])wc++;}
+  document.getElementById('stat-week').textContent=`${wc}/7`;
   renderCalendar();
 }
-
-function renderCalendar() {
-  const grid = document.getElementById('cal-grid');
-  grid.innerHTML = '';
-  const now = new Date();
-  const year = now.getFullYear();
-  const month = now.getMonth();
-  const firstDay = new Date(year, month, 1).getDay();
-  const daysInMonth = new Date(year, month + 1, 0).getDate();
-  const todayKey = getToday();
-
-  for (let i = 0; i < firstDay; i++) {
-    const d = document.createElement('div');
-    grid.appendChild(d);
-  }
-  for (let day = 1; day <= daysInMonth; day++) {
-    const key = `${year}-${month+1}-${day}`;
-    const isToday = key === todayKey;
-    const isPast = new Date(year, month, day) < new Date(now.getFullYear(), now.getMonth(), now.getDate());
-    const isDone = state.checkedDays[key];
-    const d = document.createElement('div');
-    d.className = 'cal-day';
-    d.textContent = day;
-    if (isDone) d.classList.add('done-day');
-    else if (isToday) d.classList.add('today');
-    else if (isPast) d.classList.add('missed');
+function renderCalendar(){
+  const grid=document.getElementById('cal-grid');grid.innerHTML='';
+  const now=new Date();const y=now.getFullYear(),m=now.getMonth();
+  const firstDay=new Date(y,m,1).getDay();const days=new Date(y,m+1,0).getDate();
+  const todayKey=getToday();
+  for(let i=0;i<firstDay;i++)grid.appendChild(document.createElement('div'));
+  for(let day=1;day<=days;day++){
+    const key=`${y}-${m+1}-${day}`;
+    const d=document.createElement('div');d.className='cal-day';d.textContent=day;
+    if(state.checkedDays[key])d.classList.add('done-day');
+    else if(key===todayKey)d.classList.add('today');
+    else if(new Date(y,m,day)<new Date(y,m,now.getDate()))d.classList.add('missed');
     grid.appendChild(d);
   }
 }
 
-// Food
-function renderFood() {
-  const goodEl = document.getElementById('food-good');
-  const avoidEl = document.getElementById('food-avoid');
-  goodEl.innerHTML = FOOD_GOOD.map(f => `
-    <div class="food-card food-ok">
-      <div class="food-icon">${f.icon}</div>
-      <div>
-        <div class="food-title">${f.title}<span class="food-tag tag-ok">eat freely</span></div>
-        <div class="food-desc">${f.desc}</div>
-      </div>
-    </div>
-  `).join('');
-  avoidEl.innerHTML = FOOD_AVOID.map(f => `
-    <div class="food-card food-no">
-      <div class="food-icon">${f.icon}</div>
-      <div>
-        <div class="food-title">${f.title}<span class="food-tag tag-no">go easy</span></div>
-        <div class="food-desc">${f.desc}</div>
-      </div>
-    </div>
-  `).join('');
+// ── Food ──────────────────────────────────────────────────────
+function renderFood(){
+  document.getElementById('food-good').innerHTML=FOOD_GOOD.map(f=>`<div class="food-card food-ok"><div class="food-icon">${f.icon}</div><div><div class="food-title">${f.title}<span class="food-tag tag-ok">eat freely</span></div><div class="food-desc">${f.desc}</div></div></div>`).join('');
+  document.getElementById('food-avoid').innerHTML=FOOD_AVOID.map(f=>`<div class="food-card food-no"><div class="food-icon">${f.icon}</div><div><div class="food-title">${f.title}<span class="food-tag tag-no">go easy</span></div><div class="food-desc">${f.desc}</div></div></div>`).join('');
 }
 
-// Tab switching
-function switchTab(tab) {
-  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+// ── Tabs ──────────────────────────────────────────────────────
+function switchTab(tab){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
   document.getElementById(`panel-${tab}`).classList.add('active');
   document.querySelector(`[onclick="switchTab('${tab}')"].tab`)?.classList.add('active');
   document.getElementById(`nav-${tab}`)?.classList.add('active');
 }
 
-// Init
-async function init() {
-  const d = new Date();
-  const plan = getTodayPlan();
-  document.getElementById('today-label').textContent = `${DAYS[d.getDay()]}, ${MONTHS[d.getMonth()]} ${d.getDate()}`;
-  document.getElementById('workout-day-name').textContent = plan.emoji + ' ' + plan.day;
-  document.getElementById('workout-tagline').textContent = plan.tagline;
-  const q = QUOTES[d.getDay() % QUOTES.length];
-  document.getElementById('quote-text').textContent = `"${q.text}"`;
-  document.getElementById('quote-author').textContent = `— ${q.author}`;
-  // Render with local cache immediately, then re-render after Supabase loads
-  renderExercises();
-  renderTracker();
-  renderFood();
+// ── Init ──────────────────────────────────────────────────────
+async function init(){
+  const d=new Date();const plan=getTodayPlan();
+  document.getElementById('today-label').textContent=`${DAYS[d.getDay()]}, ${MONTHS[d.getMonth()]} ${d.getDate()}`;
+  document.getElementById('workout-day-name').textContent=`${plan.emoji} ${plan.day}`;
+  document.getElementById('workout-tagline').textContent=plan.tagline;
+  const q=QUOTES[d.getDay()%QUOTES.length];
+  document.getElementById('quote-text').textContent=`"${q.text}"`;
+  document.getElementById('quote-author').textContent=`— ${q.author}`;
+  renderExercises();renderTracker();renderFood();
   await loadState();
-  renderExercises();
-  renderTracker();
+  renderExercises();renderTracker();
 }
-
-// Timer state
-const timers = {};
-
-function getTimerSeconds(ex) {
-  // Parse duration string like "3 min", "2 min", "30s each side"
-  const dur = ex.duration.toLowerCase();
-  const minMatch = dur.match(/(\d+)\s*min/);
-  const secMatch = dur.match(/(\d+)\s*s/);
-  if (minMatch) return parseInt(minMatch[1]) * 60;
-  if (secMatch) return parseInt(secMatch[1]);
-  return 60;
-}
-
-function formatTime(s) {
-  const m = Math.floor(s / 60);
-  const sec = s % 60;
-  return `${m}:${sec.toString().padStart(2,'0')}`;
-}
-
-function timerToggle(i) {
-  if (!timers[i]) {
-    const plan = getTodayPlan();
-    const ex = plan.exercises[i];
-    timers[i] = {
-      total: getTimerSeconds(ex),
-      remaining: getTimerSeconds(ex),
-      running: false,
-      interval: null
-    };
-  }
-  const t = timers[i];
-  if (t.running) {
-    clearInterval(t.interval);
-    t.running = false;
-    document.getElementById(`timer-btn-${i}`).innerHTML = '&#9654; Resume';
-    document.getElementById(`timer-btn-${i}`).classList.add('primary');
-  } else {
-    if (t.remaining <= 0) { timerReset(i); return; }
-    t.running = true;
-    document.getElementById(`timer-btn-${i}`).innerHTML = '&#9646;&#9646; Pause';
-    t.interval = setInterval(() => {
-      t.remaining--;
-      updateTimerDisplay(i);
-      if (t.remaining <= 0) {
-        clearInterval(t.interval);
-        t.running = false;
-        timerFinished(i);
-      }
-    }, 1000);
-  }
-}
-
-function timerReset(i) {
-  if (timers[i]) {
-    clearInterval(timers[i].interval);
-    const plan = getTodayPlan();
-    const ex = plan.exercises[i];
-    timers[i].remaining = getTimerSeconds(ex);
-    timers[i].running = false;
-    timers[i].total = getTimerSeconds(ex);
-  }
-  const plan = getTodayPlan();
-  const ex = plan.exercises[i];
-  const secs = getTimerSeconds(ex);
-  const disp = document.getElementById(`timer-display-${i}`);
-  const ring = document.getElementById(`timer-ring-${i}`);
-  const btn = document.getElementById(`timer-btn-${i}`);
-  if (disp) disp.textContent = formatTime(secs);
-  if (ring) { ring.style.strokeDashoffset = '0'; ring.style.stroke = '#c8f55a'; }
-  if (btn) { btn.innerHTML = '&#9654; Start'; btn.classList.add('primary'); }
-}
-
-function updateTimerDisplay(i) {
-  const t = timers[i];
-  if (!t) return;
-  const disp = document.getElementById(`timer-display-${i}`);
-  const ring = document.getElementById(`timer-ring-${i}`);
-  if (disp) disp.textContent = formatTime(t.remaining);
-  if (ring) {
-    const circ = 163.4;
-    const progress = 1 - (t.remaining / t.total);
-    ring.style.strokeDashoffset = progress * circ;
-    // Color shifts: green → yellow → orange → red as time runs out
-    const pct = t.remaining / t.total;
-    if (pct > 0.5) ring.style.stroke = '#c8f55a';
-    else if (pct > 0.25) ring.style.stroke = '#ffd166';
-    else ring.style.stroke = '#ff6b35';
-  }
-}
-
-function timerFinished(i) {
-  const disp = document.getElementById(`timer-display-${i}`);
-  const ring = document.getElementById(`timer-ring-${i}`);
-  const btn = document.getElementById(`timer-btn-${i}`);
-  const wrap = document.getElementById(`timer-wrap-${i}`);
-  if (disp) disp.textContent = '0:00';
-  if (ring) { ring.style.strokeDashoffset = '163.4'; ring.style.stroke = '#c8f55a'; }
-  if (btn) { btn.innerHTML = '&#10003; Done!'; btn.classList.add('primary'); }
-  if (wrap) wrap.classList.add('timer-done-flash');
-  setTimeout(() => { if(wrap) wrap.classList.remove('timer-done-flash'); }, 1400);
-  // Vibrate if supported
-  if (navigator.vibrate) navigator.vibrate([200, 100, 200]);
-  // Auto-mark as done
-  const todayKey = getToday();
-  const key = `${todayKey}_${i}`;
-  if (!state.todayExercises[key]) {
-    state.todayExercises[key] = true;
-    saveState();
-    setTimeout(() => renderExercises(), 800);
-  }
-}
-
 init();
+
 </script>
 </body>
 </html>
