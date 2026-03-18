@@ -1,0 +1,1475 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Daily 20-Min Ritual</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#0d0d0d;
+  --surface:#161616;
+  --card:#1e1e1e;
+  --border:#2a2a2a;
+  --accent:#c8f55a;
+  --accent2:#ff6b35;
+  --accent3:#7eb8f7;
+  --text:#f0f0f0;
+  --muted:#888;
+  --soft:#555;
+  --danger:#ff4757;
+  --warm:#ffd166;
+}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;padding:0;overflow-x:hidden}
+h1,h2,h3{font-family:'DM Serif Display',serif}
+
+/* Header */
+.header{padding:2rem 1.5rem 1rem;background:linear-gradient(180deg,#111 0%,transparent 100%);position:sticky;top:0;z-index:50;backdrop-filter:blur(12px)}
+.header-inner{max-width:520px;margin:0 auto;display:flex;align-items:center;justify-content:space-between}
+.app-title{font-size:1.1rem;font-weight:500;letter-spacing:0.04em;color:var(--accent)}
+.streak-badge{display:flex;align-items:center;gap:6px;background:var(--card);border:1px solid var(--border);border-radius:100px;padding:6px 14px;font-size:13px;font-weight:500}
+.streak-fire{font-size:16px}
+.streak-count{color:var(--warm)}
+
+/* Hero */
+.hero{max-width:520px;margin:0 auto;padding:1.5rem 1.5rem 0}
+.day-label{font-size:13px;color:var(--muted);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:6px}
+.day-title{font-size:2.2rem;line-height:1.1;margin-bottom:0.3rem}
+.day-title span{color:var(--accent);font-style:italic}
+.day-sub{font-size:14px;color:var(--muted);margin-bottom:1.5rem}
+
+/* Progress ring */
+.progress-area{display:flex;align-items:center;gap:1.5rem;background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:1.2rem;margin-bottom:1.5rem}
+.ring-wrap{position:relative;width:72px;height:72px;flex-shrink:0}
+.ring-wrap svg{transform:rotate(-90deg)}
+.ring-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.ring-num{font-size:18px;font-weight:600;color:var(--accent)}
+.ring-sub{font-size:10px;color:var(--muted)}
+.progress-text h3{font-size:1rem;font-weight:500;margin-bottom:4px}
+.progress-text p{font-size:13px;color:var(--muted)}
+.progress-text strong{color:var(--accent)}
+
+/* Tabs */
+.tabs{max-width:520px;margin:0 auto 1rem;padding:0 1.5rem;display:flex;gap:8px}
+.tab{padding:8px 18px;border-radius:100px;font-size:13px;font-weight:500;cursor:pointer;border:1px solid var(--border);background:transparent;color:var(--muted);transition:all .2s}
+.tab.active{background:var(--accent);color:#0d0d0d;border-color:var(--accent)}
+
+/* Content */
+.content{max-width:520px;margin:0 auto;padding:0 1.5rem 6rem}
+.panel{display:none}
+.panel.active{display:block}
+
+/* Exercise list */
+.ex-list{display:flex;flex-direction:column;gap:10px}
+.ex-card{background:var(--card);border:1px solid var(--border);border-radius:14px;overflow:hidden;transition:border-color .2s}
+.ex-card.done{border-color:var(--accent);opacity:0.75}
+.ex-header{display:flex;align-items:center;gap:12px;padding:14px;cursor:pointer}
+.ex-num{width:32px;height:32px;border-radius:50%;background:var(--surface);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;color:var(--muted);flex-shrink:0;transition:all .2s}
+.ex-card.done .ex-num{background:var(--accent);border-color:var(--accent);color:#0d0d0d}
+.ex-info{flex:1}
+.ex-name{font-size:15px;font-weight:500;margin-bottom:2px}
+.ex-meta{font-size:12px;color:var(--muted)}
+.ex-type{font-size:11px;padding:3px 10px;border-radius:100px;font-weight:500}
+.type-yoga{background:rgba(126,184,247,0.15);color:var(--accent3)}
+.type-strength{background:rgba(255,107,53,0.15);color:var(--accent2)}
+.type-breathe{background:rgba(200,245,90,0.15);color:var(--accent)}
+.type-cardio{background:rgba(255,209,102,0.15);color:var(--warm)}
+.ex-toggle{width:24px;height:24px;border-radius:50%;border:1.5px solid var(--soft);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .2s;flex-shrink:0;background:transparent}
+.ex-card.done .ex-toggle{background:var(--accent);border-color:var(--accent)}
+.ex-expand{padding:0 14px 14px;display:none}
+.ex-expand.open{display:block}
+.ex-viz{background:var(--surface);border-radius:10px;overflow:hidden;margin-bottom:10px}
+.ex-desc{font-size:13px;color:var(--muted);line-height:1.6}
+.ex-tip{margin-top:8px;font-size:12px;padding:8px 12px;background:rgba(200,245,90,0.08);border-left:2px solid var(--accent);border-radius:0 6px 6px 0;color:var(--accent);font-style:italic}
+
+/* Timer */
+.timer-wrap{margin:12px 0 10px;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px;display:flex;align-items:center;gap:16px}
+.timer-ring-wrap{position:relative;width:64px;height:64px;flex-shrink:0}
+.timer-ring-wrap svg{transform:rotate(-90deg)}
+.timer-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.timer-time{font-size:16px;font-weight:600;font-variant-numeric:tabular-nums;color:var(--text)}
+.timer-label{font-size:9px;color:var(--muted);margin-top:1px}
+.timer-right{flex:1}
+.timer-name{font-size:12px;color:var(--muted);margin-bottom:8px}
+.timer-controls{display:flex;gap:8px}
+.timer-btn{padding:7px 16px;border-radius:8px;font-size:13px;font-weight:500;border:1px solid var(--border);background:transparent;color:var(--text);cursor:pointer;font-family:inherit;transition:all .15s;flex:1;text-align:center}
+.timer-btn.primary{background:var(--accent);color:#0d0d0d;border-color:var(--accent)}
+.timer-btn:active{transform:scale(0.96)}
+.timer-done-flash{animation:timerDone .4s ease 3}
+@keyframes timerDone{0%,100%{background:var(--card)}50%{background:rgba(200,245,90,0.15)}}
+
+/* Done all banner */
+.done-banner{background:linear-gradient(135deg,#1a2a0a,#0d1a05);border:1px solid var(--accent);border-radius:14px;padding:1.5rem;text-align:center;margin-bottom:1rem;display:none}
+.done-banner.show{display:block}
+.done-banner h3{font-size:1.4rem;color:var(--accent);margin-bottom:6px}
+.done-banner p{font-size:14px;color:var(--muted)}
+.done-check-btn{margin-top:1rem;width:100%;padding:12px;background:var(--accent);color:#0d0d0d;border:none;border-radius:10px;font-size:15px;font-weight:600;cursor:pointer;font-family:inherit;transition:opacity .2s}
+.done-check-btn:hover{opacity:0.85}
+.done-check-btn:disabled{opacity:0.5;cursor:default}
+
+/* Calendar */
+.cal-section{margin-bottom:1.5rem}
+.section-title{font-size:13px;color:var(--muted);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:10px}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
+.cal-day{aspect-ratio:1;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:500;background:var(--surface);color:var(--soft)}
+.cal-day.done-day{background:var(--accent);color:#0d0d0d}
+.cal-day.today{border:1.5px solid var(--accent3);color:var(--accent3)}
+.cal-day.missed{background:rgba(255,71,87,0.1);color:var(--danger)}
+.cal-day-label{font-size:11px;color:var(--soft);text-align:center;margin-bottom:4px}
+
+/* Stats */
+.stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:1.5rem}
+.stat-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px}
+.stat-val{font-size:1.8rem;font-weight:600;margin-bottom:2px}
+.stat-label{font-size:12px;color:var(--muted)}
+
+/* Food */
+.food-section{margin-bottom:1.5rem}
+.food-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:8px;display:flex;gap:12px;align-items:flex-start}
+.food-icon{font-size:22px;flex-shrink:0;margin-top:2px}
+.food-title{font-size:14px;font-weight:500;margin-bottom:3px}
+.food-desc{font-size:12px;color:var(--muted);line-height:1.5}
+.food-ok{border-left:3px solid var(--accent)}
+.food-no{border-left:3px solid var(--danger)}
+.food-tag{font-size:11px;padding:2px 8px;border-radius:100px;margin-left:8px;font-weight:500}
+.tag-ok{background:rgba(200,245,90,0.1);color:var(--accent)}
+.tag-no{background:rgba(255,71,87,0.1);color:var(--danger)}
+
+/* Bottom nav */
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;background:rgba(13,13,13,0.95);backdrop-filter:blur(12px);border-top:1px solid var(--border);padding:12px 0 20px;z-index:100}
+.nav-inner{max-width:520px;margin:0 auto;display:flex;justify-content:space-around}
+.nav-btn{display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;background:none;border:none;color:var(--muted);font-size:10px;font-family:inherit;transition:color .2s}
+.nav-btn.active{color:var(--accent)}
+.nav-icon{font-size:18px}
+
+/* SVG figure */
+.figure-svg{width:100%;display:block}
+
+/* Animations */
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.5}}
+@keyframes breathe{0%,100%{transform:scale(1)}50%{transform:scale(1.15)}}
+.breathe-circle{animation:breathe 4s ease-in-out infinite}
+@keyframes slideDown{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}
+.ex-expand.open{animation:slideDown .2s ease}
+
+/* Motivational quote */
+.quote-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:1.2rem;margin-bottom:1.2rem;text-align:center}
+.quote-text{font-family:'DM Serif Display',serif;font-size:1.1rem;font-style:italic;color:var(--text);line-height:1.5;margin-bottom:6px}
+.quote-author{font-size:12px;color:var(--muted)}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-inner">
+    <div class="app-title">✦ Daily Ritual</div>
+    <div class="streak-badge">
+      <span class="streak-fire">🔥</span>
+      <span class="streak-count" id="streak-display">0</span>
+      <span style="color:var(--muted);font-size:12px">day streak</span>
+    </div>
+  </div>
+</div>
+
+<div class="hero">
+  <div class="day-label" id="today-label">Loading...</div>
+  <h1 class="day-title">Your <span id="workout-day-name">Daily</span><br>20-Min Ritual</h1>
+  <p class="day-sub" id="workout-tagline">Calm the mind. Shape the body.</p>
+
+  <div class="progress-area">
+    <div class="ring-wrap">
+      <svg width="72" height="72" viewBox="0 0 72 72">
+        <circle cx="36" cy="36" r="28" fill="none" stroke="#2a2a2a" stroke-width="5"/>
+        <circle id="progress-ring" cx="36" cy="36" r="28" fill="none" stroke="#c8f55a" stroke-width="5"
+          stroke-linecap="round" stroke-dasharray="175.9" stroke-dashoffset="175.9" style="transition:stroke-dashoffset .5s ease"/>
+      </svg>
+      <div class="ring-center">
+        <span class="ring-num" id="done-count">0</span>
+        <span class="ring-sub">/ 7 done</span>
+      </div>
+    </div>
+    <div class="progress-text">
+      <h3 id="progress-title">Ready to begin</h3>
+      <p id="progress-sub">Check off each exercise as you go — <strong>you've got this.</strong></p>
+    </div>
+  </div>
+</div>
+
+<div class="tabs">
+  <button class="tab active" onclick="switchTab('workout')">Today</button>
+  <button class="tab" onclick="switchTab('tracker')">Tracker</button>
+  <button class="tab" onclick="switchTab('food')">Nutrition</button>
+</div>
+
+<div class="content">
+
+  <!-- TODAY PANEL -->
+  <div class="panel active" id="panel-workout">
+
+    <div class="quote-card" id="quote-area">
+      <div class="quote-text" id="quote-text">"The secret of getting ahead is getting started."</div>
+      <div class="quote-author" id="quote-author">— Mark Twain</div>
+    </div>
+
+    <div class="done-banner" id="done-banner">
+      <h3>🎉 Workout Complete!</h3>
+      <p>You crushed all 7 exercises today. <br>진짜 잘했어! (jinjja jalhaesseo — You really did great!)</p>
+      <button class="done-check-btn" id="checkin-btn" onclick="checkInToday()">✓ Mark Today as Done</button>
+    </div>
+
+    <div class="ex-list" id="exercise-list"></div>
+  </div>
+
+  <!-- TRACKER PANEL -->
+  <div class="panel" id="panel-tracker">
+
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-val" style="color:var(--accent)" id="stat-streak">0</div>
+        <div class="stat-label">🔥 Current streak</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-val" style="color:var(--accent3)" id="stat-total">0</div>
+        <div class="stat-label">✦ Total workouts</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-val" style="color:var(--warm)" id="stat-week">0/7</div>
+        <div class="stat-label">📅 This week</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-val" style="color:var(--accent2)" id="stat-mins">0</div>
+        <div class="stat-label">⏱ Total minutes</div>
+      </div>
+    </div>
+
+    <div class="cal-section">
+      <div class="section-title">This month</div>
+      <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-bottom:6px">
+        <div class="cal-day-label">S</div><div class="cal-day-label">M</div>
+        <div class="cal-day-label">T</div><div class="cal-day-label">W</div>
+        <div class="cal-day-label">T</div><div class="cal-day-label">F</div>
+        <div class="cal-day-label">S</div>
+      </div>
+      <div class="cal-grid" id="cal-grid"></div>
+    </div>
+
+    <div style="margin-top:1rem">
+      <button onclick="resetData()" style="width:100%;padding:10px;background:transparent;border:1px solid var(--border);color:var(--muted);border-radius:10px;font-size:13px;cursor:pointer;font-family:inherit">Reset all data</button>
+    </div>
+  </div>
+
+  <!-- FOOD PANEL -->
+  <div class="panel" id="panel-food">
+    <div class="section-title">Eat with intention</div>
+    <p style="font-size:13px;color:var(--muted);margin-bottom:1.2rem;line-height:1.6">No strict diet — just small, smart choices that let your workout actually do its job.</p>
+
+    <div class="section-title" style="color:var(--accent)">✓ Keep these in your life</div>
+    <div id="food-good"></div>
+
+    <div class="section-title" style="color:var(--danger);margin-top:1.2rem">✗ Soft limits (not banned, just careful)</div>
+    <div id="food-avoid"></div>
+
+    <div class="food-section" style="margin-top:1.2rem">
+      <div class="section-title">Hydration</div>
+      <div class="food-card" style="border-left:3px solid var(--accent3)">
+        <div class="food-icon">💧</div>
+        <div>
+          <div class="food-title">Drink water before you're thirsty</div>
+          <div class="food-desc">Aim for 2–3 liters a day. Start your morning with a big glass before any food — it kicks your metabolism and helps with post-workout soreness. Add lemon for a small detox boost.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- BOTTOM NAV -->
+<div class="bottom-nav">
+  <div class="nav-inner">
+    <button class="nav-btn active" id="nav-workout" onclick="switchTab('workout')">
+      <span class="nav-icon">🧘</span>Today
+    </button>
+    <button class="nav-btn" id="nav-tracker" onclick="switchTab('tracker')">
+      <span class="nav-icon">📅</span>Tracker
+    </button>
+    <button class="nav-btn" id="nav-food" onclick="switchTab('food')">
+      <span class="nav-icon">🥗</span>Nutrition
+    </button>
+  </div>
+</div>
+
+<script>
+const DAYS = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+
+const WORKOUT_PLANS = [
+  {
+    day:'Sunday', emoji:'🌿', tagline:'Slow start. Full reset.',
+    exercises:[
+      {name:'Box Breathing',type:'breathe',duration:'3 min',reps:'4 cycles',desc:'Inhale 4 counts, hold 4, exhale 4, hold 4. This activates your parasympathetic nervous system — aka your calm mode.',tip:'Do this in bed before getting up. Game changer.',viz:'breathe'},
+      {name:'Cat-Cow Stretch',type:'yoga',duration:'2 min',reps:'12 reps',desc:'On all fours: arch your back up (cat), then drop it and lift your head (cow). Warms up the spine beautifully.',tip:'Move with your breath — inhale for cow, exhale for cat.',viz:'cat_cow'},
+      {name:'Child\'s Pose',type:'yoga',duration:'2 min',reps:'Hold 60s × 2',desc:'Kneel, sit back on heels, stretch arms forward, forehead to the floor. Melts tension in the lower back and hips.',tip:'Breathe into your lower back — you\'ll feel it open up.',viz:'childs_pose'},
+      {name:'Seated Spinal Twist',type:'yoga',duration:'2 min',reps:'30s each side',desc:'Sit cross-legged or with legs out, twist your torso with one hand on opposite knee. Great for digestion and spine mobility.',tip:'Twist on the exhale for a deeper stretch.',viz:'spinal_twist'},
+      {name:'Legs Up The Wall',type:'yoga',duration:'3 min',reps:'Hold full time',desc:'Lie on your back, legs straight up against a wall. Relieves tired legs, reduces anxiety, improves circulation.',tip:'Put a pillow under your lower back if needed.',viz:'legs_wall'},
+      {name:'Bridge Pose',type:'strength',duration:'3 min',reps:'3 × 10 holds',desc:'Lie on back, knees bent, feet flat. Lift hips, hold for 5 seconds, lower. Activates glutes and lower back.',tip:'Squeeze glutes hard at the top.',viz:'bridge'},
+      {name:'Savasana Meditation',type:'breathe',duration:'5 min',reps:'Full relaxation',desc:'Lie flat, close eyes, do nothing. Let each body part release. This is the most important part of any yoga practice.',tip:'Set a gentle timer — don\'t peek at the phone.',viz:'savasana'},
+    ]
+  },
+  {
+    day:'Monday', emoji:'🔥', tagline:'New week. New you.',
+    exercises:[
+      {name:'Morning Stretches',type:'yoga',duration:'2 min',reps:'5 each side',desc:'Standing side bends, neck rolls, shoulder circles. Wake every joint up gently before asking them to do anything intense.',tip:'Do these before checking your phone.',viz:'morning_stretch'},
+      {name:'Sun Salutation A',type:'yoga',duration:'4 min',reps:'3 full rounds',desc:'A flowing sequence: mountain pose → forward fold → halfway lift → plank → cobra → down dog → back to standing. Warms the whole body.',tip:'Link each movement to a breath. No rushing.',viz:'sun_sal'},
+      {name:'Warrior I',type:'yoga',duration:'3 min',reps:'45s each side',desc:'Step one foot back, bend front knee, raise arms overhead. Builds leg strength, hip flexibility, and confidence.',tip:'Press your back heel down — don\'t let it float.',viz:'warrior1'},
+      {name:'Plank Hold',type:'strength',duration:'3 min',reps:'3 × 30s',desc:'Hands under shoulders, body in a straight line, core braced. A full-body isometric hold that builds core strength without crunches.',tip:'Look at the floor, not ahead — it protects your neck.',viz:'plank'},
+      {name:'Downward Dog',type:'yoga',duration:'2 min',reps:'Hold 60s × 2',desc:'Inverted V shape — hands and feet on floor, hips high. Stretches hamstrings, calves, shoulders, and strengthens arms.',tip:'Pedal your feet to wake up the calves.',viz:'down_dog'},
+      {name:'Squats',type:'strength',duration:'3 min',reps:'3 × 12',desc:'Feet shoulder-width, toes slightly out. Lower until thighs are parallel, chest up, weight in heels. King of lower body exercises.',tip:'Imagine sitting back into a chair. Don\'t let knees cave in.',viz:'squat'},
+      {name:'Wind-Down Breathing',type:'breathe',duration:'3 min',reps:'6 cycles',desc:'4-7-8 breathing: inhale 4, hold 7, exhale 8. This powerful technique reduces cortisol and signals your body to recover.',tip:'The long exhale is the magic. Don\'t rush it.',viz:'breath_478'},
+    ]
+  },
+  {
+    day:'Tuesday', emoji:'💪', tagline:'Strength and stillness.',
+    exercises:[
+      {name:'Neck & Shoulder Rolls',type:'yoga',duration:'2 min',reps:'5 each direction',desc:'Slow, deliberate circles releasing the tension you\'ve been carrying in your neck. Critical if you sit at a desk.',tip:'Go slow — you\'re not racing.',viz:'neck_roll'},
+      {name:'Surya Namaskar B',type:'yoga',duration:'4 min',reps:'2 rounds',desc:'Sun Salutation with added chair pose and warrior I. More intense than A — gets your heart rate up while building flexibility.',tip:'Modify chair pose if your knees ache.',viz:'sun_sal_b'},
+      {name:'Push-Ups',type:'strength',duration:'3 min',reps:'3 × 10',desc:'Classic. Hands shoulder-width, lower chest to floor, push back up. If hard, do on knees — no shame, full gains.',tip:'Slow down on the way down (3 counts). That\'s where strength is built.',viz:'pushup'},
+      {name:'Warrior II',type:'yoga',duration:'3 min',reps:'45s each side',desc:'Wide stance, front knee bent, arms out to sides, gaze over front hand. Builds stamina and opens the hips.',tip:'Your back foot is flat, not angled in.',viz:'warrior2'},
+      {name:'Reverse Plank',type:'strength',duration:'2 min',reps:'2 × 20s',desc:'Sit with legs out, hands behind you, push hips up until body is a straight line face-up. Works triceps, glutes, and back.',tip:'Squeeze your core and glutes the whole time.',viz:'rev_plank'},
+      {name:'Seated Forward Fold',type:'yoga',duration:'2 min',reps:'Hold 60s × 2',desc:'Legs out, hinge from hips and reach for your feet. Don\'t round your back — it\'s about the hamstrings, not the spine.',tip:'Flex your feet to deepen the stretch.',viz:'fwd_fold'},
+      {name:'Body Scan Meditation',type:'breathe',duration:'4 min',reps:'1 round',desc:'Close eyes, bring awareness from toes to crown — notice tension without judging it. Trains your mind to listen to your body.',tip:'No wrong way to do this. Just notice.',viz:'body_scan'},
+    ]
+  },
+  {
+    day:'Wednesday', emoji:'🌊', tagline:'Midweek flow.',
+    exercises:[
+      {name:'Joint Warm-Up',type:'yoga',duration:'2 min',reps:'3 each joint',desc:'Wrists, ankles, hips — rotate each joint in both directions. Especially important midweek when your body has accumulated stress.',tip:'Use this as a mindfulness check-in — how does each joint feel today?',viz:'joint_warmup'},
+      {name:'Tree Pose',type:'yoga',duration:'3 min',reps:'45s each side',desc:'Stand on one leg, place the other foot on your inner thigh or calf (not knee). Arms above or at heart center.',tip:'Fix your gaze on one non-moving point. It\'s the real secret to balance.',viz:'tree_pose'},
+      {name:'Glute Bridges',type:'strength',duration:'3 min',reps:'3 × 15',desc:'Lie on back, knees bent. Drive hips up using glutes, hold 2 seconds, lower. Minimal impact, maximum activation.',tip:'The more you squeeze at the top, the more you get out of it.',viz:'bridge'},
+      {name:'Triangle Pose',type:'yoga',duration:'3 min',reps:'45s each side',desc:'Wide stance, reach one arm down to shin/foot, other arm up. Stretches hamstrings, groins, and opens the chest.',tip:'Don\'t lock the knee on your front leg.',viz:'triangle'},
+      {name:'Superman Hold',type:'strength',duration:'2 min',reps:'2 × 10 holds',desc:'Lie face down, simultaneously lift arms, chest, and legs off the floor. Hold 3 seconds. Strengthens the entire back chain.',tip:'Squeeze your glutes as you lift — it protects the lower back.',viz:'superman'},
+      {name:'Pigeon Pose',type:'yoga',duration:'3 min',reps:'60s each side',desc:'The ultimate hip opener. Front knee toward hand, leg straight back, fold forward. Releases deep stored tension in hips.',tip:'Use a blanket under your hip if it doesn\'t reach the floor.',viz:'pigeon'},
+      {name:'Alternate Nostril Breathing',type:'breathe',duration:'4 min',reps:'10 cycles',desc:'Block right nostril, inhale left. Block left, exhale right. Inhale right, block, exhale left. Balances the two hemispheres of the brain.',tip:'Nadi Shodhana — one of the most calming breathing practices in yoga.',viz:'nostril_breath'},
+    ]
+  },
+  {
+    day:'Thursday', emoji:'⚡', tagline:'Push through.',
+    exercises:[
+      {name:'Dynamic Stretches',type:'yoga',duration:'2 min',reps:'10 each',desc:'Leg swings, arm swings, hip circles. Dynamic = moving. Perfect pre-workout warmup that\'s better than static stretching.',tip:'Control the movement — don\'t just fling your limbs.',viz:'dynamic_stretch'},
+      {name:'Jumping Jacks',type:'cardio',duration:'3 min',reps:'3 × 30',desc:'Classic cardio. Gets your heart rate up, warms every muscle. Modify by stepping side to side if jumping hurts your joints.',tip:'Land softly — knees slightly bent.',viz:'jumping_jack'},
+      {name:'Lunges',type:'strength',duration:'3 min',reps:'3 × 10 each leg',desc:'Step forward, lower back knee toward floor, push back. Works quads, glutes, and improves balance and hip mobility.',tip:'Keep your torso upright — don\'t lean forward.',viz:'lunge'},
+      {name:'Cobra Pose',type:'yoga',duration:'2 min',reps:'Hold 30s × 3',desc:'Lie face down, hands under shoulders, push up chest while hips stay grounded. Opens the chest and strengthens the back.',tip:'Don\'t straighten your arms all the way — keep soft elbows.',viz:'cobra'},
+      {name:'Mountain Climbers',type:'cardio',duration:'3 min',reps:'3 × 20',desc:'Plank position — drive knees toward chest alternately in a running motion. Cardio + core in one.',tip:'Keep hips level — don\'t let them rise when the knee comes in.',viz:'mountain_climber'},
+      {name:'Pigeon Pose',type:'yoga',duration:'3 min',reps:'60s each side',desc:'After all that, you need this. Opens the hips and signals your nervous system to cool down.',tip:'Breathe into wherever you feel the tightest.',viz:'pigeon'},
+      {name:'Cooling Breath',type:'breathe',duration:'4 min',reps:'8 cycles',desc:'Sheetali pranayama: curl your tongue into a tube, inhale through it, exhale through the nose. Literally cools body temperature and calms the mind.',tip:'If you can\'t curl your tongue, breathe through slightly parted teeth instead.',viz:'cool_breath'},
+    ]
+  },
+  {
+    day:'Friday', emoji:'🙌', tagline:'One more day, king.',
+    exercises:[
+      {name:'5-Breath Wake-Up',type:'breathe',duration:'2 min',reps:'5 deep breaths',desc:'Before anything else — five slow, deep, intentional breaths. Anchor yourself before the day starts.',tip:'Eyes closed. No phone. Just you.',viz:'breathe'},
+      {name:'Standing Forward Fold',type:'yoga',duration:'2 min',reps:'Hold 60s × 2',desc:'Stand tall, fold forward from hips, let your head hang heavy. Decompresses the spine and calms the nervous system.',tip:'Bend your knees slightly if your hamstrings are tight.',viz:'stand_fwd'},
+      {name:'Push-Ups (Wide)',type:'strength',duration:'3 min',reps:'3 × 10',desc:'Wider than shoulder-width push-ups hit your chest more. Same form, just shift the hands out.',tip:'Slow and controlled beats fast and sloppy every single time.',viz:'pushup'},
+      {name:'Chair Pose',type:'yoga',duration:'3 min',reps:'3 × 30s hold',desc:'Feet together, squat down like sitting on an invisible chair, arms overhead. Intense! Builds quads and core.',tip:'Keep your knees behind your toes.',viz:'chair_pose'},
+      {name:'Side Plank',type:'strength',duration:'3 min',reps:'2 × 20s each side',desc:'One hand (or forearm) on floor, body in a straight diagonal line. Works obliques, shoulders, and entire lateral chain.',tip:'Stack your feet or stagger them for more stability.',viz:'side_plank'},
+      {name:'Legs Up The Wall',type:'yoga',duration:'3 min',reps:'Full hold',desc:'You earned this. Lies on your back, legs up, let gravity do the recovery work for you.',tip:'Put your phone down and just... be.',viz:'legs_wall'},
+      {name:'Gratitude Breathing',type:'breathe',duration:'4 min',reps:'Open-ended',desc:'Slow breathing while mentally noting 3 things you\'re grateful for. Combines breathwork with cognitive reframing — proven to reduce anxiety.',tip:'Make them specific. Not "health" but "that I could do today\'s workout."',viz:'breath_478'},
+    ]
+  },
+  {
+    day:'Saturday', emoji:'🌟', tagline:'Rest, but don\'t stop.',
+    exercises:[
+      {name:'Sleep Stretches',type:'yoga',duration:'3 min',reps:'2 min each side',desc:'Supine spinal twist in bed — knee dropped to one side, arms out. Start the day from horizontal.',tip:'No alarm needed for this one — do it the moment you wake.',viz:'spinal_twist'},
+      {name:'Sun Salutation A',type:'yoga',duration:'4 min',reps:'3 rounds',desc:'You know this one now. The whole-body wake-up sequence. On weekends, slow it down even more.',tip:'This is your personal time. No rushing.',viz:'sun_sal'},
+      {name:'Warrior III',type:'yoga',duration:'3 min',reps:'30s each side',desc:'Balance on one leg, body parallel to ground, arms forward. The hardest warrior. Tests balance, strength, and focus.',tip:'Gaze at the floor. Keep the standing knee slightly bent.',viz:'warrior3'},
+      {name:'Dead Bug',type:'strength',duration:'3 min',reps:'3 × 8 each side',desc:'Lie on back, arms up, knees at 90°. Lower opposite arm and leg to floor while keeping lower back pressed down.',tip:'Move SLOWLY. The back must not lift off the floor.',viz:'dead_bug'},
+      {name:'Happy Baby Pose',type:'yoga',duration:'2 min',reps:'Hold full time',desc:'Lie on back, grab outer edges of feet, knees toward armpits. Rocks the hips, decompresses lower back.',tip:'Rock side to side for a gentle spine massage.',viz:'happy_baby'},
+      {name:'Seated Meditation',type:'breathe',duration:'3 min',reps:'Open sitting',desc:'Sit comfortably, eyes closed, just observe your breath. Don\'t control it — just watch it. This is mindfulness at its most basic.',tip:'When your mind wanders (it will), gently return. That return IS the practice.',viz:'body_scan'},
+      {name:'Savasana',type:'breathe',duration:'2 min',reps:'Full rest',desc:'Lie flat. Let it all go. Every weekend workout should end here.',tip:'You showed up. That\'s already everything.',viz:'savasana'},
+    ]
+  }
+];
+
+const QUOTES = [
+  {text:'The body achieves what the mind believes.',author:'Unknown'},
+  {text:'Take care of your body. It\'s the only place you have to live.',author:'Jim Rohn'},
+  {text:'강한 몸은 강한 마음에서 시작된다 (A strong body starts from a strong mind)',author:'Korean Proverb'},
+  {text:'You don\'t have to be extreme, just consistent.',author:'Unknown'},
+  {text:'Movement is medicine for creating change in a person\'s physical, emotional, and mental states.',author:'Carol Welch'},
+  {text:'Your future self is watching you right now through your memories.',author:'Aubrey Marcus'},
+  {text:'The only bad workout is the one that didn\'t happen.',author:'Unknown'},
+];
+
+const FOOD_GOOD = [
+  {icon:'🥑',title:'Healthy fats (avocado, nuts, olive oil)',desc:'Fuel your brain and joints. A small handful of nuts pre-workout gives you sustained energy without a crash.'},
+  {icon:'🍳',title:'Eggs or protein in the morning',desc:'Starting with protein keeps you full and prevents the mid-day energy crash that makes you skip workouts.'},
+  {icon:'🍌',title:'Fruit (banana, berries, mango)',desc:'Natural sugars with fiber. A banana 30 mins before working out? Nature\'s pre-workout.'},
+  {icon:'🥗',title:'Leafy greens (spinach, kale)',desc:'Magnesium helps muscle recovery. Iron keeps you energized. Eat them any way you like.'},
+  {icon:'🧘',title:'Herbal tea (ginger, turmeric, chamomile)',desc:'Anti-inflammatory and calming. Great post-workout. Chamomile at night improves sleep quality.'},
+];
+
+const FOOD_AVOID = [
+  {icon:'🥤',title:'Sugary drinks and soda',desc:'They spike blood sugar and then crash it. Post-crash energy is the enemy of consistent workouts.'},
+  {icon:'🍟',title:'Deep-fried food',desc:'Heavy on your digestion, especially within 2 hours of working out. Your body uses energy to digest that it could use to recover.'},
+  {icon:'🌙',title:'Heavy meals after 9pm',desc:'Late heavy eating disrupts sleep quality — and sleep is when your body actually does the fitness work.'},
+  {icon:'🍺',title:'Alcohol (especially night before)',desc:'Destroys sleep architecture and increases next-day inflammation. Even one drink affects morning workout energy.'},
+  {icon:'☕',title:'Coffee on an empty stomach',desc:'Spikes cortisol. Eat something small first — even a banana — before your morning coffee.'},
+];
+
+// State
+let state = {
+  streak: 0,
+  totalWorkouts: 0,
+  checkedDays: {},
+  todayExercises: {},
+  lastCheckin: null
+};
+
+function loadState() {
+  const s = localStorage.getItem('workout_state_v2');
+  if (s) state = JSON.parse(s);
+}
+
+function saveState() {
+  localStorage.setItem('workout_state_v2', JSON.stringify(state));
+}
+
+function resetData() {
+  if (confirm('Reset all your workout data? This cannot be undone.')) {
+    state = {streak:0,totalWorkouts:0,checkedDays:{},todayExercises:{},lastCheckin:null};
+    saveState();
+    location.reload();
+  }
+}
+
+function getToday() {
+  const d = new Date();
+  return `${d.getFullYear()}-${d.getMonth()+1}-${d.getDate()}`;
+}
+
+function getTodayPlan() {
+  const d = new Date().getDay();
+  return WORKOUT_PLANS[d];
+}
+
+// EXERCISE VISUALIZATIONS
+function getViz(type) {
+  const vizes = {
+    breathe: `<svg viewBox="0 0 300 150" class="figure-svg" style="background:#0d0d0d">
+      <circle cx="150" cy="75" r="55" fill="none" stroke="#c8f55a" stroke-width="1.5" opacity="0.3"/>
+      <circle cx="150" cy="75" r="35" fill="none" stroke="#c8f55a" stroke-width="2" opacity="0.6" class="breathe-circle"/>
+      <circle cx="150" cy="75" r="18" fill="#c8f55a" opacity="0.85" class="breathe-circle"/>
+      <text x="150" y="140" text-anchor="middle" fill="#555" font-size="11" font-family="DM Sans">breathe with the circle</text>
+    </svg>`,
+    cat_cow: `<svg viewBox="0 0 300 150" class="figure-svg" style="background:#0d0d0d">
+      <text x="150" y="20" text-anchor="middle" fill="#555" font-size="10" font-family="DM Sans">CAT (exhale) → COW (inhale)</text>
+      <!-- Cat: arched back -->
+      <ellipse cx="80" cy="80" rx="45" ry="12" fill="none" stroke="#7eb8f7" stroke-width="1.5"/>
+      <path d="M35 80 Q50 50 80 45 Q110 50 125 80" fill="none" stroke="#7eb8f7" stroke-width="2"/>
+      <circle cx="35" cy="80" r="4" fill="#7eb8f7" opacity="0.6"/>
+      <circle cx="125" cy="80" r="4" fill="#7eb8f7" opacity="0.6"/>
+      <circle cx="80" cy="45" r="6" fill="#7eb8f7" opacity="0.4"/>
+      <text x="80" y="115" text-anchor="middle" fill="#7eb8f7" font-size="10" font-family="DM Sans">cat</text>
+      <!-- Cow: dropped back -->
+      <path d="M175 80 Q200 95 220 98 Q240 95 265 80" fill="none" stroke="#c8f55a" stroke-width="2"/>
+      <circle cx="175" cy="80" r="4" fill="#c8f55a" opacity="0.6"/>
+      <circle cx="265" cy="80" r="4" fill="#c8f55a" opacity="0.6"/>
+      <circle cx="220" cy="98" r="6" fill="#c8f55a" opacity="0.4"/>
+      <text x="220" y="115" text-anchor="middle" fill="#c8f55a" font-size="10" font-family="DM Sans">cow</text>
+      <line x1="148" y1="50" x2="152" y2="105" stroke="#333" stroke-width="1"/>
+    </svg>`,
+    childs_pose: `<svg viewBox="0 0 300 140" class="figure-svg" style="background:#0d0d0d">
+      <!-- Ground line -->
+      <line x1="20" y1="105" x2="280" y2="105" stroke="#222" stroke-width="1"/>
+      <!-- Body: folded forward silhouette -->
+      <path d="M80,105 Q80,75 100,70 Q140,65 190,68 Q230,70 240,105" fill="none" stroke="#7eb8f7" stroke-width="2"/>
+      <circle cx="80" cy="105" r="5" fill="#7eb8f7" opacity="0.5"/>
+      <!-- Arms extended -->
+      <line x1="190" y1="68" x2="255" y2="72" stroke="#7eb8f7" stroke-width="2" stroke-linecap="round"/>
+      <circle cx="255" cy="72" r="4" fill="#7eb8f7" opacity="0.5"/>
+      <!-- Head -->
+      <circle cx="240" cy="67" r="7" fill="none" stroke="#7eb8f7" stroke-width="1.5"/>
+      <text x="150" y="130" text-anchor="middle" fill="#555" font-size="10" font-family="DM Sans">forehead rests on floor · arms reach forward</text>
+    </svg>`,
+    spinal_twist: `<svg viewBox="0 0 300 150" class="figure-svg" style="background:#0d0d0d">
+      <line x1="20" y1="115" x2="280" y2="115" stroke="#222" stroke-width="1"/>
+      <!-- Seated figure twisted -->
+      <circle cx="150" cy="55" r="10" fill="none" stroke="#c8f55a" stroke-width="2"/>
+      <line x1="150" y1="65" x2="150" y2="105" stroke="#c8f55a" stroke-width="2.5" stroke-linecap="round"/>
+      <!-- Hips/legs -->
+      <path d="M130,105 Q150,110 170,105" fill="none" stroke="#c8f55a" stroke-width="2" stroke-linecap="round"/>
+      <line x1="130" y1="105" x2="105" y2="115" stroke="#c8f55a" stroke-width="2" stroke-linecap="round"/>
+      <line x1="170" y1="105" x2="190" y2="115" stroke="#c8f55a" stroke-width="2" stroke-linecap="round"/>
+      <!-- Arms twisted -->
+      <path d="M140,80 Q120,75 110,82" fill="none" stroke="#c8f55a" stroke-width="2" stroke-linecap="round"/>
+      <path d="M160,75 Q185,65 195,72" fill="none" stroke="#c8f55a" stroke-width="2" stroke-linecap="round"/>
+      <!-- Twist arrow -->
+      <path d="M155,55 Q175,45 180,55 Q178,60 170,58" fill="none" stroke="#ff6b35" stroke-width="1.5"/>
+      <text x="150" y="138" text-anchor="middle" fill="#555" font-size="10" font-family="DM Sans">twist on exhale · hand on opposite knee</text>
+    </svg>`,
+    legs_wall: `<svg viewBox="0 0 300 150" class="figure-svg" style="background:#0d0d0d">
+      <!-- Wall -->
+      <line x1="250" y1="10" x2="250" y2="140" stroke="#333" stroke-width="2"/>
+      <!-- Floor -->
+      <line x1="20" y1="115" x2="260" y2="115" stroke="#222" stroke-width="1"/>
+      <!-- Body horizontal -->
+      <line x1="80" y1="100" x2="200" y2="100" stroke="#7eb8f7" stroke-width="2.5" stroke-linecap="round"/>
+      <!-- Head -->
+      <circle cx="75" cy="100" r="10" fill="none" stroke="#7eb8f7" stroke-width="1.5"/>
+      <!-- Legs up on wall -->
+      <line x1="200" y1="100" x2="245" y2="40" stroke="#7eb8f7" stroke-width="2.5" stroke-linecap="round"/>
+      <line x1="200" y1="100" x2="250" y2="30" stroke="#7eb8f7" stroke-width="2" stroke-linecap="round" opacity="0.6"/>
+      <text x="130" y="135" text-anchor="middle" fill="#555" font-size="10" font-family="DM Sans">hips close to wall · legs straight up</text>
+    </svg>`,
+    bridge: `<svg viewBox="0 0 300 150" class="figure-svg" style="background:#0d0d0d">
+      <line x1="20" y1="115" x2="280" y2="115" stroke="#222" stroke-width="1"/>
+      <!-- Body lifted: arc -->
+      <path d="M60,115 Q65,90 90,75 Q130,58 180,72 Q215,82 230,115" fill="none" stroke="#c8f55a" stroke-width="2.5"/>
+      <!-- Head on ground -->
+      <circle cx="55" cy="110" r="9" fill="none" stroke="#c8f55a" stroke-width="1.5"/>
+      <!-- Arms on ground -->
+      <line x1="65" y1="112" x2="110" y2="114" stroke="#c8f55a" stroke-width="2" stroke-linecap="round"/>
+      <!-- Feet on ground -->
+      <line x1="180" y1="115" x2="165" y2="115" stroke="#c8f55a" stroke-width="3" stroke-linecap="round"/>
+      <line x1="220" y1="115" x2="235" y2="115" stroke="#c8f55a" stroke-width="3" stroke-linecap="round"/>
+      <!-- Up arrow at hips -->
+      <line x1="145" y1="65" x2="145" y2="50" stroke="#ff6b35" stroke-width="1.5" marker-end="url(#up)"/>
+      <text x="150" y="138" text-anchor="middle" fill="#555" font-size="10" font-family="DM Sans">feet flat · drive hips up · squeeze glutes</text>
+    </svg>`,
+    savasana: `<svg viewBox="0 0 300 130" class="figure-svg" style="background:#0d0d0d">
+      <line x1="20" y1="90" x2="280" y2="90" stroke="#222" stroke-width="1"/>
+      <!-- Full horizontal body -->
+      <line x1="55" y1="80" x2="245" y2="82" stroke="#7eb8f7" stroke-width="2" stroke-linecap="round"/>
+      <circle cx="48" cy="80" r="10" fill="none" stroke="#7eb8f7" stroke-width="1.5"/>
+      <!-- Arms slightly away -->
+      <line x1="120" y1="82" x2="115" y2="95" stroke="#7eb8f7" stroke-width="1.5" stroke-linecap="round"/>
+      <line x1="155" y1="82" x2="162" y2="95" stroke="#7eb8f7" stroke-width="1.5" stroke-linecap="round"/>
+      <!-- Stars above -->
+      <text x="150" y="35" text-anchor="middle" fill="#7eb8f7" font-size="18" opacity="0.4">✦ ✦ ✦</text>
+      <text x="150" y="115" text-anchor="middle" fill="#555" font-size="10" font-family="DM Sans">lie completely still · let everything go</text>
+    </svg>`,
+    sun_sal: `<svg viewBox="0 0 300 150" class="figure-svg" style="background:#0d0d0d">
+      <text x="150" y="18" text-anchor="middle" fill="#555" font-size="10" font-family="DM Sans">Mountain → Forward Fold → Plank → Cobra → Down Dog</text>
+      <!-- Simplified poses in sequence -->
+      <!-- Mountain -->
+      <line x1="30" y1="105" x2="30" y2="60" stroke="#c8f55a" stroke-width="2" stroke-linecap="round"/>
+      <circle cx="30" cy="54" r="7" fill="none" stroke="#c8f55a" stroke-width="1.5"/>
+      <line x1="22" y1="75" x2="38" y2="75" stroke="#c8f55a" stroke-width="1.5" stroke-linecap="round"/>
+      <!-- Forward fold -->
+      <line x1="80" y1="105" x2="80" y2="80" stroke="#c8f55a" stroke-width="2" stroke-linecap="round"/>
+      <path d="M80,80 Q80,68 85,62" fill="none" stroke="#c8f55a" stroke-width="2" stroke-linecap="round"/>
+      <circle cx="85" cy="58" r="6" fill="none" stroke="#c8f55a" stroke-width="1.5"/>
+      <line x1="70" y1="100" x2="100" y2="100" stroke="#c8f55a" stroke-width="1.5" stroke-linecap="round"/>
+      <!-- Plank -->
+      <line x1="130" y1="85" x2="170" y2="85" stroke="#c8f55a" stroke-width="2" stroke-linecap="round"/>
+      <line x1="130" y1="85" x2="130" y2="105" stroke="#c8f55a" stroke-width="2" stroke-linecap="round"/>
+      <line x1="170" y1="85" x2="170" y2="105" stroke="#c8f55a" stroke-width="2" stroke-linecap="round"/>
+      <circle cx="124" cy="82" r="6" fill="none" stroke="#c8f55a" stroke-width="1.5"/>
+      <!-- Cobra -->
+      <line x1="200" y1="105" x2="250" y2="105" stroke="#c8f55a" stroke-width="2" stroke-linecap="round"/>
+      <line x1="200" y1="105" x2="198" y2="95" stroke="#c8f55a" stroke-width="2" stroke-linecap="round"/>
+      <line x1="250" y1="105" x2="252" y2="95" stroke="#c8f55a" stroke-width="2" stroke-linecap="round"/>
+      <path d="M198,95 Q218,72 225,65" fill="none" stroke="#c8f55a" stroke-width="2" stroke-linecap="round"/>
+      <circle cx="225" cy="60" r="6" fill="none" stroke="#c8f55a" stroke-width="1.5"/>
+      <text x="150" y="135" text-anchor="middle" fill="#555" font-size="10" font-family="DM Sans">one breath per movement</text>
+    </svg>`,
+    warrior1: `<svg viewBox="0 0 300 155" class="figure-svg" style="background:#0d0d0d">
+      <line x1="20" y1="120" x2="280" y2="120" stroke="#222" stroke-width="1"/>
+      <!-- Wide stance: back foot, front bent knee -->
+      <line x1="90" y1="120" x2="90" y2="120" stroke="#ff6b35" stroke-width="3" stroke-linecap="round"/>
+      <line x1="185" y1="120" x2="185" y2="90" stroke="#ff6b35" stroke-width="2.5" stroke-linecap="round"/>
+      <line x1="185" y1="90" x2="165" y2="75" stroke="#ff6b35" stroke-width="2.5" stroke-linecap="round"/>
+      <line x1="165" y1="75" x2="155" y2="42" stroke="#ff6b35" stroke-width="2.5" stroke-linecap="round"/>
+      <circle cx="155" cy="35" r="9" fill="none" stroke="#ff6b35" stroke-width="1.5"/>
+      <line x1="90" y1="120" x2="120" y2="90" stroke="#ff6b35" stroke-width="2.5" stroke-linecap="round"/>
+      <line x1="120" y1="90" x2="145" y2="75" stroke="#ff6b35" stroke-width="2" stroke-linecap="round" opacity="0.6"/>
+      <!-- Arms raised -->
+      <line x1="155" y1="44" x2="140" y2="22" stroke="#ff6b35" stroke-width="2" stroke-linecap="round"/>
+      <line x1="155" y1="44" x2="170" y2="22" stroke="#ff6b35" stroke-width="2" stroke-linecap="round"/>
+      <text x="150" y="143" text-anchor="middle" fill="#555" font-size="10" font-family="DM Sans">front knee over ankle · arms reach to sky</text>
+    </svg>`,
+    plank: `<svg viewBox="0 0 300 140" class="figure-svg" style="background:#0d0d0d">
+      <line x1="20" y1="105" x2="280" y2="105" stroke="#222" stroke-width="1"/>
+      <!-- Straight body -->
+      <line x1="60" y1="80" x2="240" y2="80" stroke="#ff6b35" stroke-width="3" stroke-linecap="round"/>
+      <!-- Arms down -->
+      <line x1="80" y1="80" x2="80" y2="105" stroke="#ff6b35" stroke-width="2.5" stroke-linecap="round"/>
+      <line x1="100" y1="80" x2="100" y2="105" stroke="#ff6b35" stroke-width="2.5" stroke-linecap="round"/>
+      <!-- Feet -->
+      <line x1="225" y1="80" x2="225" y2="105" stroke="#ff6b35" stroke-width="2.5" stroke-linecap="round"/>
+      <line x1="240" y1="80" x2="240" y2="105" stroke="#ff6b35" stroke-width="2" stroke-linecap="round"/>
+      <!-- Head -->
+      <circle cx="54" cy="77" r="9" fill="none" stroke="#ff6b35" stroke-width="1.5"/>
+      <!-- Core highlight -->
+      <rect x="130" y="73" width="60" height="15" rx="3" fill="#ff6b35" opacity="0.1" stroke="#ff6b35" stroke-width="0.5"/>
+      <text x="160" y="65" text-anchor="middle" fill="#ff6b35" font-size="9" font-family="DM Sans" opacity="0.6">core active</text>
+      <text x="150" y="125" text-anchor="middle" fill="#555" font-size="10" font-family="DM Sans">straight line head to heels · breathe normally</text>
+    </svg>`,
+    down_dog: `<svg viewBox="0 0 300 150" class="figure-svg" style="background:#0d0d0d">
+      <line x1="20" y1="115" x2="280" y2="115" stroke="#222" stroke-width="1"/>
+      <!-- Inverted V: hands and feet on floor, hips up -->
+      <line x1="70" y1="115" x2="70" y2="110" stroke="#7eb8f7" stroke-width="2" stroke-linecap="round"/>
+      <line x1="90" y1="115" x2="90" y2="110" stroke="#7eb8f7" stroke-width="2" stroke-linecap="round"/>
+      <line x1="70" y1="110" x2="155" y2="58" stroke="#7eb8f7" stroke-width="2.5" stroke-linecap="round"/>
+      <line x1="155" y1="58" x2="225" y2="108" stroke="#7eb8f7" stroke-width="2.5" stroke-linecap="round"/>
+      <line x1="225" y1="108" x2="220" y2="115" stroke="#7eb8f7" stroke-width="2" stroke-linecap="round"/>
+      <line x1="240" y1="108" x2="240" y2="115" stroke="#7eb8f7" stroke-width="2" stroke-linecap="round"/>
+      <!-- Head -->
+      <circle cx="75" cy="105" r="8" fill="none" stroke="#7eb8f7" stroke-width="1.5"/>
+      <!-- Hip peak highlight -->
+      <circle cx="155" cy="58" r="5" fill="#7eb8f7" opacity="0.4"/>
+      <text x="155" y="42" text-anchor="middle" fill="#7eb8f7" font-size="9" font-family="DM Sans" opacity="0.6">hips high</text>
+      <text x="150" y="133" text-anchor="middle" fill="#555" font-size="10" font-family="DM Sans">pedal your heels · long spine</text>
+    </svg>`,
+    squat: `<svg viewBox="0 0 300 155" class="figure-svg" style="background:#0d0d0d">
+      <line x1="20" y1="120" x2="280" y2="120" stroke="#222" stroke-width="1"/>
+      <!-- Before (standing, left) -->
+      <text x="75" y="25" text-anchor="middle" fill="#555" font-size="9" font-family="DM Sans">START</text>
+      <circle cx="75" cy="35" r="8" fill="none" stroke="#c8f55a" stroke-width="1.5"/>
+      <line x1="75" y1="43" x2="75" y2="80" stroke="#c8f55a" stroke-width="2" stroke-linecap="round"/>
+      <line x1="65" y1="60" x2="85" y2="60" stroke="#c8f55a" stroke-width="1.5" stroke-linecap="round"/>
+      <line x1="75" y1="80" x2="65" y2="120" stroke="#c8f55a" stroke-width="2" stroke-linecap="round"/>
+      <line x1="75" y1="80" x2="85" y2="120" stroke="#c8f55a" stroke-width="2" stroke-linecap="round"/>
+      <!-- During (squatting, right) -->
+      <text x="225" y="25" text-anchor="middle" fill="#555" font-size="9" font-family="DM Sans">SQUAT</text>
+      <circle cx="225" cy="55" r="8" fill="none" stroke="#ff6b35" stroke-width="1.5"/>
+      <line x1="225" y1="63" x2="225" y2="88" stroke="#ff6b35" stroke-width="2" stroke-linecap="round"/>
+      <!-- Thighs roughly parallel -->
+      <line x1="225" y1="88" x2="200" y2="98" stroke="#ff6b35" stroke-width="2" stroke-linecap="round"/>
+      <line x1="225" y1="88" x2="250" y2="98" stroke="#ff6b35" stroke-width="2" stroke-linecap="round"/>
+      <line x1="200" y1="98" x2="197" y2="120" stroke="#ff6b35" stroke-width="2" stroke-linecap="round"/>
+      <line x1="250" y1="98" x2="253" y2="120" stroke="#ff6b35" stroke-width="2" stroke-linecap="round"/>
+      <!-- Arms forward -->
+      <line x1="225" y1="72" x2="200" y2="65" stroke="#ff6b35" stroke-width="1.5" stroke-linecap="round"/>
+      <line x1="225" y1="72" x2="250" y2="65" stroke="#ff6b35" stroke-width="1.5" stroke-linecap="round"/>
+      <text x="150" y="143" text-anchor="middle" fill="#555" font-size="10" font-family="DM Sans">chest up · thighs parallel · weight in heels</text>
+    </svg>`,
+    pushup: `<svg viewBox="0 0 300 140" class="figure-svg" style="background:#0d0d0d">
+      <line x1="20" y1="105" x2="280" y2="105" stroke="#222" stroke-width="1"/>
+      <!-- Body at top -->
+      <line x1="60" y1="75" x2="240" y2="75" stroke="#ff6b35" stroke-width="2.5" stroke-linecap="round" opacity="0.5"/>
+      <line x1="75" y1="75" x2="75" y2="105" stroke="#ff6b35" stroke-width="2" stroke-linecap="round" opacity="0.5"/>
+      <line x1="95" y1="75" x2="95" y2="105" stroke="#ff6b35" stroke-width="2" stroke-linecap="round" opacity="0.5"/>
+      <circle cx="54" cy="72" r="8" fill="none" stroke="#ff6b35" stroke-width="1.5" opacity="0.5"/>
+      <!-- Body going down -->
+      <line x1="60" y1="88" x2="240" y2="88" stroke="#ff6b35" stroke-width="3" stroke-linecap="round"/>
+      <line x1="75" y1="88" x2="72" y2="105" stroke="#ff6b35" stroke-width="2.5" stroke-linecap="round"/>
+      <line x1="95" y1="88" x2="98" y2="105" stroke="#ff6b35" stroke-width="2.5" stroke-linecap="round"/>
+      <circle cx="54" cy="84" r="9" fill="none" stroke="#ff6b35" stroke-width="2"/>
+      <!-- Down arrows -->
+      <line x1="160" y1="68" x2="160" y2="80" stroke="#ffd166" stroke-width="1.5" stroke-linecap="round"/>
+      <text x="150" y="124" text-anchor="middle" fill="#555" font-size="10" font-family="DM Sans">slow on the way down · 3-count descent</text>
+    </svg>`,
+    warrior2: `<svg viewBox="0 0 300 155" class="figure-svg" style="background:#0d0d0d">
+      <line x1="20" y1="120" x2="280" y2="120" stroke="#222" stroke-width="1"/>
+      <!-- Wide stance -->
+      <line x1="55" y1="120" x2="245" y2="120" stroke="#ff6b35" stroke-width="3" stroke-linecap="round" opacity="0.3"/>
+      <!-- Body upright -->
+      <line x1="150" y1="55" x2="150" y2="90" stroke="#ff6b35" stroke-width="2.5" stroke-linecap="round"/>
+      <circle cx="150" cy="47" r="9" fill="none" stroke="#ff6b35" stroke-width="1.5"/>
+      <!-- Front leg bent -->
+      <line x1="150" y1="90" x2="115" y2="90" stroke="#ff6b35" stroke-width="2.5" stroke-linecap="round"/>
+      <line x1="115" y1="90" x2="95" y2="120" stroke="#ff6b35" stroke-width="2.5" stroke-linecap="round"/>
+      <!-- Back leg straight -->
+      <line x1="150" y1="90" x2="200" y2="90" stroke="#ff6b35" stroke-width="2" stroke-linecap="round"/>
+      <line x1="200" y1="90" x2="218" y2="120" stroke="#ff6b35" stroke-width="2" stroke-linecap="round"/>
+      <!-- Arms stretched out to sides -->
+      <line x1="150" y1="68" x2="65" y2="68" stroke="#ff6b35" stroke-width="2" stroke-linecap="round"/>
+      <line x1="150" y1="68" x2="240" y2="68" stroke="#ff6b35" stroke-width="2" stroke-linecap="round"/>
+      <text x="150" y="143" text-anchor="middle" fill="#555" font-size="10" font-family="DM Sans">arms parallel to floor · gaze over front hand</text>
+    </svg>`,
+    tree_pose: `<svg viewBox="0 0 300 160" class="figure-svg" style="background:#0d0d0d">
+      <line x1="20" y1="125" x2="280" y2="125" stroke="#222" stroke-width="1"/>
+      <!-- Standing leg -->
+      <line x1="150" y1="125" x2="150" y2="85" stroke="#7eb8f7" stroke-width="3" stroke-linecap="round"/>
+      <!-- Raised foot on inner thigh -->
+      <path d="M150,100 Q138,92 130,100 Q132,115 150,115" fill="none" stroke="#7eb8f7" stroke-width="2" stroke-linecap="round"/>
+      <!-- Body -->
+      <line x1="150" y1="85" x2="150" y2="48" stroke="#7eb8f7" stroke-width="2.5" stroke-linecap="round"/>
+      <circle cx="150" cy="40" r="9" fill="none" stroke="#7eb8f7" stroke-width="1.5"/>
+      <!-- Arms raised -->
+      <line x1="150" y1="58" x2="130" y2="28" stroke="#7eb8f7" stroke-width="2" stroke-linecap="round"/>
+      <line x1="150" y1="58" x2="170" y2="28" stroke="#7eb8f7" stroke-width="2" stroke-linecap="round"/>
+      <!-- Gaze point -->
+      <circle cx="220" cy="70" r="3" fill="#7eb8f7" opacity="0.4"/>
+      <line x1="157" y1="40" x2="217" y2="70" stroke="#7eb8f7" stroke-width="0.5" stroke-dasharray="3,3" opacity="0.3"/>
+      <text x="220" y="62" fill="#7eb8f7" font-size="9" font-family="DM Sans" opacity="0.5">gaze point</text>
+      <text x="150" y="145" text-anchor="middle" fill="#555" font-size="10" font-family="DM Sans">fix gaze on one point · standing knee soft</text>
+    </svg>`,
+    triangle: `<svg viewBox="0 0 300 155" class="figure-svg" style="background:#0d0d0d">
+      <line x1="20" y1="120" x2="280" y2="120" stroke="#222" stroke-width="1"/>
+      <!-- Wide stance -->
+      <line x1="60" y1="120" x2="240" y2="120" stroke="#c8f55a" stroke-width="2" stroke-linecap="round"/>
+      <!-- Body side-bending -->
+      <line x1="150" y1="120" x2="120" y2="120" stroke="#c8f55a" stroke-width="2.5" stroke-linecap="round"/>
+      <line x1="150" y1="120" x2="210" y2="120" stroke="#c8f55a" stroke-width="2" stroke-linecap="round"/>
+      <!-- Torso leaning -->
+      <line x1="150" y1="88" x2="150" y2="60" stroke="#c8f55a" stroke-width="2.5" stroke-linecap="round"/>
+      <path d="M150,88 Q140,108 125,120" fill="none" stroke="#c8f55a" stroke-width="2.5"/>
+      <circle cx="150" cy="52" r="9" fill="none" stroke="#c8f55a" stroke-width="1.5"/>
+      <!-- Arms: one down, one up -->
+      <line x1="150" y1="70" x2="118" y2="105" stroke="#c8f55a" stroke-width="1.5" stroke-linecap="round"/>
+      <line x1="150" y1="70" x2="175" y2="42" stroke="#c8f55a" stroke-width="1.5" stroke-linecap="round"/>
+      <text x="150" y="143" text-anchor="middle" fill="#555" font-size="10" font-family="DM Sans">reach down to shin · top arm points to sky</text>
+    </svg>`,
+    superman: `<svg viewBox="0 0 300 140" class="figure-svg" style="background:#0d0d0d">
+      <line x1="20" y1="95" x2="280" y2="95" stroke="#222" stroke-width="1"/>
+      <!-- Face down body floating -->
+      <line x1="80" y1="75" x2="220" y2="75" stroke="#ff6b35" stroke-width="2.5" stroke-linecap="round"/>
+      <!-- Arms raised forward -->
+      <line x1="80" y1="75" x2="45" y2="65" stroke="#ff6b35" stroke-width="2" stroke-linecap="round"/>
+      <line x1="80" y1="75" x2="50" y2="80" stroke="#ff6b35" stroke-width="1.5" stroke-linecap="round" opacity="0.5"/>
+      <!-- Legs raised back -->
+      <line x1="220" y1="75" x2="255" y2="65" stroke="#ff6b35" stroke-width="2" stroke-linecap="round"/>
+      <line x1="220" y1="75" x2="258" y2="78" stroke="#ff6b35" stroke-width="1.5" stroke-linecap="round" opacity="0.5"/>
+      <!-- Head -->
+      <circle cx="72" cy="72" r="8" fill="none" stroke="#ff6b35" stroke-width="1.5"/>
+      <!-- Lift arrows -->
+      <line x1="60" y1="85" x2="55" y2="72" stroke="#ffd166" stroke-width="1" stroke-dasharray="2,2"/>
+      <line x1="240" y1="85" x2="247" y2="72" stroke="#ffd166" stroke-width="1" stroke-dasharray="2,2"/>
+      <text x="150" y="120" text-anchor="middle" fill="#555" font-size="10" font-family="DM Sans">chest and legs lift simultaneously · hold 3s</text>
+    </svg>`,
+    pigeon: `<svg viewBox="0 0 300 155" class="figure-svg" style="background:#0d0d0d">
+      <line x1="20" y1="118" x2="280" y2="118" stroke="#222" stroke-width="1"/>
+      <!-- Front knee bent, folded forward -->
+      <path d="M80,118 Q100,105 130,100 Q145,98 150,90" fill="none" stroke="#7eb8f7" stroke-width="2.5" stroke-linecap="round"/>
+      <!-- Back leg extended -->
+      <line x1="150" y1="90" x2="240" y2="118" stroke="#7eb8f7" stroke-width="2.5" stroke-linecap="round"/>
+      <!-- Upper body folded forward -->
+      <path d="M150,90 Q165,80 180,75 Q200,72 220,72" fill="none" stroke="#7eb8f7" stroke-width="2" stroke-linecap="round"/>
+      <circle cx="225" cy="72" r="8" fill="none" stroke="#7eb8f7" stroke-width="1.5"/>
+      <!-- Arms extended on floor -->
+      <line x1="165" y1="80" x2="105" y2="105" stroke="#7eb8f7" stroke-width="1.5" stroke-linecap="round"/>
+      <!-- Hip highlight -->
+      <circle cx="148" cy="108" r="6" fill="#7eb8f7" opacity="0.15" stroke="#7eb8f7" stroke-width="0.5"/>
+      <text x="100" y="100" fill="#7eb8f7" font-size="8" font-family="DM Sans" opacity="0.5">hip</text>
+      <text x="150" y="143" text-anchor="middle" fill="#555" font-size="10" font-family="DM Sans">breathe into the hip · front shin parallel to mat</text>
+    </svg>`,
+    breath_478: `<svg viewBox="0 0 300 150" class="figure-svg" style="background:#0d0d0d">
+      <!-- 4-7-8 visualization -->
+      <text x="150" y="20" text-anchor="middle" fill="#c8f55a" font-size="11" font-family="DM Sans" font-weight="500">4 - 7 - 8 Breathing</text>
+      <!-- Arc segments -->
+      <path d="M 150 120 A 65 65 0 0 1 85 77" fill="none" stroke="#c8f55a" stroke-width="5" stroke-linecap="round" opacity="0.9"/>
+      <text x="88" y="55" text-anchor="middle" fill="#c8f55a" font-size="11" font-family="DM Sans">4</text>
+      <text x="68" y="72" fill="#555" font-size="9" font-family="DM Sans">inhale</text>
+      <path d="M 85 77 A 65 65 0 0 1 215 77" fill="none" stroke="#7eb8f7" stroke-width="5" stroke-linecap="round" opacity="0.9"/>
+      <text x="150" y="38" text-anchor="middle" fill="#7eb8f7" font-size="11" font-family="DM Sans">7</text>
+      <text x="138" y="28" fill="#555" font-size="9" font-family="DM Sans">hold</text>
+      <path d="M 215 77 A 65 65 0 0 1 150 120" fill="none" stroke="#ff6b35" stroke-width="5" stroke-linecap="round" opacity="0.9"/>
+      <text x="218" y="55" fill="#ff6b35" font-size="11" font-family="DM Sans">8</text>
+      <text x="218" y="72" fill="#555" font-size="9" font-family="DM Sans">exhale</text>
+      <circle cx="150" cy="80" r="18" fill="#c8f55a" opacity="0.08" stroke="#c8f55a" stroke-width="0.5"/>
+      <text x="150" y="138" text-anchor="middle" fill="#555" font-size="10" font-family="DM Sans">repeat 4–6 times · exhale through mouth</text>
+    </svg>`,
+    warrior3: `<svg viewBox="0 0 300 155" class="figure-svg" style="background:#0d0d0d">
+      <line x1="20" y1="115" x2="280" y2="115" stroke="#222" stroke-width="1"/>
+      <!-- Standing leg -->
+      <line x1="120" y1="115" x2="120" y2="75" stroke="#c8f55a" stroke-width="3" stroke-linecap="round"/>
+      <!-- Body horizontal -->
+      <line x1="120" y1="75" x2="240" y2="75" stroke="#c8f55a" stroke-width="2.5" stroke-linecap="round"/>
+      <!-- Leg extended back -->
+      <line x1="240" y1="75" x2="260" y2="75" stroke="#c8f55a" stroke-width="2.5" stroke-linecap="round"/>
+      <!-- Arms forward -->
+      <line x1="120" y1="75" x2="65" y2="75" stroke="#c8f55a" stroke-width="2" stroke-linecap="round"/>
+      <!-- Head -->
+      <circle cx="58" cy="75" r="9" fill="none" stroke="#c8f55a" stroke-width="1.5"/>
+      <!-- Gaze down -->
+      <line x1="90" y1="80" x2="90" y2="95" stroke="#c8f55a" stroke-width="0.5" stroke-dasharray="2,2" opacity="0.4"/>
+      <text x="150" y="143" text-anchor="middle" fill="#555" font-size="10" font-family="DM Sans">body parallel to floor · arms and leg extend</text>
+    </svg>`,
+    lunge: `<svg viewBox="0 0 300 160" class="figure-svg" style="background:#0d0d0d">
+      <line x1="20" y1="125" x2="280" y2="125" stroke="#222" stroke-width="1"/>
+      <!-- Front leg -->
+      <line x1="140" y1="125" x2="140" y2="90" stroke="#ffd166" stroke-width="2.5" stroke-linecap="round"/>
+      <!-- Back knee near floor -->
+      <line x1="140" y1="90" x2="185" y2="90" stroke="#ffd166" stroke-width="2" stroke-linecap="round"/>
+      <line x1="185" y1="90" x2="210" y2="125" stroke="#ffd166" stroke-width="2" stroke-linecap="round"/>
+      <!-- Back foot -->
+      <line x1="210" y1="125" x2="225" y2="125" stroke="#ffd166" stroke-width="3" stroke-linecap="round"/>
+      <!-- Back knee dot -->
+      <circle cx="185" cy="118" r="4" fill="#ffd166" opacity="0.3"/>
+      <text x="185" y="112" fill="#555" font-size="8" font-family="DM Sans" opacity="0.6">near floor</text>
+      <!-- Torso upright -->
+      <line x1="150" y1="90" x2="150" y2="50" stroke="#ffd166" stroke-width="2.5" stroke-linecap="round"/>
+      <circle cx="150" cy="42" r="9" fill="none" stroke="#ffd166" stroke-width="1.5"/>
+      <!-- Arms -->
+      <line x1="150" y1="62" x2="130" y2="72" stroke="#ffd166" stroke-width="1.5" stroke-linecap="round"/>
+      <line x1="150" y1="62" x2="170" y2="72" stroke="#ffd166" stroke-width="1.5" stroke-linecap="round"/>
+      <text x="150" y="148" text-anchor="middle" fill="#555" font-size="10" font-family="DM Sans">torso upright · front knee over ankle</text>
+    </svg>`,
+    cobra: `<svg viewBox="0 0 300 150" class="figure-svg" style="background:#0d0d0d">
+      <line x1="20" y1="105" x2="280" y2="105" stroke="#222" stroke-width="1"/>
+      <!-- Legs and hips on floor -->
+      <line x1="110" y1="105" x2="250" y2="105" stroke="#ff6b35" stroke-width="3" stroke-linecap="round"/>
+      <!-- Upper body lifted -->
+      <path d="M110,105 Q105,88 110,72 Q115,58 130,50" fill="none" stroke="#ff6b35" stroke-width="2.5" stroke-linecap="round"/>
+      <!-- Head -->
+      <circle cx="135" cy="44" r="9" fill="none" stroke="#ff6b35" stroke-width="1.5"/>
+      <!-- Arms slightly bent (elbows in) -->
+      <line x1="115" y1="78" x2="90" y2="105" stroke="#ff6b35" stroke-width="2" stroke-linecap="round"/>
+      <line x1="125" y1="75" x2="105" y2="105" stroke="#ff6b35" stroke-width="1.5" stroke-linecap="round" opacity="0.5"/>
+      <!-- Open chest indicator -->
+      <path d="M115,58 Q130,52 140,55" fill="none" stroke="#ff6b35" stroke-width="1" stroke-dasharray="2,2" opacity="0.4"/>
+      <text x="150" y="128" text-anchor="middle" fill="#555" font-size="10" font-family="DM Sans">hips stay grounded · soft elbows · chest opens</text>
+    </svg>`,
+    mountain_climber: `<svg viewBox="0 0 300 140" class="figure-svg" style="background:#0d0d0d">
+      <line x1="20" y1="105" x2="280" y2="105" stroke="#222" stroke-width="1"/>
+      <!-- Plank base -->
+      <line x1="70" y1="75" x2="240" y2="78" stroke="#ffd166" stroke-width="2" stroke-linecap="round" opacity="0.4"/>
+      <!-- Hands -->
+      <line x1="80" y1="75" x2="78" y2="105" stroke="#ffd166" stroke-width="2" stroke-linecap="round"/>
+      <line x1="100" y1="75" x2="100" y2="105" stroke="#ffd166" stroke-width="2" stroke-linecap="round"/>
+      <!-- Feet back -->
+      <line x1="230" y1="78" x2="230" y2="105" stroke="#ffd166" stroke-width="2" stroke-linecap="round" opacity="0.4"/>
+      <!-- One knee driven in -->
+      <path d="M230,78 Q195,75 168,80 Q155,82 150,75" fill="none" stroke="#ffd166" stroke-width="2.5" stroke-linecap="round"/>
+      <circle cx="150" cy="74" r="5" fill="#ffd166" opacity="0.6"/>
+      <!-- Head -->
+      <circle cx="62" cy="72" r="9" fill="none" stroke="#ffd166" stroke-width="1.5"/>
+      <!-- Motion arrows -->
+      <line x1="170" y1="65" x2="195" y2="65" stroke="#ff6b35" stroke-width="1.5" stroke-dasharray="3,2" stroke-linecap="round"/>
+      <text x="150" y="124" text-anchor="middle" fill="#555" font-size="10" font-family="DM Sans">alternate knees · hips level · keep breathing</text>
+    </svg>`,
+    cool_breath: `<svg viewBox="0 0 300 155" class="figure-svg" style="background:#0d0d0d">
+      <text x="150" y="18" text-anchor="middle" fill="#7eb8f7" font-size="11" font-family="DM Sans" font-weight="500">Sheetali — cooling breath</text>
+      <!-- Simplified face -->
+      <circle cx="150" cy="65" r="38" fill="none" stroke="#333" stroke-width="1.5"/>
+      <!-- Rolled tongue -->
+      <path d="M135,78 Q150,90 165,78" fill="none" stroke="#7eb8f7" stroke-width="2" stroke-linecap="round"/>
+      <path d="M140,78 Q150,95 160,78" fill="#7eb8f7" opacity="0.2"/>
+      <!-- Inhale arrows coming in -->
+      <line x1="108" y1="90" x2="130" y2="82" stroke="#7eb8f7" stroke-width="1.5" stroke-dasharray="3,2" opacity="0.7"/>
+      <line x1="192" y1="90" x2="170" y2="82" stroke="#7eb8f7" stroke-width="1.5" stroke-dasharray="3,2" opacity="0.7"/>
+      <!-- Nose exhale arrows -->
+      <line x1="145" y1="55" x2="145" y2="30" stroke="#c8f55a" stroke-width="1.5" opacity="0.6"/>
+      <line x1="155" y1="55" x2="155" y2="30" stroke="#c8f55a" stroke-width="1.5" opacity="0.6"/>
+      <text x="150" y="24" text-anchor="middle" fill="#c8f55a" font-size="9" font-family="DM Sans" opacity="0.6">exhale nose</text>
+      <text x="104" y="100" text-anchor="end" fill="#7eb8f7" font-size="9" font-family="DM Sans" opacity="0.6">inhale</text>
+      <text x="196" y="100" fill="#7eb8f7" font-size="9" font-family="DM Sans" opacity="0.6">tongue</text>
+      <text x="150" y="138" text-anchor="middle" fill="#555" font-size="10" font-family="DM Sans">curl tongue · inhale cool air · exhale through nose</text>
+    </svg>`,
+    neck_roll: `<svg viewBox="0 0 300 150" class="figure-svg" style="background:#0d0d0d">
+      <!-- Head in center, arc of motion -->
+      <circle cx="150" cy="75" r="35" fill="none" stroke="#7eb8f7" stroke-width="1" stroke-dasharray="4,3" opacity="0.3"/>
+      <circle cx="150" cy="75" r="18" fill="none" stroke="#7eb8f7" stroke-width="2.5"/>
+      <!-- Eyes/nose simplified -->
+      <circle cx="144" cy="72" r="2" fill="#7eb8f7" opacity="0.5"/>
+      <circle cx="156" cy="72" r="2" fill="#7eb8f7" opacity="0.5"/>
+      <path d="M146,80 Q150,83 154,80" fill="none" stroke="#7eb8f7" stroke-width="1.5" stroke-linecap="round"/>
+      <!-- Neck -->
+      <line x1="142" y1="93" x2="140" y2="115" stroke="#7eb8f7" stroke-width="2" stroke-linecap="round"/>
+      <line x1="158" y1="93" x2="160" y2="115" stroke="#7eb8f7" stroke-width="2" stroke-linecap="round"/>
+      <!-- Shoulders -->
+      <line x1="110" y1="120" x2="190" y2="120" stroke="#7eb8f7" stroke-width="2.5" stroke-linecap="round"/>
+      <!-- Arc arrows -->
+      <path d="M120,60 Q108,75 120,90" fill="none" stroke="#c8f55a" stroke-width="1.5" stroke-linecap="round"/>
+      <path d="M180,60 Q192,75 180,90" fill="none" stroke="#c8f55a" stroke-width="1.5" stroke-linecap="round"/>
+      <text x="150" y="143" text-anchor="middle" fill="#555" font-size="10" font-family="DM Sans">slow full circles · 5 each direction</text>
+    </svg>`,
+    morning_stretch: `<svg viewBox="0 0 300 155" class="figure-svg" style="background:#0d0d0d">
+      <line x1="20" y1="125" x2="280" y2="125" stroke="#222" stroke-width="1"/>
+      <!-- Side bend figure -->
+      <circle cx="150" cy="42" r="9" fill="none" stroke="#c8f55a" stroke-width="1.5"/>
+      <line x1="150" y1="51" x2="150" y2="90" stroke="#c8f55a" stroke-width="2.5" stroke-linecap="round"/>
+      <line x1="150" y1="90" x2="132" y2="125" stroke="#c8f55a" stroke-width="2" stroke-linecap="round"/>
+      <line x1="150" y1="90" x2="168" y2="125" stroke="#c8f55a" stroke-width="2" stroke-linecap="round"/>
+      <!-- One arm reaching up and over -->
+      <line x1="150" y1="65" x2="135" y2="42" stroke="#c8f55a" stroke-width="1.5" stroke-linecap="round"/>
+      <path d="M135,42 Q120,35 118,48" fill="none" stroke="#c8f55a" stroke-width="1.5" stroke-linecap="round"/>
+      <!-- Other arm lower -->
+      <line x1="150" y1="65" x2="168" y2="78" stroke="#c8f55a" stroke-width="1.5" stroke-linecap="round" opacity="0.5"/>
+      <!-- Stretch arc -->
+      <path d="M118,35 Q130,28 148,34" fill="none" stroke="#ff6b35" stroke-width="1" stroke-dasharray="2,2" opacity="0.6"/>
+      <text x="150" y="145" text-anchor="middle" fill="#555" font-size="10" font-family="DM Sans">side bends · neck rolls · shoulder circles</text>
+    </svg>`,
+    joint_warmup: `<svg viewBox="0 0 300 150" class="figure-svg" style="background:#0d0d0d">
+      <!-- Joint circles -->
+      <circle cx="80" cy="55" r="18" fill="none" stroke="#c8f55a" stroke-width="1.5" stroke-dasharray="4,3"/>
+      <circle cx="80" cy="55" r="6" fill="#c8f55a" opacity="0.6"/>
+      <text x="80" y="85" text-anchor="middle" fill="#555" font-size="9" font-family="DM Sans">wrists</text>
+      <circle cx="150" cy="55" r="18" fill="none" stroke="#7eb8f7" stroke-width="1.5" stroke-dasharray="4,3"/>
+      <circle cx="150" cy="55" r="6" fill="#7eb8f7" opacity="0.6"/>
+      <text x="150" y="85" text-anchor="middle" fill="#555" font-size="9" font-family="DM Sans">hips</text>
+      <circle cx="220" cy="55" r="18" fill="none" stroke="#ff6b35" stroke-width="1.5" stroke-dasharray="4,3"/>
+      <circle cx="220" cy="55" r="6" fill="#ff6b35" opacity="0.6"/>
+      <text x="220" y="85" text-anchor="middle" fill="#555" font-size="9" font-family="DM Sans">ankles</text>
+      <!-- Rotation arrows -->
+      <path d="M68,40 Q62,55 68,70" fill="none" stroke="#c8f55a" stroke-width="1.5" stroke-linecap="round"/>
+      <path d="M138,40 Q132,55 138,70" fill="none" stroke="#7eb8f7" stroke-width="1.5" stroke-linecap="round"/>
+      <path d="M208,40 Q202,55 208,70" fill="none" stroke="#ff6b35" stroke-width="1.5" stroke-linecap="round"/>
+      <text x="150" y="115" text-anchor="middle" fill="#555" font-size="10" font-family="DM Sans">3 circles each joint · both directions</text>
+      <text x="150" y="130" text-anchor="middle" fill="#c8f55a" font-size="9" font-family="DM Sans" opacity="0.6">listen to your body — go gentle</text>
+    </svg>`,
+    dynamic_stretch: `<svg viewBox="0 0 300 155" class="figure-svg" style="background:#0d0d0d">
+      <line x1="20" y1="125" x2="280" y2="125" stroke="#222" stroke-width="1"/>
+      <!-- Leg swing -->
+      <circle cx="80" cy="42" r="8" fill="none" stroke="#ffd166" stroke-width="1.5"/>
+      <line x1="80" y1="50" x2="80" y2="85" stroke="#ffd166" stroke-width="2.5" stroke-linecap="round"/>
+      <line x1="80" y1="85" x2="65" y2="125" stroke="#ffd166" stroke-width="2" stroke-linecap="round"/>
+      <path d="M80,85 Q85,105 100,110" fill="none" stroke="#ffd166" stroke-width="2.5" stroke-linecap="round"/>
+      <path d="M100,110 Q118,100 115,85" fill="none" stroke="#ffd166" stroke-width="1.5" stroke-linecap="round" stroke-dasharray="3,2"/>
+      <text x="80" y="145" text-anchor="middle" fill="#555" font-size="9" font-family="DM Sans">leg swings</text>
+      <!-- Arm swing -->
+      <circle cx="200" cy="42" r="8" fill="none" stroke="#ff6b35" stroke-width="1.5"/>
+      <line x1="200" y1="50" x2="200" y2="90" stroke="#ff6b35" stroke-width="2.5" stroke-linecap="round"/>
+      <line x1="200" y1="90" x2="183" y2="125" stroke="#ff6b35" stroke-width="2" stroke-linecap="round"/>
+      <line x1="200" y1="90" x2="217" y2="125" stroke="#ff6b35" stroke-width="2" stroke-linecap="round"/>
+      <path d="M200,62 Q175,52 172,65" fill="none" stroke="#ff6b35" stroke-width="2" stroke-linecap="round"/>
+      <path d="M200,62 Q225,52 228,65" fill="none" stroke="#ff6b35" stroke-width="2" stroke-linecap="round" opacity="0.5"/>
+      <text x="200" y="145" text-anchor="middle" fill="#555" font-size="9" font-family="DM Sans">arm swings</text>
+    </svg>`,
+    jumping_jack: `<svg viewBox="0 0 300 155" class="figure-svg" style="background:#0d0d0d">
+      <line x1="20" y1="125" x2="280" y2="125" stroke="#222" stroke-width="1"/>
+      <!-- Closed (left) -->
+      <text x="75" y="22" text-anchor="middle" fill="#555" font-size="9" font-family="DM Sans">closed</text>
+      <circle cx="75" cy="32" r="8" fill="none" stroke="#ffd166" stroke-width="1.5"/>
+      <line x1="75" y1="40" x2="75" y2="80" stroke="#ffd166" stroke-width="2.5" stroke-linecap="round"/>
+      <line x1="65" y1="58" x2="85" y2="58" stroke="#ffd166" stroke-width="1.5" stroke-linecap="round"/>
+      <line x1="75" y1="80" x2="68" y2="125" stroke="#ffd166" stroke-width="2" stroke-linecap="round"/>
+      <line x1="75" y1="80" x2="82" y2="125" stroke="#ffd166" stroke-width="2" stroke-linecap="round"/>
+      <!-- Open (right) -->
+      <text x="225" y="22" text-anchor="middle" fill="#555" font-size="9" font-family="DM Sans">open</text>
+      <circle cx="225" cy="32" r="8" fill="none" stroke="#ffd166" stroke-width="1.5"/>
+      <line x1="225" y1="40" x2="225" y2="80" stroke="#ffd166" stroke-width="2.5" stroke-linecap="round"/>
+      <!-- Arms up -->
+      <line x1="205" y1="52" x2="198" y2="35" stroke="#ffd166" stroke-width="2" stroke-linecap="round"/>
+      <line x1="245" y1="52" x2="252" y2="35" stroke="#ffd166" stroke-width="2" stroke-linecap="round"/>
+      <!-- Legs wide -->
+      <line x1="225" y1="80" x2="200" y2="125" stroke="#ffd166" stroke-width="2" stroke-linecap="round"/>
+      <line x1="225" y1="80" x2="250" y2="125" stroke="#ffd166" stroke-width="2" stroke-linecap="round"/>
+      <!-- Transition arrow -->
+      <path d="M100,75 Q150,65 200,75" fill="none" stroke="#555" stroke-width="1" stroke-dasharray="3,2"/>
+      <text x="150" y="145" text-anchor="middle" fill="#555" font-size="10" font-family="DM Sans">land softly · knees slightly bent</text>
+    </svg>`,
+    fwd_fold: `<svg viewBox="0 0 300 150" class="figure-svg" style="background:#0d0d0d">
+      <line x1="20" y1="115" x2="280" y2="115" stroke="#222" stroke-width="1"/>
+      <!-- Seated, legs out -->
+      <line x1="80" y1="115" x2="220" y2="115" stroke="#7eb8f7" stroke-width="3" stroke-linecap="round"/>
+      <!-- Back folded over legs -->
+      <path d="M80,115 Q80,95 90,82 Q110,68 150,65 Q190,65 215,70" fill="none" stroke="#7eb8f7" stroke-width="2.5" stroke-linecap="round"/>
+      <!-- Head near feet -->
+      <circle cx="218" cy="64" r="8" fill="none" stroke="#7eb8f7" stroke-width="1.5"/>
+      <!-- Hands reaching for feet -->
+      <line x1="205" y1="70" x2="218" y2="115" stroke="#7eb8f7" stroke-width="1.5" stroke-linecap="round" stroke-dasharray="3,2"/>
+      <!-- Flex feet -->
+      <line x1="220" y1="115" x2="230" y2="108" stroke="#7eb8f7" stroke-width="2.5" stroke-linecap="round"/>
+      <line x1="220" y1="115" x2="232" y2="110" stroke="#7eb8f7" stroke-width="2" stroke-linecap="round" opacity="0.5"/>
+      <text x="150" y="138" text-anchor="middle" fill="#555" font-size="10" font-family="DM Sans">flex feet · hinge from hips · long spine</text>
+    </svg>`,
+    chair_pose: `<svg viewBox="0 0 300 160" class="figure-svg" style="background:#0d0d0d">
+      <line x1="20" y1="130" x2="280" y2="130" stroke="#222" stroke-width="1"/>
+      <!-- Invisible chair outline -->
+      <rect x="110" y="85" width="80" height="40" rx="4" fill="none" stroke="#333" stroke-width="1" stroke-dasharray="4,3"/>
+      <!-- Body in chair pose -->
+      <circle cx="150" cy="40" r="9" fill="none" stroke="#ff6b35" stroke-width="1.5"/>
+      <!-- Arms raised above head -->
+      <line x1="150" y1="49" x2="138" y2="25" stroke="#ff6b35" stroke-width="2" stroke-linecap="round"/>
+      <line x1="150" y1="49" x2="162" y2="25" stroke="#ff6b35" stroke-width="2" stroke-linecap="round"/>
+      <!-- Torso leaning slightly back -->
+      <line x1="150" y1="49" x2="152" y2="85" stroke="#ff6b35" stroke-width="2.5" stroke-linecap="round"/>
+      <!-- Thighs roughly parallel -->
+      <line x1="152" y1="85" x2="125" y2="88" stroke="#ff6b35" stroke-width="2.5" stroke-linecap="round"/>
+      <line x1="152" y1="85" x2="175" y2="88" stroke="#ff6b35" stroke-width="2.5" stroke-linecap="round"/>
+      <!-- Lower legs -->
+      <line x1="125" y1="88" x2="122" y2="130" stroke="#ff6b35" stroke-width="2" stroke-linecap="round"/>
+      <line x1="175" y1="88" x2="178" y2="130" stroke="#ff6b35" stroke-width="2" stroke-linecap="round"/>
+      <text x="150" y="150" text-anchor="middle" fill="#555" font-size="10" font-family="DM Sans">sit back · knees behind toes · hold the burn</text>
+    </svg>`,
+    side_plank: `<svg viewBox="0 0 300 145" class="figure-svg" style="background:#0d0d0d">
+      <line x1="20" y1="108" x2="280" y2="108" stroke="#222" stroke-width="1"/>
+      <!-- Diagonal body line -->
+      <line x1="75" y1="108" x2="235" y2="58" stroke="#ff6b35" stroke-width="3" stroke-linecap="round"/>
+      <!-- Supporting arm -->
+      <line x1="75" y1="108" x2="85" y2="85" stroke="#ff6b35" stroke-width="2.5" stroke-linecap="round"/>
+      <!-- Top arm raised -->
+      <line x1="155" y1="83" x2="155" y2="60" stroke="#ff6b35" stroke-width="2" stroke-linecap="round"/>
+      <!-- Head -->
+      <circle cx="238" cy="52" r="9" fill="none" stroke="#ff6b35" stroke-width="1.5"/>
+      <!-- Feet stacked -->
+      <line x1="75" y1="108" x2="65" y2="108" stroke="#ff6b35" stroke-width="3" stroke-linecap="round"/>
+      <!-- Core highlight -->
+      <circle cx="155" cy="83" r="5" fill="#ff6b35" opacity="0.2"/>
+      <text x="150" y="130" text-anchor="middle" fill="#555" font-size="10" font-family="DM Sans">hips up · body straight · free arm overhead</text>
+    </svg>`,
+    stand_fwd: `<svg viewBox="0 0 300 155" class="figure-svg" style="background:#0d0d0d">
+      <line x1="20" y1="118" x2="280" y2="118" stroke="#222" stroke-width="1"/>
+      <!-- Legs straight -->
+      <line x1="140" y1="118" x2="138" y2="70" stroke="#7eb8f7" stroke-width="2.5" stroke-linecap="round"/>
+      <line x1="160" y1="118" x2="162" y2="70" stroke="#7eb8f7" stroke-width="2.5" stroke-linecap="round"/>
+      <!-- Body folded over legs -->
+      <path d="M138,70 Q135,58 140,50 Q145,42 150,38" fill="none" stroke="#7eb8f7" stroke-width="2.5" stroke-linecap="round"/>
+      <circle cx="152" cy="32" r="9" fill="none" stroke="#7eb8f7" stroke-width="1.5"/>
+      <!-- Head hanging down -->
+      <line x1="148" y1="40" x2="145" y2="50" stroke="#7eb8f7" stroke-width="1.5" stroke-linecap="round" opacity="0.5"/>
+      <!-- Arms hanging -->
+      <line x1="143" y1="58" x2="130" y2="80" stroke="#7eb8f7" stroke-width="1.5" stroke-linecap="round"/>
+      <line x1="150" y1="58" x2="165" y2="78" stroke="#7eb8f7" stroke-width="1.5" stroke-linecap="round" opacity="0.6"/>
+      <text x="150" y="143" text-anchor="middle" fill="#555" font-size="10" font-family="DM Sans">let head hang heavy · slight knee bend ok</text>
+    </svg>`,
+    body_scan: `<svg viewBox="0 0 300 155" class="figure-svg" style="background:#0d0d0d">
+      <!-- Seated figure with awareness traveling up body -->
+      <line x1="20" y1="115" x2="280" y2="115" stroke="#222" stroke-width="1"/>
+      <!-- Body outline seated -->
+      <circle cx="150" cy="40" r="10" fill="none" stroke="#7eb8f7" stroke-width="2"/>
+      <line x1="150" y1="50" x2="150" y2="90" stroke="#7eb8f7" stroke-width="2.5" stroke-linecap="round"/>
+      <line x1="130" y1="115" x2="150" y2="90" stroke="#7eb8f7" stroke-width="2" stroke-linecap="round"/>
+      <line x1="170" y1="115" x2="150" y2="90" stroke="#7eb8f7" stroke-width="2" stroke-linecap="round"/>
+      <line x1="150" y1="68" x2="128" y2="80" stroke="#7eb8f7" stroke-width="1.5" stroke-linecap="round"/>
+      <line x1="150" y1="68" x2="172" y2="80" stroke="#7eb8f7" stroke-width="1.5" stroke-linecap="round"/>
+      <!-- Awareness pulse traveling up -->
+      <circle cx="150" cy="115" r="4" fill="#c8f55a" opacity="0.3"/>
+      <circle cx="150" cy="105" r="4" fill="#c8f55a" opacity="0.5"/>
+      <circle cx="150" cy="90" r="5" fill="#c8f55a" opacity="0.6"/>
+      <circle cx="150" cy="70" r="5" fill="#c8f55a" opacity="0.7"/>
+      <circle cx="150" cy="50" r="6" fill="#c8f55a" opacity="0.8"/>
+      <circle cx="150" cy="40" r="7" fill="#c8f55a" opacity="0.9" stroke="#c8f55a" stroke-width="1"/>
+      <text x="150" y="145" text-anchor="middle" fill="#555" font-size="10" font-family="DM Sans">awareness travels from toes to crown</text>
+    </svg>`,
+    nostril_breath: `<svg viewBox="0 0 300 155" class="figure-svg" style="background:#0d0d0d">
+      <text x="150" y="18" text-anchor="middle" fill="#c8f55a" font-size="11" font-family="DM Sans" font-weight="500">Nadi Shodhana</text>
+      <!-- Face -->
+      <circle cx="150" cy="72" r="38" fill="none" stroke="#333" stroke-width="1.5"/>
+      <!-- Eyes -->
+      <path d="M132,64 Q136,60 140,64" fill="none" stroke="#7eb8f7" stroke-width="1.5" stroke-linecap="round"/>
+      <path d="M160,64 Q164,60 168,64" fill="none" stroke="#7eb8f7" stroke-width="1.5" stroke-linecap="round"/>
+      <!-- Nostrils -->
+      <ellipse cx="144" cy="80" rx="4" ry="3" fill="none" stroke="#7eb8f7" stroke-width="1.5"/>
+      <ellipse cx="156" cy="80" rx="4" ry="3" fill="none" stroke="#7eb8f7" stroke-width="1.5"/>
+      <!-- Right hand blocking right nostril -->
+      <path d="M175,60 Q188,58 190,70 Q188,80 178,82" fill="none" stroke="#c8f55a" stroke-width="2" stroke-linecap="round"/>
+      <circle cx="178" cy="82" r="4" fill="#c8f55a" opacity="0.6"/>
+      <text x="200" y="70" fill="#c8f55a" font-size="9" font-family="DM Sans">right thumb</text>
+      <!-- Arrows for left nostril breath -->
+      <line x1="120" y1="65" x2="108" y2="50" stroke="#7eb8f7" stroke-width="1.5" stroke-dasharray="3,2"/>
+      <text x="95" y="45" text-anchor="end" fill="#7eb8f7" font-size="9" font-family="DM Sans">inhale/</text>
+      <text x="95" y="58" text-anchor="end" fill="#7eb8f7" font-size="9" font-family="DM Sans">exhale</text>
+      <text x="150" y="142" text-anchor="middle" fill="#555" font-size="10" font-family="DM Sans">alternate sides · slow and even</text>
+    </svg>`,
+    dead_bug: `<svg viewBox="0 0 300 150" class="figure-svg" style="background:#0d0d0d">
+      <line x1="20" y1="80" x2="280" y2="80" stroke="#222" stroke-width="1"/>
+      <!-- Body on back -->
+      <line x1="70" y1="75" x2="230" y2="75" stroke="#7eb8f7" stroke-width="2.5" stroke-linecap="round"/>
+      <!-- Head -->
+      <circle cx="62" cy="72" r="9" fill="none" stroke="#7eb8f7" stroke-width="1.5"/>
+      <!-- Arms UP (vertical) -->
+      <line x1="115" y1="75" x2="115" y2="45" stroke="#7eb8f7" stroke-width="2" stroke-linecap="round"/>
+      <line x1="155" y1="75" x2="155" y2="45" stroke="#7eb8f7" stroke-width="2" stroke-linecap="round"/>
+      <!-- Knees up 90 degrees -->
+      <line x1="165" y1="75" x2="165" y2="45" stroke="#7eb8f7" stroke-width="2" stroke-linecap="round"/>
+      <line x1="165" y1="45" x2="185" y2="45" stroke="#7eb8f7" stroke-width="2" stroke-linecap="round"/>
+      <line x1="200" y1="75" x2="200" y2="45" stroke="#7eb8f7" stroke-width="2" stroke-linecap="round"/>
+      <line x1="200" y1="45" x2="220" y2="45" stroke="#7eb8f7" stroke-width="2" stroke-linecap="round"/>
+      <!-- One arm + opposite leg lowering -->
+      <line x1="115" y1="75" x2="100" y2="108" stroke="#ff6b35" stroke-width="2.5" stroke-linecap="round" stroke-dasharray="4,2"/>
+      <line x1="200" y1="75" x2="185" y2="108" stroke="#ff6b35" stroke-width="2.5" stroke-linecap="round" stroke-dasharray="4,2"/>
+      <text x="150" y="135" text-anchor="middle" fill="#555" font-size="10" font-family="DM Sans">back stays flat · opposite arm + leg lower</text>
+    </svg>`,
+    happy_baby: `<svg viewBox="0 0 300 150" class="figure-svg" style="background:#0d0d0d">
+      <line x1="20" y1="80" x2="280" y2="80" stroke="#222" stroke-width="1"/>
+      <!-- Body on back, rounded -->
+      <path d="M75,75 Q150,65 225,75" fill="none" stroke="#7eb8f7" stroke-width="2.5" stroke-linecap="round"/>
+      <!-- Head -->
+      <circle cx="150" cy="60" r="10" fill="none" stroke="#7eb8f7" stroke-width="1.5"/>
+      <!-- Legs up, bent, grabbing feet -->
+      <line x1="120" y1="75" x2="108" y2="50" stroke="#7eb8f7" stroke-width="2" stroke-linecap="round"/>
+      <line x1="108" y1="50" x2="90" y2="42" stroke="#7eb8f7" stroke-width="2" stroke-linecap="round"/>
+      <line x1="180" y1="75" x2="192" y2="50" stroke="#7eb8f7" stroke-width="2" stroke-linecap="round"/>
+      <line x1="192" y1="50" x2="210" y2="42" stroke="#7eb8f7" stroke-width="2" stroke-linecap="round"/>
+      <!-- Hands grabbing feet -->
+      <circle cx="88" cy="42" r="5" fill="#7eb8f7" opacity="0.4"/>
+      <circle cx="212" cy="42" r="5" fill="#7eb8f7" opacity="0.4"/>
+      <!-- Arms reaching up to feet -->
+      <line x1="130" y1="68" x2="90" y2="44" stroke="#c8f55a" stroke-width="1.5" stroke-linecap="round" stroke-dasharray="3,2"/>
+      <line x1="170" y1="68" x2="210" y2="44" stroke="#c8f55a" stroke-width="1.5" stroke-linecap="round" stroke-dasharray="3,2"/>
+      <text x="150" y="115" text-anchor="middle" fill="#555" font-size="10" font-family="DM Sans">grab outer feet · knees toward armpits · rock side to side</text>
+    </svg>`,
+    sun_sal_b: `<svg viewBox="0 0 300 150" class="figure-svg" style="background:#0d0d0d">
+      <text x="150" y="15" text-anchor="middle" fill="#555" font-size="10" font-family="DM Sans">Chair → Fold → Plank → Warrior I → Down Dog</text>
+      <line x1="20" y1="112" x2="280" y2="112" stroke="#222" stroke-width="1"/>
+      <!-- Chair -->
+      <circle cx="35" cy="52" r="6" fill="none" stroke="#c8f55a" stroke-width="1.5"/>
+      <line x1="35" y1="58" x2="35" y2="78" stroke="#c8f55a" stroke-width="2" stroke-linecap="round"/>
+      <line x1="35" y1="78" x2="27" y2="112" stroke="#c8f55a" stroke-width="1.5" stroke-linecap="round"/>
+      <line x1="35" y1="78" x2="43" y2="112" stroke="#c8f55a" stroke-width="1.5" stroke-linecap="round"/>
+      <line x1="29" y1="62" x2="28" y2="48" stroke="#c8f55a" stroke-width="1.5" stroke-linecap="round"/>
+      <line x1="41" y1="62" x2="42" y2="48" stroke="#c8f55a" stroke-width="1.5" stroke-linecap="round"/>
+      <!-- Fold -->
+      <circle cx="90" cy="60" r="6" fill="none" stroke="#c8f55a" stroke-width="1.5"/>
+      <path d="M90,66 Q88,80 86,88" fill="none" stroke="#c8f55a" stroke-width="2" stroke-linecap="round"/>
+      <line x1="75" y1="112" x2="86" y2="88" stroke="#c8f55a" stroke-width="1.5" stroke-linecap="round"/>
+      <line x1="97" y1="112" x2="86" y2="88" stroke="#c8f55a" stroke-width="1.5" stroke-linecap="round"/>
+      <!-- Plank -->
+      <circle cx="138" cy="68" r="6" fill="none" stroke="#c8f55a" stroke-width="1.5"/>
+      <line x1="132" y1="72" x2="158" y2="78" stroke="#c8f55a" stroke-width="2" stroke-linecap="round"/>
+      <line x1="132" y1="72" x2="128" y2="95" stroke="#c8f55a" stroke-width="1.5" stroke-linecap="round"/>
+      <line x1="158" y1="78" x2="162" y2="95" stroke="#c8f55a" stroke-width="1.5" stroke-linecap="round"/>
+      <!-- Warrior I -->
+      <circle cx="205" cy="55" r="6" fill="none" stroke="#ff6b35" stroke-width="1.5"/>
+      <line x1="205" y1="61" x2="205" y2="80" stroke="#ff6b35" stroke-width="2" stroke-linecap="round"/>
+      <line x1="205" y1="80" x2="192" y2="112" stroke="#ff6b35" stroke-width="1.5" stroke-linecap="round"/>
+      <line x1="205" y1="80" x2="220" y2="112" stroke="#ff6b35" stroke-width="1.5" stroke-linecap="round"/>
+      <line x1="202" y1="62" x2="197" y2="45" stroke="#ff6b35" stroke-width="1.5" stroke-linecap="round"/>
+      <line x1="208" y1="62" x2="213" y2="45" stroke="#ff6b35" stroke-width="1.5" stroke-linecap="round"/>
+      <!-- Down Dog -->
+      <line x1="248" y1="112" x2="252" y2="90" stroke="#c8f55a" stroke-width="2" stroke-linecap="round"/>
+      <line x1="263" y1="112" x2="265" y2="90" stroke="#c8f55a" stroke-width="2" stroke-linecap="round"/>
+      <line x1="252" y1="90" x2="268" y2="68" stroke="#c8f55a" stroke-width="2.5" stroke-linecap="round"/>
+      <line x1="268" y1="68" x2="275" y2="88" stroke="#c8f55a" stroke-width="2.5" stroke-linecap="round"/>
+      <circle cx="276" cy="90" r="5" fill="none" stroke="#c8f55a" stroke-width="1.5"/>
+    </svg>`
+  };
+  return vizes[type] || vizes['breathe'];
+}
+
+// Render exercises
+function renderExercises() {
+  const plan = getTodayPlan();
+  const todayKey = getToday();
+  const el = document.getElementById('exercise-list');
+  el.innerHTML = '';
+
+  plan.exercises.forEach((ex, i) => {
+    const key = `${todayKey}_${i}`;
+    const isDone = state.todayExercises[key];
+    const div = document.createElement('div');
+    div.className = `ex-card${isDone ? ' done' : ''}`;
+    div.id = `ex-${i}`;
+    div.innerHTML = `
+      <div class="ex-header" onclick="toggleExpand(${i})">
+        <div class="ex-num">${isDone ? '✓' : i+1}</div>
+        <div class="ex-info">
+          <div class="ex-name">${ex.name}</div>
+          <div class="ex-meta">${ex.duration} &nbsp;·&nbsp; ${ex.reps}</div>
+        </div>
+        <span class="ex-type type-${ex.type}">${ex.type}</span>
+        <div class="ex-toggle" onclick="event.stopPropagation();toggleDone(${i})">${isDone ? '✓' : ''}</div>
+      </div>
+      <div class="ex-expand" id="expand-${i}">
+        <div class="ex-viz">${getViz(ex.viz)}</div>
+        <div class="timer-wrap" id="timer-wrap-${i}">
+          <div class="timer-ring-wrap">
+            <svg width="64" height="64" viewBox="0 0 64 64">
+              <circle cx="32" cy="32" r="26" fill="none" stroke="#2a2a2a" stroke-width="4"/>
+              <circle id="timer-ring-${i}" cx="32" cy="32" r="26" fill="none" stroke="#c8f55a" stroke-width="4"
+                stroke-linecap="round" stroke-dasharray="163.4" stroke-dashoffset="0" style="transition:stroke-dashoffset .9s linear,stroke .3s"/>
+            </svg>
+            <div class="timer-center">
+              <span class="timer-time" id="timer-display-${i}">${formatTime(getTimerSeconds(ex))}</span>
+              <span class="timer-label">timer</span>
+            </div>
+          </div>
+          <div class="timer-right">
+            <div class="timer-name">${ex.duration} &nbsp;·&nbsp; ${ex.reps}</div>
+            <div class="timer-controls">
+              <button class="timer-btn primary" id="timer-btn-${i}" onclick="timerToggle(${i})">&#9654; Start</button>
+              <button class="timer-btn" onclick="timerReset(${i})">&#8635; Reset</button>
+            </div>
+          </div>
+        </div>
+        <div class="ex-desc">${ex.desc}</div>
+        <div class="ex-tip">&#128161; ${ex.tip}</div>
+      </div>
+    `;
+    el.appendChild(div);
+  });
+
+  updateProgress();
+}
+
+function toggleExpand(i) {
+  const el = document.getElementById(`expand-${i}`);
+  el.classList.toggle('open');
+}
+
+function toggleDone(i) {
+  const todayKey = getToday();
+  const key = `${todayKey}_${i}`;
+  state.todayExercises[key] = !state.todayExercises[key];
+  saveState();
+  renderExercises();
+}
+
+function updateProgress() {
+  const plan = getTodayPlan();
+  const todayKey = getToday();
+  let done = 0;
+  plan.exercises.forEach((_, i) => {
+    if (state.todayExercises[`${todayKey}_${i}`]) done++;
+  });
+
+  const total = plan.exercises.length;
+  const circ = 175.9;
+  const offset = circ - (done / total) * circ;
+  document.getElementById('progress-ring').style.strokeDashoffset = offset;
+  document.getElementById('done-count').textContent = done;
+
+  if (done === 0) {
+    document.getElementById('progress-title').textContent = 'Ready to begin';
+    document.getElementById('progress-sub').innerHTML = `Check off each exercise as you go — <strong>you've got this.</strong>`;
+  } else if (done < total) {
+    document.getElementById('progress-title').textContent = `${done} of ${total} done`;
+    document.getElementById('progress-sub').innerHTML = `Keep going — <strong>${total - done} more to go.</strong>`;
+  } else {
+    document.getElementById('progress-title').textContent = 'Workout complete!';
+    document.getElementById('progress-sub').innerHTML = `<strong>All 7 exercises done today. 대박!</strong>`;
+  }
+
+  const banner = document.getElementById('done-banner');
+  const todayDone = state.checkedDays[todayKey];
+  if (done === total) {
+    banner.classList.add('show');
+    document.getElementById('checkin-btn').disabled = !!todayDone;
+    document.getElementById('checkin-btn').textContent = todayDone ? '✓ Already checked in today' : '✓ Mark Today as Done';
+  } else {
+    banner.classList.remove('show');
+  }
+}
+
+function checkInToday() {
+  const todayKey = getToday();
+  if (state.checkedDays[todayKey]) return;
+  state.checkedDays[todayKey] = true;
+  state.totalWorkouts++;
+  recalcStreak();
+  saveState();
+  updateProgress();
+  renderTracker();
+  document.getElementById('checkin-btn').disabled = true;
+  document.getElementById('checkin-btn').textContent = '✓ Logged! See you tomorrow 🔥';
+}
+
+function recalcStreak() {
+  let streak = 0;
+  const d = new Date();
+  while (true) {
+    const key = `${d.getFullYear()}-${d.getMonth()+1}-${d.getDate()}`;
+    if (state.checkedDays[key]) {
+      streak++;
+      d.setDate(d.getDate() - 1);
+    } else break;
+  }
+  state.streak = streak;
+}
+
+// Tracker
+function renderTracker() {
+  recalcStreak();
+  document.getElementById('stat-streak').textContent = state.streak;
+  document.getElementById('stat-total').textContent = state.totalWorkouts;
+  document.getElementById('streak-display').textContent = state.streak;
+  document.getElementById('stat-mins').textContent = state.totalWorkouts * 20;
+
+  // Week count
+  const today = new Date();
+  const weekStart = new Date(today);
+  weekStart.setDate(today.getDate() - today.getDay());
+  let weekCount = 0;
+  for (let i = 0; i < 7; i++) {
+    const d = new Date(weekStart);
+    d.setDate(weekStart.getDate() + i);
+    const key = `${d.getFullYear()}-${d.getMonth()+1}-${d.getDate()}`;
+    if (state.checkedDays[key]) weekCount++;
+  }
+  document.getElementById('stat-week').textContent = `${weekCount}/7`;
+
+  // Calendar
+  renderCalendar();
+}
+
+function renderCalendar() {
+  const grid = document.getElementById('cal-grid');
+  grid.innerHTML = '';
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = now.getMonth();
+  const firstDay = new Date(year, month, 1).getDay();
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+  const todayKey = getToday();
+
+  for (let i = 0; i < firstDay; i++) {
+    const d = document.createElement('div');
+    grid.appendChild(d);
+  }
+  for (let day = 1; day <= daysInMonth; day++) {
+    const key = `${year}-${month+1}-${day}`;
+    const isToday = key === todayKey;
+    const isPast = new Date(year, month, day) < new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const isDone = state.checkedDays[key];
+    const d = document.createElement('div');
+    d.className = 'cal-day';
+    d.textContent = day;
+    if (isDone) d.classList.add('done-day');
+    else if (isToday) d.classList.add('today');
+    else if (isPast) d.classList.add('missed');
+    grid.appendChild(d);
+  }
+}
+
+// Food
+function renderFood() {
+  const goodEl = document.getElementById('food-good');
+  const avoidEl = document.getElementById('food-avoid');
+  goodEl.innerHTML = FOOD_GOOD.map(f => `
+    <div class="food-card food-ok">
+      <div class="food-icon">${f.icon}</div>
+      <div>
+        <div class="food-title">${f.title}<span class="food-tag tag-ok">eat freely</span></div>
+        <div class="food-desc">${f.desc}</div>
+      </div>
+    </div>
+  `).join('');
+  avoidEl.innerHTML = FOOD_AVOID.map(f => `
+    <div class="food-card food-no">
+      <div class="food-icon">${f.icon}</div>
+      <div>
+        <div class="food-title">${f.title}<span class="food-tag tag-no">go easy</span></div>
+        <div class="food-desc">${f.desc}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+// Tab switching
+function switchTab(tab) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById(`panel-${tab}`).classList.add('active');
+  document.querySelector(`[onclick="switchTab('${tab}')"].tab`)?.classList.add('active');
+  document.getElementById(`nav-${tab}`)?.classList.add('active');
+}
+
+// Init
+function init() {
+  loadState();
+  const d = new Date();
+  const plan = getTodayPlan();
+  document.getElementById('today-label').textContent = `${DAYS[d.getDay()]}, ${MONTHS[d.getMonth()]} ${d.getDate()}`;
+  document.getElementById('workout-day-name').textContent = plan.emoji + ' ' + plan.day;
+  document.getElementById('workout-tagline').textContent = plan.tagline;
+
+  const q = QUOTES[d.getDay() % QUOTES.length];
+  document.getElementById('quote-text').textContent = `"${q.text}"`;
+  document.getElementById('quote-author').textContent = `— ${q.author}`;
+
+  renderExercises();
+  renderTracker();
+  renderFood();
+}
+
+// Timer state
+const timers = {};
+
+function getTimerSeconds(ex) {
+  // Parse duration string like "3 min", "2 min", "30s each side"
+  const dur = ex.duration.toLowerCase();
+  const minMatch = dur.match(/(\d+)\s*min/);
+  const secMatch = dur.match(/(\d+)\s*s/);
+  if (minMatch) return parseInt(minMatch[1]) * 60;
+  if (secMatch) return parseInt(secMatch[1]);
+  return 60;
+}
+
+function formatTime(s) {
+  const m = Math.floor(s / 60);
+  const sec = s % 60;
+  return `${m}:${sec.toString().padStart(2,'0')}`;
+}
+
+function timerToggle(i) {
+  if (!timers[i]) {
+    const plan = getTodayPlan();
+    const ex = plan.exercises[i];
+    timers[i] = {
+      total: getTimerSeconds(ex),
+      remaining: getTimerSeconds(ex),
+      running: false,
+      interval: null
+    };
+  }
+  const t = timers[i];
+  if (t.running) {
+    clearInterval(t.interval);
+    t.running = false;
+    document.getElementById(`timer-btn-${i}`).innerHTML = '&#9654; Resume';
+    document.getElementById(`timer-btn-${i}`).classList.add('primary');
+  } else {
+    if (t.remaining <= 0) { timerReset(i); return; }
+    t.running = true;
+    document.getElementById(`timer-btn-${i}`).innerHTML = '&#9646;&#9646; Pause';
+    t.interval = setInterval(() => {
+      t.remaining--;
+      updateTimerDisplay(i);
+      if (t.remaining <= 0) {
+        clearInterval(t.interval);
+        t.running = false;
+        timerFinished(i);
+      }
+    }, 1000);
+  }
+}
+
+function timerReset(i) {
+  if (timers[i]) {
+    clearInterval(timers[i].interval);
+    const plan = getTodayPlan();
+    const ex = plan.exercises[i];
+    timers[i].remaining = getTimerSeconds(ex);
+    timers[i].running = false;
+    timers[i].total = getTimerSeconds(ex);
+  }
+  const plan = getTodayPlan();
+  const ex = plan.exercises[i];
+  const secs = getTimerSeconds(ex);
+  const disp = document.getElementById(`timer-display-${i}`);
+  const ring = document.getElementById(`timer-ring-${i}`);
+  const btn = document.getElementById(`timer-btn-${i}`);
+  if (disp) disp.textContent = formatTime(secs);
+  if (ring) { ring.style.strokeDashoffset = '0'; ring.style.stroke = '#c8f55a'; }
+  if (btn) { btn.innerHTML = '&#9654; Start'; btn.classList.add('primary'); }
+}
+
+function updateTimerDisplay(i) {
+  const t = timers[i];
+  if (!t) return;
+  const disp = document.getElementById(`timer-display-${i}`);
+  const ring = document.getElementById(`timer-ring-${i}`);
+  if (disp) disp.textContent = formatTime(t.remaining);
+  if (ring) {
+    const circ = 163.4;
+    const progress = 1 - (t.remaining / t.total);
+    ring.style.strokeDashoffset = progress * circ;
+    // Color shifts: green → yellow → orange → red as time runs out
+    const pct = t.remaining / t.total;
+    if (pct > 0.5) ring.style.stroke = '#c8f55a';
+    else if (pct > 0.25) ring.style.stroke = '#ffd166';
+    else ring.style.stroke = '#ff6b35';
+  }
+}
+
+function timerFinished(i) {
+  const disp = document.getElementById(`timer-display-${i}`);
+  const ring = document.getElementById(`timer-ring-${i}`);
+  const btn = document.getElementById(`timer-btn-${i}`);
+  const wrap = document.getElementById(`timer-wrap-${i}`);
+  if (disp) disp.textContent = '0:00';
+  if (ring) { ring.style.strokeDashoffset = '163.4'; ring.style.stroke = '#c8f55a'; }
+  if (btn) { btn.innerHTML = '&#10003; Done!'; btn.classList.add('primary'); }
+  if (wrap) wrap.classList.add('timer-done-flash');
+  setTimeout(() => { if(wrap) wrap.classList.remove('timer-done-flash'); }, 1400);
+  // Vibrate if supported
+  if (navigator.vibrate) navigator.vibrate([200, 100, 200]);
+  // Auto-mark as done
+  const todayKey = getToday();
+  const key = `${todayKey}_${i}`;
+  if (!state.todayExercises[key]) {
+    state.todayExercises[key] = true;
+    saveState();
+    setTimeout(() => renderExercises(), 800);
+  }
+}
+
+init();
+</script>
+</body>
+</html>
