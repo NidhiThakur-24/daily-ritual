@@ -53,7 +53,7 @@ def chat():  # Define the function to handle chat API requests
         "contents": contents,  # Include the list of contents (messages)
         "generationConfig": {  # Configure generation parameters
             "temperature": 0.7,  # Set temperature for randomness in responses
-            "maxOutputTokens": body.get("max_tokens", 1000),  # Set max tokens, default to 1000
+            "maxOutputTokens": body.get("max_tokens", 2500), # Set max tokens, default to 2500
         }
     }
 
