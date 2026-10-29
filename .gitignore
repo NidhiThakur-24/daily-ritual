@@ -2,4 +2,5 @@
 .venv/
 __pycache__/
 *.pyc
-.DS_Storedaily_ritual.egg-info/
+.DS_Store
+*.egg-info/

@@ -242,6 +242,32 @@
       opacity: 0.75
     }
 
+    .plan-day-pill {
+      padding: 6px 14px;
+      border-radius: 100px;
+      font-size: 11px;
+      font-weight: 500;
+      cursor: pointer;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--muted);
+      white-space: nowrap;
+      transition: all .2s;
+      font-family: inherit;
+    }
+
+    .plan-day-pill:hover {
+      border-color: var(--accent);
+      color: var(--text);
+    }
+
+    .plan-day-pill.active {
+      background: var(--accent);
+      color: #0d0d0d;
+      border-color: var(--accent);
+      font-weight: 700;
+    }
+
     .ex-header {
       display: flex;
       align-items: center;
@@ -877,18 +903,239 @@
       display: inline-block;
       animation: ai-dot-pulse 1.3s ease-in-out infinite
     }
+
+    /* Authentication Overlay & Header Logout */
+    .auth-overlay {
+      position: fixed;
+      inset: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(13, 13, 13, 0.92);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      z-index: 9999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+    }
+
+    .auth-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 2.2rem 2rem;
+      width: 100%;
+      max-width: 400px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+      animation: tab-enter 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .auth-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--accent);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 0.6rem;
+    }
+
+    .auth-title {
+      font-size: 1.75rem;
+      font-weight: 400;
+      line-height: 1.2;
+      margin-bottom: 0.4rem;
+      color: var(--text);
+    }
+
+    .auth-sub {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.4;
+      margin-bottom: 1.5rem;
+    }
+
+    .auth-error {
+      background: rgba(255, 71, 87, 0.12);
+      border: 1px solid rgba(255, 71, 87, 0.3);
+      color: var(--danger);
+      border-radius: 10px;
+      padding: 10px 12px;
+      font-size: 13px;
+      line-height: 1.4;
+      margin-bottom: 1.2rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .auth-group {
+      margin-bottom: 1rem;
+    }
+
+    .auth-label {
+      display: block;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 6px;
+    }
+
+    .auth-input {
+      width: 100%;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 11px 14px;
+      color: var(--text);
+      font-size: 14px;
+      font-family: inherit;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .auth-input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(200, 245, 90, 0.15);
+    }
+
+    .auth-btn {
+      width: 100%;
+      padding: 12px;
+      border-radius: 12px;
+      background: var(--accent);
+      color: #0d0d0d;
+      font-size: 14px;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+      font-family: inherit;
+      margin-top: 0.4rem;
+      transition: transform 0.15s ease, filter 0.15s ease;
+    }
+
+    .auth-btn:hover {
+      filter: brightness(1.08);
+      transform: translateY(-1px);
+    }
+
+    .auth-btn:active {
+      transform: translateY(0);
+    }
+
+    .auth-btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .auth-toggle {
+      text-align: center;
+      margin-top: 1.2rem;
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .auth-toggle a {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 600;
+      margin-left: 4px;
+      cursor: pointer;
+    }
+
+    .auth-toggle a:hover {
+      text-decoration: underline;
+    }
+
+    .logout-btn {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 100px;
+      padding: 6px 12px;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--muted);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-family: inherit;
+      transition: all 0.2s ease;
+    }
+
+    .logout-btn:hover {
+      color: var(--danger);
+      border-color: rgba(255, 71, 87, 0.4);
+      background: rgba(255, 71, 87, 0.08);
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
   </style>
 </head>
 
 <body>
 
+  <!-- AUTHENTICATION OVERLAY -->
+  <div id="auth-overlay" class="auth-overlay" style="display:none">
+    <div class="auth-card">
+      <div class="auth-badge">✦ Daily Ritual</div>
+      <h2 class="auth-title" id="auth-title">Welcome Back</h2>
+      <p class="auth-sub" id="auth-sub">Sign in to access your workouts and AI plans.</p>
+
+      <div class="auth-error" id="auth-error" style="display:none">
+        <span>⚠</span>
+        <span id="auth-error-msg"></span>
+      </div>
+
+      <form id="auth-form" onsubmit="handleAuthSubmit(event)">
+        <div class="auth-group" id="auth-name-group" style="display:none">
+          <label class="auth-label" for="auth-name">Your Name</label>
+          <input type="text" id="auth-name" class="auth-input" placeholder="e.g. Alex" autocomplete="name">
+        </div>
+
+        <div class="auth-group">
+          <label class="auth-label" for="auth-email">Email Address</label>
+          <input type="email" id="auth-email" class="auth-input" placeholder="alex@example.com" required autocomplete="email">
+        </div>
+
+        <div class="auth-group">
+          <label class="auth-label" for="auth-password">Password</label>
+          <input type="password" id="auth-password" class="auth-input" placeholder="At least 6 characters" required autocomplete="current-password">
+        </div>
+
+        <button type="submit" id="auth-submit-btn" class="auth-btn">Sign In</button>
+      </form>
+
+      <div class="auth-toggle">
+        <span id="auth-toggle-prompt">Don't have an account?</span>
+        <a href="javascript:void(0)" id="auth-toggle-link" onclick="toggleAuthMode()">Sign up</a>
+      </div>
+    </div>
+  </div>
+
   <div class="header">
     <div class="header-inner">
       <div class="app-title">✦ Daily Ritual</div>
-      <div class="streak-badge">
-        <span class="streak-fire">🔥</span>
-        <span class="streak-count" id="streak-display">0</span>
-        <span style="color:var(--muted);font-size:12px">day streak</span>
+      <div class="header-actions">
+        <div class="streak-badge">
+          <span class="streak-fire">🔥</span>
+          <span class="streak-count" id="streak-display">0</span>
+          <span style="color:var(--muted);font-size:12px">day streak</span>
+        </div>
+        <button class="logout-btn" id="logout-btn" onclick="logout()" title="Log out of Daily Ritual">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+          Logout
+        </button>
       </div>
     </div>
   </div>
@@ -935,9 +1182,21 @@
         <div class="quote-author" id="quote-author">— Mark Twain</div>
       </div>
 
+      <!-- ACTIVE AI PLAN BANNER & DAY SWITCHER -->
+      <div class="active-plan-banner" id="active-plan-banner" style="display:none;background:rgba(200,245,90,0.06);border:1px solid rgba(200,245,90,0.22);border-radius:14px;padding:12px 14px;margin-bottom:14px">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+          <div>
+            <div style="font-size:10px;color:var(--accent);text-transform:uppercase;letter-spacing:0.08em;font-weight:700">✦ Active AI Plan</div>
+            <div id="active-plan-title" style="font-size:14px;font-weight:600;margin-top:2px;color:var(--text)">Personalized Workout</div>
+          </div>
+          <button onclick="clearCustomPlan()" style="background:transparent;border:1px solid var(--border);color:var(--muted);padding:5px 10px;border-radius:8px;font-size:11px;cursor:pointer;font-family:inherit;transition:all .2s" title="Switch back to standard routine">Switch to Standard</button>
+        </div>
+        <div id="plan-days-nav" style="display:flex;gap:6px;overflow-x:auto;padding-bottom:2px"></div>
+      </div>
+
       <div class="done-banner" id="done-banner">
         <h3>🎉 Workout Complete!</h3>
-        <p>You crushed all 7 exercises today. <br>진짜 잘했어! (jinjja jalhaesseo — You really did great!)</p>
+        <p>You crushed all exercises today. <br>진짜 잘했어! (jinjja jalhaesseo — You really did great!)</p>
         <button class="done-check-btn" id="checkin-btn" onclick="checkInToday()">✓ Mark Today as Done</button>
       </div>
 
@@ -1105,6 +1364,14 @@
   </div>
 
   <script>
+    const API_BASE = (window.location.origin && window.location.origin !== 'null' && !window.location.origin.startsWith('file'))
+      ? window.location.origin
+      : 'http://localhost:5000';
+
+    let activeCustomPlan = null;
+    let selectedDayIndex = null;
+    let currentGeneratedPlan = null;
+
     const DAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
     const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 
@@ -1249,10 +1516,35 @@
 
     function getToday() {
       const d = new Date();
-      return `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`;
+      const m = String(d.getMonth() + 1).padStart(2, '0');
+      const day = String(d.getDate()).padStart(2, '0');
+      return `${d.getFullYear()}-${m}-${day}`;
     }
 
     function getTodayPlan() {
+      if (activeCustomPlan && activeCustomPlan.days && activeCustomPlan.days.length > 0) {
+        if (selectedDayIndex === null || selectedDayIndex < 0 || selectedDayIndex >= activeCustomPlan.days.length) {
+          const d = new Date().getDay();
+          selectedDayIndex = (d === 0 ? 6 : d - 1) % activeCustomPlan.days.length;
+        }
+        const customDay = activeCustomPlan.days[selectedDayIndex];
+        return {
+          isCustom: true,
+          planName: activeCustomPlan.planName,
+          day: customDay.day + (customDay.focus ? ` · ${customDay.focus}` : ''),
+          emoji: '✦',
+          tagline: customDay.focus || activeCustomPlan.tagline || 'Custom AI Plan',
+          exercises: (customDay.exercises || []).map(ex => ({
+            name: ex.name,
+            type: ex.type || 'strength',
+            duration: ex.duration || `${ex.sets || 3} sets`,
+            reps: ex.reps || '10 reps',
+            desc: ex.tip || `${ex.sets || 3} sets of ${ex.reps || '10'}`,
+            tip: ex.tip || 'Maintain controlled form throughout.',
+            viz: ex.viz || ex.type || 'breathe'
+          }))
+        };
+      }
       const d = new Date().getDay();
       return WORKOUT_PLANS[d];
     }
@@ -1933,6 +2225,24 @@
       const el = document.getElementById('exercise-list');
       el.innerHTML = '';
 
+      // Update Active AI Plan Banner & Day Selector
+      const planBanner = document.getElementById('active-plan-banner');
+      const planTitle = document.getElementById('active-plan-title');
+      const daysNav = document.getElementById('plan-days-nav');
+      if (planBanner && activeCustomPlan && activeCustomPlan.days && activeCustomPlan.days.length > 0) {
+        planBanner.style.display = 'block';
+        if (planTitle) planTitle.textContent = activeCustomPlan.planName || 'Personalized AI Plan';
+        if (daysNav) {
+          daysNav.innerHTML = activeCustomPlan.days.map((d, idx) => `
+            <button class="plan-day-pill${idx === selectedDayIndex ? ' active' : ''}" onclick="selectPlanDay(${idx})">
+              ${d.day || `Day ${idx + 1}`}
+            </button>
+          `).join('');
+        }
+      } else if (planBanner) {
+        planBanner.style.display = 'none';
+      }
+
       plan.exercises.forEach((ex, i) => {
         const key = `${todayKey}_${i}`;
         const isDone = state.todayExercises[key];
@@ -1981,6 +2291,14 @@
       updateProgress();
     }
 
+    function selectPlanDay(idx) {
+      selectedDayIndex = idx;
+      const plan = getTodayPlan();
+      document.getElementById('workout-day-name').textContent = plan.emoji + ' ' + plan.day;
+      document.getElementById('workout-tagline').textContent = plan.tagline;
+      renderExercises();
+    }
+
     function toggleExpand(i) {
       const el = document.getElementById(`expand-${i}`);
       el.classList.toggle('open');
@@ -2004,9 +2322,11 @@
 
       const total = plan.exercises.length;
       const circ = 175.9;
-      const offset = circ - (done / total) * circ;
+      const offset = total > 0 ? circ - (done / total) * circ : circ;
       document.getElementById('progress-ring').style.strokeDashoffset = offset;
       document.getElementById('done-count').textContent = done;
+      const ringSub = document.querySelector('.ring-sub');
+      if (ringSub) ringSub.textContent = `/ ${total} done`;
 
       if (done === 0) {
         document.getElementById('progress-title').textContent = 'Ready to begin';
@@ -2016,12 +2336,12 @@
         document.getElementById('progress-sub').innerHTML = `Keep going — <strong>${total - done} more to go.</strong>`;
       } else {
         document.getElementById('progress-title').textContent = 'Workout complete!';
-        document.getElementById('progress-sub').innerHTML = `<strong>All 7 exercises done today. 대박!</strong>`;
+        document.getElementById('progress-sub').innerHTML = `<strong>All ${total} exercises done today. 대박!</strong>`;
       }
 
       const banner = document.getElementById('done-banner');
       const todayDone = state.checkedDays[todayKey];
-      if (done === total) {
+      if (done === total && total > 0) {
         banner.classList.add('show');
         document.getElementById('checkin-btn').disabled = !!todayDone;
         document.getElementById('checkin-btn').textContent = todayDone ? '✓ Already checked in today' : '✓ Mark Today as Done';
@@ -2030,7 +2350,7 @@
       }
     }
 
-    function checkInToday() {
+    async function checkInToday() {
       const todayKey = getToday();
       if (state.checkedDays[todayKey]) return;
       state.checkedDays[todayKey] = true;
@@ -2039,16 +2359,36 @@
       saveState();
       updateProgress();
       renderTracker();
-      document.getElementById('checkin-btn').disabled = true;
-      document.getElementById('checkin-btn').textContent = '✓ Logged! See you tomorrow 🔥';
+      const btn = document.getElementById('checkin-btn');
+      if (btn) {
+        btn.disabled = true;
+        btn.textContent = '✓ Logged! See you tomorrow 🔥';
+      }
+
+      // Sync check-in to backend database
+      try {
+        await apiFetch(`${API_BASE}/api/checkin`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            date: todayKey,
+            exercises: state.todayExercises || {}
+          })
+        });
+      } catch (err) {
+        console.warn('Checkin sync to backend failed:', err);
+      }
     }
 
     function recalcStreak() {
       let streak = 0;
       const d = new Date();
       while (true) {
-        const key = `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`;
-        if (state.checkedDays[key]) {
+        const m = String(d.getMonth() + 1).padStart(2, '0');
+        const day = String(d.getDate()).padStart(2, '0');
+        const key = `${d.getFullYear()}-${m}-${day}`;
+        const legacyKey = `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`;
+        if (state.checkedDays[key] || state.checkedDays[legacyKey]) {
           streak++;
           d.setDate(d.getDate() - 1);
         } else break;
@@ -2072,8 +2412,11 @@
       for (let i = 0; i < 7; i++) {
         const d = new Date(weekStart);
         d.setDate(weekStart.getDate() + i);
-        const key = `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`;
-        if (state.checkedDays[key]) weekCount++;
+        const m = String(d.getMonth() + 1).padStart(2, '0');
+        const day = String(d.getDate()).padStart(2, '0');
+        const key = `${d.getFullYear()}-${m}-${day}`;
+        const legacyKey = `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`;
+        if (state.checkedDays[key] || state.checkedDays[legacyKey]) weekCount++;
       }
       document.getElementById('stat-week').textContent = `${weekCount}/7`;
 
@@ -2096,10 +2439,13 @@
         grid.appendChild(d);
       }
       for (let day = 1; day <= daysInMonth; day++) {
-        const key = `${year}-${month + 1}-${day}`;
-        const isToday = key === todayKey;
+        const m = String(month + 1).padStart(2, '0');
+        const dayPadded = String(day).padStart(2, '0');
+        const key = `${year}-${m}-${dayPadded}`;
+        const legacyKey = `${year}-${month + 1}-${day}`;
+        const isToday = key === todayKey || legacyKey === todayKey;
         const isPast = new Date(year, month, day) < new Date(now.getFullYear(), now.getMonth(), now.getDate());
-        const isDone = state.checkedDays[key];
+        const isDone = state.checkedDays[key] || state.checkedDays[legacyKey];
         const d = document.createElement('div');
         d.className = 'cal-day';
         d.textContent = day;
@@ -2144,8 +2490,58 @@
       document.getElementById(`nav-${tab}`)?.classList.add('active');
     }
 
+    async function loadActivePlan() {
+      // 1. Instant local cache load
+      const cached = localStorage.getItem('active_custom_plan');
+      if (cached) {
+        try { activeCustomPlan = JSON.parse(cached); } catch(e){}
+      }
+      // 2. Fetch latest active plan from backend
+      try {
+        const token = localStorage.getItem('authToken');
+        if (!token) return;
+        const res = await apiFetch(`${API_BASE}/api/plan/active`);
+        if (res.ok) {
+          const data = await res.json();
+          if (data && data.plan) {
+            activeCustomPlan = data.plan;
+            localStorage.setItem('active_custom_plan', JSON.stringify(data.plan));
+          } else {
+            activeCustomPlan = null;
+            localStorage.removeItem('active_custom_plan');
+          }
+          const p = getTodayPlan();
+          document.getElementById('workout-day-name').textContent = p.emoji + ' ' + p.day;
+          document.getElementById('workout-tagline').textContent = p.tagline;
+          renderExercises();
+        }
+      } catch (err) {
+        console.warn('Could not fetch active plan:', err);
+      }
+    }
+
+    async function syncCheckinsFromBackend() {
+      try {
+        const token = localStorage.getItem('authToken');
+        if (!token) return;
+        const res = await apiFetch(`${API_BASE}/api/checkins`);
+        if (res.ok) {
+          const data = await res.json();
+          if (data && data.checkins && Array.isArray(data.checkins)) {
+            data.checkins.forEach(d => {
+              state.checkedDays[d] = true;
+            });
+            saveState();
+            renderTracker();
+          }
+        }
+      } catch (err) {
+        console.warn('Could not sync checkins from backend:', err);
+      }
+    }
+
     // Init
-    function init() {
+    async function init() {
       loadState();
       const d = new Date();
       const plan = getTodayPlan();
@@ -2160,14 +2556,16 @@
       renderExercises();
       renderTracker();
       renderFood();
+
+      await loadActivePlan();
+      await syncCheckinsFromBackend();
     }
 
     // Timer state
     const timers = {};
 
     function getTimerSeconds(ex) {
-      // Parse duration string like "3 min", "2 min", "30s each side"
-      const dur = ex.duration.toLowerCase();
+      const dur = (ex.duration || ex.reps || "60s").toLowerCase();
       const minMatch = dur.match(/(\d+)\s*min/);
       const secMatch = dur.match(/(\d+)\s*s/);
       if (minMatch) return parseInt(minMatch[1]) * 60;
@@ -2375,12 +2773,12 @@ Make it realistic. Each day needs exactly 3 exercises only. Keep all text very s
       try {
         // LESSON: The fetch call now goes through the local Flask proxy.
         // Use the explicit backend URL so the frontend doesn't accidentally hit the wrong origin.
-        const res = await fetch('https://daily-ritual-api-zft2.onrender.com/api/chat', {
+        const res = await apiFetch(`${API_BASE}/api/chat`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            model: 'gemini-1.5-flash',
-            max_tokens: 2500,
+            model: 'gemini-2.5-flash',
+            max_tokens: 4000,
             system: strictSystem,
             messages: [{ role: 'user', content: user }]
           })
@@ -2442,6 +2840,7 @@ Make it realistic. Each day needs exactly 3 exercises only. Keep all text very s
     }
 
     function aiRender(plan) {
+      currentGeneratedPlan = plan;
       const el = document.getElementById('ai-results-view');
 
       const daysHtml = plan.days.map((d, i) => `
@@ -2485,13 +2884,203 @@ Make it realistic. Each day needs exactly 3 exercises only. Keep all text very s
       <div style="font-size:13px;color:var(--text);line-height:1.5">${plan.progressionTip}</div>
     </div>
 
+    <button id="activate-plan-btn" onclick="activateCurrentPlan()" style="width:100%;padding:13px;background:var(--accent);color:#0d0d0d;border:none;border-radius:12px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;margin-bottom:10px;box-shadow:0 4px 15px rgba(200,245,90,0.22);transition:all .2s">
+      ✓ Set as Active Workout Plan
+    </button>
+
     <button onclick="aiShow('ai-form-view')" style="width:100%;padding:11px;background:transparent;border:1px solid var(--border);color:var(--muted);border-radius:12px;font-size:13px;cursor:pointer;font-family:inherit">↺ Generate Another Plan</button>
   `;
 
       aiShow('ai-results-view');
     }
 
-    init();
+    async function apiFetch(url, options = {}) {
+      const token = localStorage.getItem('authToken');
+      options.headers = options.headers || {};
+      if (token && !options.headers['Authorization']) {
+        options.headers['Authorization'] = `Bearer ${token}`;
+      }
+      const res = await fetch(url, options);
+      if (res.status === 401) {
+        localStorage.removeItem('authToken');
+        const overlay = document.getElementById('auth-overlay');
+        if (overlay) overlay.style.display = 'flex';
+        showAuthError('Session expired. Please sign in again.');
+        throw new Error('Session expired — please log in');
+      }
+      return res;
+    }
+
+    async function activateCurrentPlan() {
+      if (!currentGeneratedPlan) return;
+      const btn = document.getElementById('activate-plan-btn');
+      if (btn) {
+        btn.disabled = true;
+        btn.textContent = 'Activating Plan...';
+      }
+      try {
+        const res = await apiFetch(`${API_BASE}/api/plan/save`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            plan: currentGeneratedPlan,
+            goal: aiS.g || ''
+          })
+        });
+        if (!res.ok) {
+          const err = await res.json().catch(() => ({}));
+          throw new Error(err.error || 'Failed to save plan');
+        }
+        activeCustomPlan = currentGeneratedPlan;
+        selectedDayIndex = 0;
+        localStorage.setItem('active_custom_plan', JSON.stringify(currentGeneratedPlan));
+
+        // Switch to workout tab and re-render
+        switchTab('workout');
+        init();
+      } catch (err) {
+        alert('Could not activate plan: ' + err.message);
+        if (btn) {
+          btn.disabled = false;
+          btn.textContent = '✓ Set as Active Workout Plan';
+        }
+      }
+    }
+
+    async function clearCustomPlan() {
+      if (!confirm('Switch back to the standard 7-day routine? You can re-activate your AI plan anytime.')) return;
+      try {
+        await apiFetch(`${API_BASE}/api/plan/clear`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' }
+        });
+      } catch (err) {
+        console.warn('Backend clear plan error:', err);
+      }
+      activeCustomPlan = null;
+      selectedDayIndex = 0;
+      localStorage.removeItem('active_custom_plan');
+      init();
+    }
+
+    // ─────────────────────────────────────────
+    // Authentication & Session Management
+    const AUTH_API_BASE = API_BASE;
+    let authMode = 'login'; // 'login' | 'register'
+
+    function toggleAuthMode() {
+      authMode = authMode === 'login' ? 'register' : 'login';
+      const isRegister = authMode === 'register';
+
+      document.getElementById('auth-title').textContent = isRegister ? 'Create Account' : 'Welcome Back';
+      document.getElementById('auth-sub').textContent = isRegister
+        ? 'Join Daily Ritual to create tailored workout plans.'
+        : 'Sign in to access your workouts and AI plans.';
+      document.getElementById('auth-name-group').style.display = isRegister ? 'block' : 'none';
+      document.getElementById('auth-name').required = isRegister;
+      document.getElementById('auth-password').setAttribute('autocomplete', isRegister ? 'new-password' : 'current-password');
+      document.getElementById('auth-submit-btn').textContent = isRegister ? 'Create Account' : 'Sign In';
+      document.getElementById('auth-toggle-prompt').textContent = isRegister ? 'Already have an account?' : "Don't have an account?";
+      document.getElementById('auth-toggle-link').textContent = isRegister ? 'Sign in' : 'Sign up';
+
+      hideAuthError();
+    }
+
+    function showAuthError(msg) {
+      const errBox = document.getElementById('auth-error');
+      const errMsg = document.getElementById('auth-error-msg');
+      if (errBox && errMsg) {
+        errMsg.textContent = msg;
+        errBox.style.display = 'flex';
+      }
+    }
+
+    function hideAuthError() {
+      const errBox = document.getElementById('auth-error');
+      if (errBox) {
+        errBox.style.display = 'none';
+      }
+    }
+
+    async function handleAuthSubmit(e) {
+      e.preventDefault();
+      hideAuthError();
+
+      const submitBtn = document.getElementById('auth-submit-btn');
+      const email = document.getElementById('auth-email').value.trim();
+      const password = document.getElementById('auth-password').value;
+      const isRegister = authMode === 'register';
+      const name = isRegister ? document.getElementById('auth-name').value.trim() : '';
+
+      if (isRegister && !name) {
+        showAuthError('Please enter your name.');
+        return;
+      }
+      if (!email) {
+        showAuthError('Please enter your email.');
+        return;
+      }
+      if (password.length < 6) {
+        showAuthError('Password must be at least 6 characters.');
+        return;
+      }
+
+      const endpoint = isRegister ? `${AUTH_API_BASE}/auth/register` : `${AUTH_API_BASE}/auth/login`;
+      const payload = isRegister ? { name, email, password } : { email, password };
+
+      const originalBtnText = submitBtn.textContent;
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Please wait...';
+
+      try {
+        const res = await fetch(endpoint, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+
+        const data = await res.json().catch(() => ({}));
+
+        if (!res.ok) {
+          const msg = data.error || data.detail || (isRegister ? 'Registration failed.' : 'Login failed. Invalid credentials.');
+          throw new Error(msg);
+        }
+
+        if (!data.token) {
+          throw new Error('Authentication succeeded but no token was returned.');
+        }
+
+        // Token field name confirmed from main.py is 'token'
+        localStorage.setItem('authToken', data.token);
+
+        document.getElementById('auth-overlay').style.display = 'none';
+        init();
+      } catch (err) {
+        showAuthError(err.message || 'An error occurred. Please try again.');
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = originalBtnText;
+      }
+    }
+
+    function logout() {
+      localStorage.removeItem('authToken');
+      localStorage.removeItem('active_custom_plan');
+      location.reload();
+    }
+
+    function checkAuth() {
+      const token = localStorage.getItem('authToken');
+      const overlay = document.getElementById('auth-overlay');
+      if (!token) {
+        if (overlay) overlay.style.display = 'flex';
+      } else {
+        if (overlay) overlay.style.display = 'none';
+        init();
+      }
+    }
+
+    checkAuth();
   </script>
 </body>
 

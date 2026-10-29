@@ -14,16 +14,21 @@ SQLMODEL vs TRADITIONAL SQLALCHEMY LESSON:
    SQLAlchemy 2.0 select statements with Pydantic type safety and IDE autocompletion.
 """
 
+import sys
 import os
 import json
 from datetime import datetime, timedelta, timezone
 from typing import Any, Dict, List, Optional
 
+# On Windows multiprocessing spawn, prevent double import of models
+if __name__ in ('__main__', '__mp_main__'):
+    sys.modules['main'] = sys.modules[__name__]
+
 import jwt
 import httpx
 from dotenv import load_dotenv
 from fastapi import FastAPI, Depends, HTTPException, status
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, FileResponse
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from sqlmodel import SQLModel, Field, Relationship, create_engine, Session, select
@@ -43,11 +48,11 @@ if not SECRET_KEY:
         "Please specify SECRET_KEY in your environment or .env file before running the application."
     )
 
-DATABASE_URL = os.getenv("DATABASE_URL")
+DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///daily_ritual.db")
 if not DATABASE_URL:
     raise RuntimeError(
         "CRITICAL DATABASE ERROR: 'DATABASE_URL' environment variable is missing! "
-        "Please specify a valid PostgreSQL connection string (e.g. from Render Postgres) "
+        "Please specify a valid database connection string (e.g. sqlite:///daily_ritual.db or PostgreSQL) "
         "in your environment or .env file before starting the application."
     )
 
@@ -56,15 +61,17 @@ if DATABASE_URL.startswith("postgres://"):
     DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
 
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+GEMINI_MODEL = os.getenv("GEMINI_MODEL", "gemini-2.5-flash")
 GEMINI_URL = (
-    "https://generativelanguage.googleapis.com/v1beta/models/"
-    "gemini-1.5-flash:generateContent?key={key}"
+    f"https://generativelanguage.googleapis.com/v1beta/models/"
+    f"{GEMINI_MODEL}:generateContent?key={{key}}"
 )
 
 # ─────────────────────────────────────────
 # SQLModel Database Engine & Session Generator
 # ─────────────────────────────────────────
-engine = create_engine(DATABASE_URL, echo=False)
+connect_args = {"check_same_thread": False} if DATABASE_URL.startswith("sqlite") else {}
+engine = create_engine(DATABASE_URL, echo=False, connect_args=connect_args)
 
 def get_session():
     """Yield a SQLModel session per request, ensuring automatic cleanup."""
@@ -82,6 +89,7 @@ class User(SQLModel, table=True):
     Serves as both DB model and Pydantic validation schema.
     """
     __tablename__ = 'users'
+    __table_args__ = {'extend_existing': True}
 
     id: Optional[int] = Field(default=None, primary_key=True)
     name: str = Field(nullable=False)
@@ -105,6 +113,7 @@ class User(SQLModel, table=True):
 class Plan(SQLModel, table=True):
     """Stores AI-generated workout plans per user in 'plans' table."""
     __tablename__ = 'plans'
+    __table_args__ = {'extend_existing': True}
 
     id: Optional[int] = Field(default=None, primary_key=True)
     user_id: int = Field(foreign_key="users.id", nullable=False)
@@ -128,6 +137,7 @@ class Plan(SQLModel, table=True):
 class Checkin(SQLModel, table=True):
     """Stores daily exercise checkins in 'checkins' table."""
     __tablename__ = 'checkins'
+    __table_args__ = {'extend_existing': True}
 
     id: Optional[int] = Field(default=None, primary_key=True)
     user_id: int = Field(foreign_key="users.id", nullable=False)
@@ -164,6 +174,8 @@ class ChatMessage(SQLModel):
     content: str
 
 class ChatRequest(SQLModel):
+    model: Optional[str] = None
+    max_tokens: Optional[int] = None
     system: Optional[str] = ""
     messages: List[ChatMessage] = []
 
@@ -191,8 +203,17 @@ security_scheme = HTTPBearer(auto_error=False)
 
 @app.on_event("startup")
 def on_startup():
-    """Create database tables on application startup."""
-    SQLModel.metadata.create_all(engine)
+    """Create database tables on application startup with fallback support."""
+    global engine
+    try:
+        SQLModel.metadata.create_all(engine)
+    except Exception as exc:
+        if not DATABASE_URL.startswith("sqlite"):
+            print(f"[WARN] Failed to connect to primary database ({exc}). Falling back to local SQLite database (daily_ritual.db)...")
+            engine = create_engine("sqlite:///daily_ritual.db", echo=False, connect_args={"check_same_thread": False})
+            SQLModel.metadata.create_all(engine)
+        else:
+            raise exc
 
 
 # ─────────────────────────────────────────
@@ -396,27 +417,47 @@ async def chat(
     payload: ChatRequest,
     current_user: User = Depends(get_current_user)
 ):
-    if not GEMINI_API_KEY:
-        return JSONResponse(status_code=500, content={'error': {'message': 'GEMINI_API_KEY not set'}})
+    load_dotenv(override=True)
+    api_key = (os.getenv("GEMINI_API_KEY") or "").strip().strip('"').strip("'")
+    if not api_key:
+        return JSONResponse(status_code=500, content={'error': {'message': 'GEMINI_API_KEY not set in .env'}})
+
+    # Model resolution: request payload -> environment variable -> gemini-2.5-flash
+    model = (payload.model or os.getenv("GEMINI_MODEL") or "gemini-2.5-flash").strip()
+    # Map legacy/deprecated Gemini models to gemini-2.5-flash
+    if "gemini-1.5" in model or "gemini-1.0" in model:
+        model = "gemini-2.5-flash"
+
+    target_url = f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent?key={api_key}"
 
     contents = []
     for msg in payload.messages:
         role = 'model' if msg.role == 'assistant' else 'user'
         contents.append({'role': role, 'parts': [{'text': msg.content}]})
 
+    generation_config = {
+        'temperature': 0.7,
+        'maxOutputTokens': payload.max_tokens or 4096,
+    }
+    # Turn off thinking budget on reasoning models for fast structured generation
+    if any(k in model for k in ("2.5", "3.", "thinking")):
+        generation_config['thinkingConfig'] = {'thinkingBudget': 0}
+
+    # Request direct JSON when prompt asks for JSON
+    is_json_requested = 'json' in (payload.system or '').lower() or any('json' in m.content.lower() for m in payload.messages)
+    if is_json_requested:
+        generation_config['responseMimeType'] = 'application/json'
+
     gemini_body = {
         'systemInstruction': {'parts': [{'text': payload.system or ""}]},
         'contents': contents,
-        'generationConfig': {
-            'temperature': 0.7,
-            'maxOutputTokens': 2500,
-        }
+        'generationConfig': generation_config
     }
 
     try:
-        async with httpx.AsyncClient(timeout=30.0) as client:
+        async with httpx.AsyncClient(timeout=45.0) as client:
             response = await client.post(
-                GEMINI_URL.format(key=GEMINI_API_KEY),
+                target_url,
                 headers={'Content-Type': 'application/json'},
                 json=gemini_body,
             )
@@ -427,10 +468,14 @@ async def chat(
         return JSONResponse(status_code=500, content={'error': {'message': str(e)}})
 
     if 'error' in gemini_data:
-        return JSONResponse(status_code=500, content={'error': {'message': gemini_data['error'].get('message', 'Gemini error')}})
+        err_msg = gemini_data['error'].get('message', 'Gemini error')
+        return JSONResponse(status_code=500, content={'error': {'message': err_msg}})
 
     try:
-        text = gemini_data['candidates'][0]['content']['parts'][0]['text']
+        parts = gemini_data['candidates'][0]['content']['parts']
+        text = "".join(p.get("text", "") for p in parts if "text" in p)
+        if not text:
+            return JSONResponse(status_code=500, content={'error': {'message': 'Empty response from Gemini'}})
     except (KeyError, IndexError):
         return JSONResponse(status_code=500, content={'error': {'message': 'Unexpected Gemini response shape'}})
 
@@ -443,22 +488,37 @@ async def chat(
 
 @app.get('/health')
 def health():
+    load_dotenv(override=True)
+    api_key = (os.getenv("GEMINI_API_KEY") or "").strip().strip('"').strip("'")
+    model = (os.getenv("GEMINI_MODEL") or "gemini-2.5-flash").strip()
+    key_preview = f"{api_key[:6]}...{api_key[-4:]}" if len(api_key) > 10 else "not set"
     return {
         'status': 'ok',
-        'provider': 'Gemini 1.5 Flash',
-        'key_loaded': bool(GEMINI_API_KEY)
+        'provider': model,
+        'key_loaded': bool(api_key),
+        'key_preview': key_preview
     }
 
 
 # ─────────────────────────────────────────
-# Server Runner
+# Frontend Serving & Server Runner
 # ─────────────────────────────────────────
+
+@app.get('/')
+def serve_frontend():
+    """Serve single-page frontend application."""
+    if os.path.exists("index.html"):
+        return FileResponse("index.html")
+    return {"message": "Daily Ritual API is running"}
+
 
 if __name__ == '__main__':
     import uvicorn
     port = int(os.getenv("PORT", 5000))
-    print("\n✦ Daily Ritual FastAPI + SQLModel server starting...")
-    print(f"✦ Gemini key loaded: {bool(GEMINI_API_KEY)}")
-    print(f"✦ Health check → http://localhost:{port}/health")
-    print(f"✦ Interactive API Docs → http://localhost:{port}/docs\n")
-    uvicorn.run("main:app", host="0.0.0.0", port=port, reload=True)
+    reload_enabled = os.getenv("RELOAD", "false").lower() in ("true", "1", "yes")
+    print("\n* Daily Ritual FastAPI + SQLModel server starting...")
+    print(f"* Gemini key loaded: {bool(GEMINI_API_KEY)}")
+    print(f"* Web App -> http://localhost:{port}/")
+    print(f"* Health check -> http://localhost:{port}/health")
+    print(f"* Interactive API Docs -> http://localhost:{port}/docs\n")
+    uvicorn.run("main:app", host="0.0.0.0", port=port, reload=reload_enabled)
