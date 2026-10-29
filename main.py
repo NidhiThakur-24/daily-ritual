@@ -48,15 +48,14 @@ if not SECRET_KEY:
         "Please specify SECRET_KEY in your environment or .env file before running the application."
     )
 
-DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///daily_ritual.db")
+DATABASE_URL = os.getenv("DATABASE_URL")
 if not DATABASE_URL:
-    raise RuntimeError(
-        "CRITICAL DATABASE ERROR: 'DATABASE_URL' environment variable is missing! "
-        "Please specify a valid database connection string (e.g. sqlite:///daily_ritual.db or PostgreSQL) "
-        "in your environment or .env file before starting the application."
-    )
+    if os.getenv("VERCEL"):
+        DATABASE_URL = "sqlite:////tmp/daily_ritual.db"
+    else:
+        DATABASE_URL = "sqlite:///daily_ritual.db"
 
-# Render provides connection strings starting with 'postgres://', which SQLAlchemy/SQLModel requires to be 'postgresql://'
+# Render/Neon/Supabase provide connection strings starting with 'postgres://', which SQLAlchemy/SQLModel requires to be 'postgresql://'
 if DATABASE_URL.startswith("postgres://"):
     DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
 
@@ -209,8 +208,9 @@ def on_startup():
         SQLModel.metadata.create_all(engine)
     except Exception as exc:
         if not DATABASE_URL.startswith("sqlite"):
-            print(f"[WARN] Failed to connect to primary database ({exc}). Falling back to local SQLite database (daily_ritual.db)...")
-            engine = create_engine("sqlite:///daily_ritual.db", echo=False, connect_args={"check_same_thread": False})
+            fallback_db = "/tmp/daily_ritual.db" if os.getenv("VERCEL") else "daily_ritual.db"
+            print(f"[WARN] Failed to connect to primary database ({exc}). Falling back to local SQLite database ({fallback_db})...")
+            engine = create_engine(f"sqlite:///{fallback_db}", echo=False, connect_args={"check_same_thread": False})
             SQLModel.metadata.create_all(engine)
         else:
             raise exc
